@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>청개구리 사전점검 AI앱 (v16.3 Hybrid Input)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- [v16.3 디자인 시스템] --- */
+        :root {
+            --primary-grad: linear-gradient(135deg, #00b09b, #96c93d);
+            --header-grad: linear-gradient(135deg, #134E5E, #71B280);
+            --bg-color: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-main: #2d3436;
+            --text-sub: #636e72;
+            --shadow-soft: 0 10px 25px rgba(0,0,0,0.05);
+            --dev-color: #8e44ad;
+            --container-max-width: 600px;
+        }
+
+        body { 
+            margin: 0; padding: 0; 
+            font-family: 'Pretendard', sans-serif;
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            line-height: 1.5; 
+            padding-bottom: 80px; 
+            -webkit-font-smoothing: antialiased;
+            display: flex; justify-content: center;
+        }
+
+        .app-container {
+            width: 100%; max-width: var(--container-max-width);
+            background: var(--bg-color); box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            min-height: 100vh; position: relative;
+        }
+
+        /* 헤더 스타일 */
+        .header-container { background: var(--header-grad); padding: 15px 20px; border-radius: 0 0 24px 24px; display: flex; align-items: center; gap: 12px; box-shadow: 0 4px 15px rgba(19, 78, 94, 0.3); position: relative; z-index: 100; margin-bottom: 20px; }
+        .header-frog-img { height: 45px; width: 45px; object-fit: cover; border-radius: 12px; border: 2px solid rgba(255,255,255,0.8); background-color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); flex-shrink: 0; }
+        .header-text-group { flex: 1; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
+        .header-title { color: white; font-size: 1.2rem; font-weight: 800; margin: 0; line-height: 1.2; text-shadow: 0 2px 4px rgba(0,0,0,0.1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .version-badge { font-size: 0.65rem; background: rgba(0,0,0,0.25); color: rgba(255,255,255,0.9); padding: 2px 6px; border-radius: 6px; font-weight: 600; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: all 0.3s ease; align-self: flex-end; width: fit-content; margin-top: 4px; }
+        .version-badge.dev-active { background: var(--dev-color) !important; box-shadow: 0 0 10px rgba(142, 68, 173, 0.6); border: 1px solid #d2b4de; transform: scale(1.05); }
+
+        /* 상태바 */
+        .status-bar-container { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; margin-bottom: 20px; }
+        .status-pill { background: white; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; color: var(--text-sub); box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 6px; }
+        .btn-manual-3d { background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 10px rgba(118, 75, 162, 0.3); transition: transform 0.1s; }
+        .btn-manual-3d:active { transform: scale(0.95); }
+
+        /* 메인 카드 */
+        .main-card { background: var(--card-bg); padding: 25px 20px; margin: 0 10px 25px 10px; border-radius: 24px; box-shadow: var(--shadow-soft); border: 1px solid rgba(255,255,255,0.8); }
+        .input-row { display: flex; gap: 10px; margin-bottom: 15px; }
+        .input-col { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+        .input-label { font-size: 0.8rem; font-weight: 700; color: #636e72; margin-left: 4px; display:flex; align-items:center; gap:5px; }
+        input, select, textarea { width: 100%; padding: 12px; font-size: 0.95rem; border: none; border-radius: 12px; background: #f1f3f5; color: #2d3436; box-sizing: border-box; font-family: 'Pretendard', sans-serif; }
+        input:focus, select:focus, textarea:focus { background: #fff; outline: none; box-shadow: 0 0 0 2px #00b09b; }
+        textarea { height: 100px; resize: none; line-height: 1.6; } 
+        .site-inputs { display: flex; gap: 5px; }
+        .site-inputs input { text-align: center; font-weight: 700; color: #2d3436; } 
+        .site-info-group { flex: 7; } .location-group { flex: 3; } .triple-col { flex: 1; }
+        .full-address-row { margin-bottom: 20px; }
+
+        /* 듀얼 포토 */
+        .photo-section { display: flex; flex-direction: column; gap: 20px; margin: 25px 0; }
+        .photo-area-wide, .photo-area-close { width: 100%; aspect-ratio: 4 / 3; border-radius: 16px; position: relative; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
+        .photo-area-wide { background: #f0f8ff; border: 2px dashed #3498db; }
+        .photo-area-wide .photo-text { color: #3498db; font-size: 0.9rem; font-weight: 700; margin-top: 8px; }
+        .photo-area-close { background: #eefbf3; border: 2px dashed #00b09b; }
+        .photo-icon { font-size: 2.5rem; margin-bottom: 8px; background: linear-gradient(135deg, #00b09b, #96c93d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .photo-text { font-size: 0.9rem; font-weight: 700; text-align: center; pointer-events: none; line-height: 1.4; }
+        .preview-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; display: none; z-index: 10; background-color: #000; }
+        .center-crosshair { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; pointer-events: none; z-index: 20; }
+        .center-crosshair::before, .center-crosshair::after { content: ''; position: absolute; background: rgba(231, 76, 60, 0.8); }
+        .center-crosshair::before { width: 100%; height: 2px; top: 50%; }
+        .center-crosshair::after { height: 100%; width: 2px; left: 50%; }
+
+        .legal-inline-box { margin-top: 20px; padding: 15px; background: #fffbe6; border: 1px solid #ffeaa7; border-radius: 12px; }
+        .legal-title-small { font-size: 0.9rem; font-weight: 800; color: #d35400; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+        .legal-text-small { font-size: 0.8rem; color: #636e72; line-height: 1.5; margin-bottom: 12px; }
+        .legal-check-row { display: flex; align-items: center; gap: 8px; cursor: pointer; width: 100%; }
+        .legal-check-row input { width: 18px; height: 18px; margin: 0; cursor: pointer; accent-color: #d35400; flex-shrink: 0; }
+        .legal-check-row label { font-size: 0.85rem; font-weight: 700; color: #2d3436; cursor: pointer; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        .btn-save-next { background: linear-gradient(to bottom, #3498db, #2980b9); color: white; border: none; padding: 14px 24px; border-radius: 12px; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 0 #1c5985, 0 5px 10px rgba(0,0,0,0.2); width: 100%; margin-top: 20px; }
+        .btn-save-next:active { transform: translateY(4px); box-shadow: 0 0 0 #1c5985; }
+        .btn-save-next:disabled { background: #b2bec3; cursor: not-allowed; box-shadow: none; transform: none; }
+
+        /* 리스트 영역 */
+        .list-area { padding: 0 10px 10px 10px; margin-top: 20px; }
+        .list-header-box { margin-bottom: 15px; background: #fff; padding: 15px; border-radius: 16px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); display: flex; justify-content: space-between; align-items: center; border-left: 6px solid #00b09b; }
+        .list-title-text { font-size: 1rem; font-weight: 800; color: #2d3436; }
+        .list-subtitle-text { font-size: 0.85rem; color: #00b09b; font-weight: 600; }
+        .list-item { background: white; padding: 12px; border-radius: 16px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border: 1px solid #f1f3f5; }
+        .list-photos { display: flex; gap: 8px; width: 100%; }
+        .list-thumb { width: 50%; aspect-ratio: 4/3; border-radius: 8px; object-fit: cover; border: 1px solid #eee; background-color: #f9f9f9; }
+        .list-content { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+        .list-room-work { font-weight: 800; font-size: 1rem; color: #2d3436; border-bottom: 1px dashed #eee; padding-bottom: 5px; margin-bottom: 5px; }
+        .list-type { font-size: 0.85rem; color: #e74c3c; font-weight: 700; background: #fff5f5; padding: 2px 8px; border-radius: 4px; align-self: flex-start; }
+        .list-detail { font-size: 0.9rem; color: #636e72; line-height: 1.5; white-space: pre-wrap; }
+        .list-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 5px; }
+        .btn-edit-item, .btn-delete-item { border: none; border-radius: 6px; padding: 8px 16px; font-size: 0.8rem; cursor: pointer; font-weight: bold; color: white; }
+        .btn-edit-item { background: #f39c12; }
+        .btn-delete-item { background: #b2bec3; }
+
+        /* 하단 액션 버튼 */
+        .bottom-actions { display: flex; gap: 8px; padding: 0 10px 20px 10px; margin-top: 30px; }
+        .btn-3d { 
+            flex: 1; padding: 10px 0; border: none; border-radius: 12px; 
+            color: white; font-size: 0.85rem; font-weight: 800; cursor: pointer; 
+            display: flex; flex-direction: row; align-items: center; justify-content: center; 
+            gap: 5px; transition: all 0.1s; position: relative; text-decoration: none; 
+        }
+        .btn-pdf-3d { background: linear-gradient(to bottom, #2ecc71, #27ae60); box-shadow: 0 4px 0 #1e8449, 0 5px 10px rgba(46, 204, 113, 0.3); }
+        .btn-pdf-3d:active { transform: translateY(4px); box-shadow: 0 0 0 #1e8449; }
+        
+        .btn-reserve-3d { background: linear-gradient(to bottom, #9b59b6, #8e44ad); box-shadow: 0 4px 0 #71368a, 0 5px 10px rgba(155, 89, 182, 0.3); }
+        .btn-reserve-3d:active { transform: translateY(4px); box-shadow: 0 0 0 #71368a; }
+        
+        .btn-call-3d { background: linear-gradient(to bottom, #f39c12, #d35400); box-shadow: 0 4px 0 #a04000, 0 5px 10px rgba(230, 126, 34, 0.3); }
+        .btn-call-3d:active { transform: translateY(4px); box-shadow: 0 0 0 #a04000; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .modal-content { background: white; width: 85%; max-width: 400px; border-radius: 24px; padding: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); text-align: center; animation: popUp 0.3s ease-out; }
+        @keyframes popUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-title { font-size: 1.3rem; font-weight: 900; color: #2d3436; margin-bottom: 20px; }
+        .price-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 0.9rem; }
+        .price-table th, .price-table td { border-bottom: 1px solid #eee; padding: 10px; text-align: left; }
+        .price-table th { background: #f8f9fa; color: #2d3436; font-weight: 800; }
+        .price-table td { color: #636e72; }
+        .price-highlight { color: #8e44ad; font-weight: 800; }
+        .warning-box { background: #fff9e6; color: #d35400; padding: 15px; border-radius: 12px; font-size: 0.85rem; text-align: left; margin-bottom: 20px; border: 1px solid #ffeaa7; line-height: 1.5; }
+        .btn-modal-close-3d { width: 100%; padding: 14px 0; border: none; border-radius: 16px; color: white; font-size: 1rem; font-weight: 800; cursor: pointer; margin-top: 15px; background: linear-gradient(to bottom, #1abc9c, #16a085); box-shadow: 0 4px 0 #12876f; }
+        .btn-modal-close-3d:active { transform: translateY(4px); box-shadow: 0 0 0 #12876f; }
+        .footer-info { text-align: center; padding: 20px 10px; color: #b2bec3; font-size: 0.7rem; line-height: 1.4; border-top: 1px solid #dfe6e9; margin-top: 30px; background: #fff; }
+        .footer-info p { margin: 2px 0; padding: 0; }
+        .footer-bold { font-weight: 800; color: #636e72; }
+        .manual-check-row { display: flex; align-items: center; gap: 10px; cursor: pointer; margin-top: 20px; padding: 10px; background: #f1f3f5; border-radius: 12px; }
+        .manual-check-row input { width: 20px; height: 20px; margin: 0; cursor: pointer; accent-color: #00b09b; }
+        .manual-check-row label { font-size: 1rem; font-weight: 700; color: #2d3436; cursor: pointer; margin: 0; }
+
+        /* 챗봇 스타일 */
+        .chat-float-btn {
+            position: fixed; bottom: 20px; right: 20px;
+            width: 60px; height: 60px;
+            background: linear-gradient(135deg, #00b09b, #96c93d);
+            border-radius: 50%;
+            box-shadow: 0 5px 20px rgba(0, 176, 155, 0.4);
+            display: flex; align-items: center; justify-content: center;
+            color: white; 
+            font-size: 1rem; /* 글자 크기 조정 */
+            font-weight: 800; /* 글자 굵게 */
+            cursor: pointer;
+            z-index: 999;
+            transition: transform 0.2s;
+        }
+        .chat-float-btn:hover { transform: scale(1.1); }
+        .chat-float-btn:active { transform: scale(0.95); }
+
+        .chat-window {
+            position: fixed; bottom: 90px; right: 20px;
+            width: 320px; height: 450px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            border: 2px solid #00b09b;
+            animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .chat-header {
+            background: #00b09b; color: white; padding: 15px;
+            font-weight: 800; display: flex; justify-content: space-between; align-items: center;
+        }
+        .chat-close-btn { cursor: pointer; font-size: 1.2rem; }
+        
+        .chat-body {
+            flex: 1; padding: 15px; overflow-y: auto; background: #f0f4f8;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .chat-bubble {
+            max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 0.9rem; line-height: 1.4;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .chat-bot { background: white; align-self: flex-start; border-top-left-radius: 0; border: 1px solid #eee; }
+        .chat-user { background: #00b09b; color: white; align-self: flex-end; border-top-right-radius: 0; }
+
+        .chat-options {
+            padding: 10px; background: white; border-top: 1px solid #eee;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+        }
+        .chat-option-btn {
+            background: #eefbf3; border: 1px solid #00b09b; color: #00b09b;
+            padding: 8px; border-radius: 8px; font-size: 0.85rem; font-weight: 700; cursor: pointer;
+            text-align: center;
+        }
+        .chat-option-btn:hover { background: #00b09b; color: white; }
+
+        @media print {
+            body { background: white; padding: 0; display: block; }
+            .app-container { max-width: 100%; box-shadow: none; }
+            .header-container, .main-card, .bottom-actions, .footer-info, .status-bar-container, .list-footer, .chat-float-btn, .chat-window { display: none !important; } 
+            .list-area { padding: 0; margin: 0; }
+            .list-header-box { border: none; padding: 0; margin-bottom: 20px; border-bottom: 2px solid #333; border-radius: 0; box-shadow: none; }
+            .list-item { border: 1px solid #000; box-shadow: none; break-inside: avoid; margin-bottom: 20px; padding: 15px; }
+            .list-photos { display: flex !important; gap: 10px; margin-bottom: 10px; }
+            .list-thumb { width: 50% !important; height: auto; aspect-ratio: 4/3; object-fit: contain; border: 1px solid #ccc; }
+            #pdf-header-title { display: block !important; text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 20px; padding-top: 20px;}
+            #pdf-disclaimer { display: block !important; margin-top: 30px; font-size: 10px; color: #666; text-align: center; border-top: 1px solid #ddd; padding-top: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div id="paidServiceModal" class="modal-overlay" style="display:none;">
+            <div class="modal-content">
+                <div class="modal-title" style="color:#8e44ad;">🐸 유료 사전점검 안내</div>
+                <div style="text-align:left; font-size:0.9rem; margin-bottom:15px; color:#555;">
+                    청개구리는 불필요한 점검(라돈측정, 공기질측정, 열화상검사, 기타)를 생략하고 중대하자를 중점으로 검사합니다. 수도권 이외는 추가요금이 발생합니다. (직통) 010-2322-0949
+                </div>
+                <table class="price-table">
+                    <tr><th>20평형</th><td class="price-highlight">90,000원</td></tr>
+                    <tr><th>30평형</th><td class="price-highlight">110,000원</td></tr>
+                    <tr><th>40평형</th><td class="price-highlight">130,000원</td></tr>
+                    <tr><th>50평형</th><td class="price-highlight">150,000원</td></tr>
+                    <tr><th>기타</th><td>별도 상담</td></tr>
+                </table>
+                <div class="warning-box">
+                    <b>[예약 및 환불 규정]</b><br>
+                    1. <b>선입금 후 꼭 직통(010-2322-0949)으로 입금자와 주소, 방문일/시간을 문자로 보내주시면 확정여부를 통보해 드립니다.</b><br>
+                    2. 방문 <b>7일 전 취소 시 100% 환불</b>됩니다.<br>
+                    3. 그 외 기간은 환불이 불가합니다.<br>
+                    4. 예약서 작성 시 위 내용에 동의한 것으로 간주합니다.
+                </div>
+                <button class="btn-modal-close-3d" onclick="window.goToGoogleForm()">
+                    <i class="fa-solid fa-pen-to-square"></i> 예약 신청서 작성하기
+                </button>
+                <button onclick="document.getElementById('paidServiceModal').style.display='none'" style="margin-top:10px; background:none; border:none; color:#999; text-decoration:underline; cursor:pointer;">닫기</button>
+            </div>
+        </div>
+
+        <div class="header-container">
+            <img src="froginspector.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3069/3069172.png'" class="header-frog-img">
+            <div class="header-text-group">
+                <h2 class="header-title">청개구리 사전점검 AI앱(무료)</h2>
+                <span class="version-badge" id="versionBadge" onclick="window.checkDevMode()">v16.3 Hybrid Input</span>
+            </div>
+        </div>
+        
+        <div class="status-bar-container">
+            <div class="status-pill" id="statusPill">
+                <i class="fa-solid fa-circle-check" style="color:#00b09b;"></i>
+                <span id="statusMsg">AI 분석 엔진 대기 중</span>
+            </div>
+            <button class="btn-manual-3d" onclick="window.openManual()">
+                사용설명서 <i class="fa-solid fa-book-open"></i>
+            </button>
+        </div>
+
+        <div class="main-card">
+            <div class="full-address-row">
+                <div class="input-label"><i class="fa-solid fa-map-location-dot"></i> 전체 주소 입력</div>
+                <input type="text" id="fullAddress" placeholder="서울 송파구 ***">
+            </div>
+
+            <div class="input-row">
+                <div class="input-col site-info-group">
+                    <label class="input-label">A. 현장 정보 (리포트용)</label>
+                    <div class="site-inputs">
+                        <input type="text" id="aptName" placeholder="아파트명" style="flex:1.5;">
+                        <input type="tel" id="aptDong" placeholder="000동" style="flex:1;">
+                        <input type="tel" id="aptHo" placeholder="0000호" style="flex:1;">
+                    </div>
+                </div>
+                <div class="input-col location-group">
+                    <label class="input-label">B. 위치</label>
+                    <select id="roomSelect">
+                        <option value="">선택</option>
+                        <option value="거실">거실</option>
+                        <option value="주방">주방</option>
+                        <option value="침실1">침실1</option>
+                        <option value="침실2">침실2</option>
+                        <option value="침실3">침실3</option>
+                        <option value="안방">안방</option>
+                        <option value="욕실1">욕실1</option>
+                        <option value="욕실2">욕실2</option>
+                        <option value="현관">현관</option>
+                        <option value="발코니">발코니</option>
+                        <option value="다용도실">다용도실</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="photo-section">
+                <input type="file" id="cameraInputWide" accept="image/*" style="display:none">
+                <label class="photo-area-wide" for="cameraInputWide">
+                    <div style="text-align:center;">
+                        <i class="fa-solid fa-image" style="color:#3498db; font-size:2rem; margin-bottom:5px;"></i>
+                        <div class="photo-text" style="color:#3498db;">1. 멀리서 찍기 (위치 파악용)</div>
+                    </div>
+                    <img id="previewImageWide" class="preview-img">
+                </label>
+
+                <input type="file" id="cameraInputClose" accept="image/*" style="display:none">
+                <label class="photo-area-close" id="photoAreaBtn" for="cameraInputClose">
+                    <div class="photo-icon"><i class="fa-solid fa-camera-retro"></i></div>
+                    <div class="photo-text">2. 가까이 찍기 (자동 분석 시작)<br><span style="font-size:0.75rem; color:#999;">십자선에 하자를 맞추세요</span></div>
+                    <img id="previewImageClose" class="preview-img">
+                    <div class="center-crosshair"></div>
+                </label>
+            </div>
+
+            <div class="input-col" style="margin-bottom: 15px;">
+                <label class="input-label" style="color:#8e44ad;"><i class="fa-solid fa-keyboard"></i> C. 하자 내용 (직접 입력)</label>
+                <input type="text" id="userDefectInput" placeholder="예) 창호 우측 내부창짝 수직수평불량" style="background:#f8f9fa; border:1px solid #dcdde1;">
+            </div>
+
+            <div class="input-row">
+                <div class="input-col triple-col">
+                    <label class="input-label">D. 공종</label>
+                    <select id="workType"><option value="">자동입력</option></select>
+                </div>
+                <div class="input-col triple-col">
+                    <label class="input-label">E. 세부</label>
+                    <select id="subWorkType"><option value="">자동입력</option></select>
+                </div>
+                <div class="input-col triple-col">
+                    <label class="input-label">F. 유형</label>
+                    <input type="text" id="defectType" placeholder="자동입력">
+                </div>
+            </div>
+
+            <div class="input-col" style="margin-bottom: 10px;">
+                <div class="input-label" style="color:#00b09b;">
+                    <i class="fa-solid fa-robot"></i> G. AI 분석 리포트 (국토부 데이터 AI참조)
+                </div>
+                <textarea id="defectDetail" placeholder="멀리서 한 장, 가까이서 한 장 찍으시면 AI가 더 정확하게 분석합니다."></textarea>
+                
+                <div class="legal-inline-box">
+                    <div class="legal-title-small"><i class="fa-solid fa-triangle-exclamation"></i> 이용 전 필수 확인</div>
+                    <div class="legal-text-small">
+                        1. <b>법적 효력 없음:</b> 본 결과는 AI 추정치이며 전문가의 현장 실사가 필요합니다.<br>
+                        2. <b>책임 제한:</b> 분석 오류 및 분쟁에 대해 개발사는 법적 책임을 지지 않습니다.
+                    </div>
+                    <div class="legal-check-row">
+                        <input type="checkbox" id="inlineAgreeCheck" onchange="window.toggleSaveButton()">
+                        <label for="inlineAgreeCheck">위 내용을 확인하였으며 결과에 동의합니다.</label>
+                    </div>
+                </div>
+
+                <div style="text-align: right;">
+                    <button class="btn-save-next" id="btnSaveList" onclick="window.addToList()" disabled>
+                        리스트 저장 <i class="fa-solid fa-download"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="pdf-header-title" style="display:none;"></div>
+
+        <div class="list-area">
+            <div class="list-header-box">
+                <div class="list-title-text">📋 점검 리스트 <span id="listCount" style="color:#00b09b;">(0)</span></div>
+                <div id="currentAptInfo" class="list-subtitle-text">정보 입력 대기</div>
+            </div>
+            <div id="listBox"></div>
+        </div>
+        
+        <div id="pdf-disclaimer" style="display:none;">
+            ※ 본 리포트는 입주자 사전점검 보조 자료이며 법적 효력이 없습니다. (제공: 청개구리샤시)
+        </div>
+
+        <div class="bottom-actions">
+            <button class="btn-3d btn-pdf-3d" onclick="window.savePDF()">
+                <i class="fa-solid fa-file-pdf"></i>
+                <span>전체저장</span>
+            </button>
+            <button class="btn-3d btn-reserve-3d" onclick="window.openPaidService()">
+                <i class="fa-solid fa-calendar-check"></i>
+                <span>유료예약</span>
+            </button>
+            <button class="btn-3d btn-call-3d" onclick="window.toggleChat()">
+                <i class="fa-solid fa-robot"></i>
+                <span>AI 상담</span>
+            </button>
+        </div>
+
+        <div class="footer-info">
+            <p><span class="footer-bold">청개구리샤시</span> | 대표: 전영웅 | 사업자: 123-36-31426 | 📞 010-2322-0949</p>
+            <p>본 서비스는 참고용 보조 도구이며 법적 책임을 지지 않습니다. | ⓒ 2026 Cheong-gaeguri Corp.</p>
+        </div>
+    </div>
+
+    <div id="manualModal" class="modal-overlay" style="display:none;">
+        <div class="modal-content">
+            <div class="modal-title">🐸 앱 사용법</div>
+            <div style="text-align:left; color:#636e72; font-size:0.9rem; line-height:1.6;">
+                1. <b>전체 주소와 현장정보 위치</b>를 입력하세요.<br>
+                2. <b>[1. 멀리서 찍기]</b>: 방 전체나 창호 전체가 나오게 찍으세요. (위치 파악용)<br>
+                3. <b>[2. 가까이 찍기]</b>: 하자 부위를 십자선에 맞춰 찍으세요. (정밀 분석용)<br>
+                4. <b>[C. 하자 내용]</b>: "창호 우측 수직불량" 처럼 직접 입력하면 AI가 더 정확하게 분석합니다.<br>
+                5. <b>공종, 세부, 유형, 분석리포트</b>는 AI가 자동으로 만들어줍니다.<br>
+                6. 분석 결과 확인 후 <b>동의 체크</b> -> <b>[리스트 저장]</b>을 누르세요.<br>
+                7. <b>PDF저장</b>을 누르면 폰의 내파일에서 확인하실 수 있습니다.<br>
+                8. 정밀한 진단을 원하시면 <b>유료</b>로 신청하세요.
+            </div>
+            
+            <div class="manual-check-row">
+                <input type="checkbox" id="manualCheck" onchange="window.closeManual()">
+                <label for="manualCheck">네, 모두 확인했습니다.</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-float-btn" onclick="window.toggleChat()">
+        챗봇
+    </div>
+
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">
+            <span>🐸 청개구리 챗봇</span>
+            <span class="chat-close-btn" onclick="window.toggleChat()"><i class="fa-solid fa-xmark"></i></span>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="chat-bubble chat-bot">
+                안녕하세요! 청개구리 샤시입니다.<br>
+                무엇을 도와드릴까요?
+            </div>
+        </div>
+        <div class="chat-options">
+            <div class="chat-option-btn" onclick="window.askBot('cost')">💰 비용 안내</div>
+            <div class="chat-option-btn" onclick="window.askBot('reason')">📉 싼 이유?</div> <div class="chat-option-btn" onclick="window.askBot('defect')">🛠️ 중대하자란?</div>
+            <div class="chat-option-btn" onclick="window.askBot('booking')">📅 예약 방법</div>
+        </div>
+    </div>
+
+    <script type="importmap">
+        { "imports": { "@google/generative-ai": "https://esm.run/@google/generative-ai" } }
+    </script>
+
+    <script type="module">
+        import { GoogleGenerativeAI } from "@google/generative-ai";
+
+        const part1 = "AIzaSyAP_9dcbRPRdP4"; 
+        const part2 = "GD6WniQsWixFUFYRhfig";
+        const API_KEY = part1 + part2;
+        const GOOGLE_FORM_URL = "https://forms.gle/iF9t9gXCHkuMQj8W6"; 
+
+        let defectDataList = [];
+        let currentWideFile = null;
+        let currentCloseFile = null;
+        let clickCount = 0; let clickTimer; const DAILY_LIMIT = 100;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const isDev = localStorage.getItem('is_developer') === 'true';
+            if (isDev) document.getElementById('versionBadge').classList.add('dev-active');
+            
+            const workType = document.getElementById('workType');
+            ['타일공사','도배공사','마루공사','창호공사','가구공사','기타공사'].forEach(t => {
+                let opt = document.createElement('option'); opt.value = t; opt.innerText = t; workType.appendChild(opt);
+            });
+        });
+
+        window.checkDevMode = function() {
+            clearTimeout(clickTimer); clickCount++;
+            if (clickCount === 5) {
+                const isDev = localStorage.getItem('is_developer') === 'true';
+                localStorage.setItem('is_developer', !isDev);
+                const badge = document.getElementById('versionBadge');
+                if (!isDev) { alert("🐸 개발자 모드 활성화!"); badge.classList.add('dev-active'); }
+                else { alert("개발자 모드 해제."); badge.classList.remove('dev-active'); }
+                clickCount = 0;
+            }
+            clickTimer = setTimeout(() => { clickCount = 0; }, 1000);
+        };
+
+        function checkDailyLimit() {
+            const isDev = localStorage.getItem('is_developer') === 'true';
+            if (isDev) return true;
+            const today = new Date().toDateString();
+            let usageData = JSON.parse(localStorage.getItem('frog_app_usage') || '{}');
+            if (usageData.date !== today) { usageData = { date: today, count: 0 }; }
+            if (usageData.count >= DAILY_LIMIT) {
+                alert(`⚠️ 일일 무료 한도(${DAILY_LIMIT}회) 초과.`);
+                return false;
+            }
+            usageData.count++;
+            localStorage.setItem('frog_app_usage', JSON.stringify(usageData));
+            return true;
+        }
+
+        function updateStatus(msg, isError = false) {
+            const statusMsg = document.getElementById('statusMsg');
+            const icon = document.querySelector('#statusPill i');
+            statusMsg.innerText = msg;
+            icon.className = isError ? "fa-solid fa-circle-exclamation" : "fa-solid fa-circle-check";
+            icon.style.color = isError ? "#e74c3c" : "#00b09b";
+        }
+
+        window.toggleSaveButton = function() {
+            const chk = document.getElementById('inlineAgreeCheck');
+            const btn = document.getElementById('btnSaveList');
+            btn.disabled = !chk.checked;
+            btn.style.background = chk.checked ? 'linear-gradient(to bottom, #3498db, #2980b9)' : '#b2bec3';
+            btn.style.cursor = chk.checked ? 'pointer' : 'not-allowed';
+        }
+
+        window.openManual = function() { 
+            document.getElementById('manualCheck').checked = false; 
+            document.getElementById('manualModal').style.display = 'flex'; 
+        };
+        
+        window.closeManual = function() { 
+            if(document.getElementById('manualCheck').checked) {
+                document.getElementById('manualModal').style.display = 'none'; 
+            }
+        };
+        window.openPaidService = function() { document.getElementById('paidServiceModal').style.display = 'flex'; };
+        window.goToGoogleForm = function() { window.open(GOOGLE_FORM_URL, '_blank'); };
+
+        document.getElementById('cameraInputWide').addEventListener('change', (e) => handleImage(e, 'wide'));
+        document.getElementById('cameraInputClose').addEventListener('change', (e) => handleImage(e, 'close'));
+
+        function handleImage(event, type) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                if(type === 'wide') {
+                    currentWideFile = file;
+                    const p = document.getElementById('previewImageWide');
+                    p.src = e.target.result; p.style.display = 'block';
+                    updateStatus("이제 2번(가까이 찍기)을 촬영하세요.");
+                } else {
+                    if (!checkDailyLimit()) { document.getElementById('cameraInputClose').value = ""; return; }
+                    currentCloseFile = file;
+                    const p = document.getElementById('previewImageClose');
+                    p.src = e.target.result; p.style.display = 'block';
+                    runTargetedAnalysis();
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function fileToGenerativePart(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve({ inlineData: { data: reader.result.split(',')[1], mimeType: file.type } });
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function runTargetedAnalysis() {
+            const detailBox = document.getElementById('defectDetail');
+            const photoBtn = document.getElementById('photoAreaBtn');
+            const userDefectInput = document.getElementById('userDefectInput').value; // [추가] 사용자 입력값
+
+            detailBox.value = "AI가 정밀 분석 중입니다...";
+            updateStatus("AI 듀얼 정밀 분석 중...");
+            photoBtn.style.opacity = '0.7';
+
+            try {
+                const genAI = new GoogleGenerativeAI(API_KEY);
+                const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+                
+                // [수정] 프롬프트에 사용자 입력(userDefectInput) 반영
+                const prompt = `
+                    입주자 사전점검 AI입니다.
+                    사진 1(Wide): 공종(Work Type) 파악.
+                    사진 2(Close): 하자 유형(Type) 및 상세 내용(Detail) 파악.
+                    
+                    **[사용자 추가 입력 정보]: "${userDefectInput}"**
+                    (이 정보가 있다면, 이를 최우선으로 반영하여 분석 결과를 생성하세요.)
+
+                    [출력 형식 JSON]
+                    {
+                        "work": "공종명(예: 창호공사)",
+                        "sub": "세부공종명(예: PL창호)",
+                        "type": "하자유형(예: 파손/찍힘/오염/수직수평불량)",
+                        "detail": "1. 현상: [보이는 대로 기술 + 사용자 입력 내용 반영]\\n2. 💡사례매칭: [국토부 하자 판정 기준 참고 설명]"
+                    }
+                `;
+                
+                const parts = [prompt];
+                if (currentWideFile) parts.push(await fileToGenerativePart(currentWideFile)); 
+                if (currentCloseFile) parts.push(await fileToGenerativePart(currentCloseFile)); 
+
+                const result = await model.generateContent(parts);
+                const response = await result.response;
+                const text = response.text();
+                
+                let data = {};
+                try {
+                    let cleanText = text.replace(/```json/g, "").replace(/```/g, "").trim();
+                    const jsonMatch = cleanText.match(/\{[\s\S]*\}/);
+                    if (jsonMatch) data = JSON.parse(jsonMatch[0]);
+                    else throw new Error("JSON Parse Error");
+                } catch (e) {
+                    data = { detail: "텍스트 변환 실패. 직접 입력해주세요.", work: "기타", sub: "", type: "확인필요" };
+                }
+
+                applyDataToUI(data);
+                updateStatus("분석 완료! 확인 후 동의해주세요.");
+            } catch (error) {
+                console.error("AI Error:", error);
+                updateStatus("분석 실패", true);
+                detailBox.value = "일시적인 오류가 발생했습니다.";
+            } finally {
+                photoBtn.style.opacity = '1';
+            }
+        }
+
+        function applyDataToUI(data) {
+            document.getElementById('workType').value = data.work || "";
+            const subSelect = document.getElementById('subWorkType');
+            subSelect.innerHTML = `<option value="${data.sub}">${data.sub}</option>`;
+            subSelect.value = data.sub || ""; 
+            document.getElementById('defectType').value = data.type || "";
+            document.getElementById('defectDetail').value = (data.detail || "") + "\n\n(※ AI 분석 결과는 단순 참고용입니다.)";
+        }
+
+        window.addToList = function() {
+            if(!document.getElementById('inlineAgreeCheck').checked) { alert("동의해주세요."); return; }
+            
+            const wideSrc = document.getElementById('previewImageWide').src;
+            const closeSrc = document.getElementById('previewImageClose').src;
+            
+            if (!currentCloseFile && (!closeSrc || closeSrc.includes('data:image/svg+xml'))) { 
+                alert("사진 촬영(가까이 찍기)이 필요합니다."); return; 
+            }
+            
+            const fullAddr = document.getElementById('fullAddress').value;
+            const finalAptName = document.getElementById('aptName').value || (fullAddr ? "주소참조" : "OO아파트");
+            const fullAptInfo = `${fullAddr} (${finalAptName} ${document.getElementById('aptDong').value} ${document.getElementById('aptHo').value})`;
+            
+            document.getElementById('currentAptInfo').innerText = fullAptInfo;
+            document.getElementById('pdf-header-title').innerText = fullAptInfo + " 사전점검 리포트";
+
+            const uniqueId = Date.now();
+            const itemData = {
+                id: uniqueId, 
+                room: document.getElementById('roomSelect').value || "위치미지정", 
+                work: document.getElementById('workType').value,
+                sub: document.getElementById('subWorkType').value, 
+                type: document.getElementById('defectType').value,
+                detail: document.getElementById('defectDetail').value, 
+                wideImg: (wideSrc && !wideSrc.includes('svg')) ? wideSrc : null,
+                closeImg: closeSrc
+            };
+            defectDataList.push(itemData);
+
+            const itemHtml = `
+                <div class="list-item" id="item-${uniqueId}">
+                    <div class="list-room-work">${itemData.room} | ${itemData.work}</div>
+                    <div class="list-photos">
+                        ${itemData.wideImg ? `<img src="${itemData.wideImg}" class="list-thumb">` : ''}
+                        <img src="${itemData.closeImg}" class="list-thumb" style="${!itemData.wideImg ? 'width:100%' : ''}">
+                    </div>
+                    <div class="list-content">
+                        <div class="list-type">${itemData.type}</div>
+                        <div class="list-detail">${itemData.detail}</div>
+                    </div>
+                    <div class="list-footer">
+                        <button class="btn-edit-item" onclick="window.editItem(${uniqueId})">수정</button>
+                        <button class="btn-delete-item" onclick="window.deleteItem(${uniqueId})">삭제</button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('listBox').insertAdjacentHTML('beforeend', itemHtml); 
+            document.getElementById('listCount').innerText = `(${defectDataList.length})`;
+            
+            // [수정] 입력값 초기화 시 사용자 입력창도 초기화
+            document.getElementById('cameraInputWide').value = "";
+            document.getElementById('cameraInputClose').value = "";
+            currentWideFile = null; currentCloseFile = null;
+            document.getElementById('previewImageWide').style.display = 'none';
+            document.getElementById('previewImageClose').style.display = 'none';
+            document.getElementById('userDefectInput').value = ""; 
+            document.getElementById('defectDetail').value = ""; 
+            document.getElementById('inlineAgreeCheck').checked = false;
+            window.toggleSaveButton();
+            updateStatus("다음 항목을 촬영하세요.");
+            document.querySelector('.list-header-box').scrollIntoView({behavior: "smooth"});
+        };
+
+        window.editItem = function(id) {
+            const itemIndex = defectDataList.findIndex(i => i.id === id);
+            if (itemIndex === -1) return;
+            const item = defectDataList[itemIndex];
+            
+            document.getElementById('roomSelect').value = item.room;
+            document.getElementById('workType').value = item.work;
+            document.getElementById('defectDetail').value = item.detail;
+            
+            if(item.wideImg) {
+                const pWide = document.getElementById('previewImageWide');
+                pWide.src = item.wideImg; pWide.style.display = 'block';
+            }
+            const pClose = document.getElementById('previewImageClose');
+            pClose.src = item.closeImg; pClose.style.display = 'block';
+            
+            if(confirm("수정 모드로 불러오시겠습니까? (리스트에서 삭제됩니다)")) {
+                document.getElementById(`item-${id}`).remove();
+                defectDataList.splice(itemIndex, 1);
+                document.getElementById('listCount').innerText = `(${defectDataList.length})`;
+                window.scrollTo(0, 0); 
+            }
+        };
+
+        window.deleteItem = function(id) {
+            if(confirm("삭제하시겠습니까?")) {
+                document.getElementById(`item-${id}`).remove();
+                defectDataList = defectDataList.filter(i => i.id !== id);
+                document.getElementById('listCount').innerText = `(${defectDataList.length})`;
+            }
+        };
+        
+        window.savePDF = function() {
+            if(defectDataList.length === 0) { alert("저장할 내용이 없습니다."); return; }
+            window.print(); 
+        };
+
+        /* 챗봇 관련 스크립트 */
+        window.toggleChat = function() {
+            const chatWindow = document.getElementById('chatWindow');
+            if(chatWindow.style.display === 'flex') {
+                chatWindow.style.display = 'none';
+            } else {
+                chatWindow.style.display = 'flex';
+                const chatBody = document.getElementById('chatBody');
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }
+        };
+
+        window.askBot = function(type) {
+            const chatBody = document.getElementById('chatBody');
+            let userText = "";
+            let botText = "";
+
+            if(type === 'cost') {
+                userText = "비용이 궁금해요.";
+                botText = "💰 [점검 비용 안내]<br>20평형: 9만원<br>30평형: 11만원<br>40평형: 13만원<br><br>※ 수도권 외 지역은 추가 출장비가 발생할 수 있습니다.";
+            } else if(type === 'reason') {
+                userText = "점검 비용이 왜 이렇게 싼가요?";
+                botText = "💡 [점검 비용이 저렴한 이유]<br>1. AI 도입으로 시간/비용 획기적 절감<br>2. 보여주기식 불필요한 검사 배제<br>3. 검사 직후 1분 내 자료전송 시스템 구축<br><br>거품을 뺀 실속 있는 가격입니다!";
+            } else if(type === 'location') {
+                userText = "출장 지역은 어디인가요?";
+                botText = "📍 서울, 경기, 인천 전 지역 출장 가능합니다.<br>그 외 지역은 유선으로 문의 부탁드립니다.<br>📞 010-2322-0949";
+            } else if(type === 'defect') {
+                userText = "중대하자가 무엇인가요?";
+                botText = "🛠️ [중대하자 집중 점검]<br>제작불량, 시공불량, 결로, 외풍을 중점으로 검사합니다.<br>청개구리는 오염, 흠집보다 중대 하자를 집중적으로 찾아냅니다!";
+            } else if(type === 'booking') {
+                userText = "예약은 어떻게 하나요?";
+                botText = "📅 [예약 방법]<br>1. 하단 '유료예약' 버튼 클릭<br>2. 신청서 작성 및 입금<br>3. 010-2322-0949로 '입금자명/날짜' 문자 발송<br><br>확인 후 확정 문자를 보내드립니다!";
+            }
+
+            chatBody.innerHTML += `<div class="chat-bubble chat-user">${userText}</div>`;
+            
+            setTimeout(() => {
+                chatBody.innerHTML += `<div class="chat-bubble chat-bot">${botText}</div>`;
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }, 300);
+        };
+    </script>
+</body>
+</html>
