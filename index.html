@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 사전점검 AI앱 v17.3</title>
+    <title>청개구리 사전점검 AI앱 v17.4</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;800;900&family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -361,10 +361,12 @@
         .photo-preview {
             position: absolute;
             inset: 0;
-            object-fit: contain;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
             display: none;
             z-index: 10;
-            background: #000;
+            background: white;
             border-radius: var(--radius-md);
         }
         .photo-capture .retake-badge {
@@ -931,7 +933,7 @@
                     <div class="header-title">청개구리 사전점검 AI앱</div>
                 </div>
                 <span class="free-tag">무료</span>
-                <span class="version-tag" id="versionBadge" onclick="App.checkDevMode()">v17.3</span>
+                <span class="version-tag" id="versionBadge" onclick="App.checkDevMode()">v17.4</span>
             </div>
         </header>
 
