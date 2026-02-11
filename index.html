@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 사전점검 AI앱 v17.2</title>
+    <title>청개구리 사전점검 AI앱 v17.3</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;800;900&family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -65,7 +65,7 @@
         /* ── HEADER ── */
         .header {
             background: linear-gradient(160deg, #0A3D2F 0%, #0A6B5C 40%, #12B89A 100%);
-            padding: 16px 14px 24px;
+            padding: 14px 14px 20px;
             position: relative;
             overflow: hidden;
         }
@@ -85,9 +85,9 @@
             bottom: -2px;
             left: 0;
             right: 0;
-            height: 20px;
+            height: 14px;
             background: var(--bg-warm);
-            border-radius: 20px 20px 0 0;
+            border-radius: 14px 14px 0 0;
         }
         .header-inner {
             display: flex;
@@ -160,7 +160,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 10px 10px;
+            padding: 6px 10px;
         }
         .status-chip {
             display: flex;
@@ -209,7 +209,7 @@
             align-items: center;
             justify-content: center;
             gap: 0;
-            padding: 6px 10px 14px;
+            padding: 4px 10px 8px;
         }
         .step-node {
             display: flex;
@@ -245,9 +245,9 @@
         /* ── SECTION CARD ── */
         .section {
             background: var(--card);
-            margin: 0 6px 10px;
+            margin: 0 6px 6px;
             border-radius: var(--radius-lg);
-            padding: 18px 14px;
+            padding: 14px 14px;
             box-shadow: var(--shadow-sm);
             border: 1px solid var(--border-light);
         }
@@ -255,7 +255,7 @@
             font-size: 0.82rem;
             font-weight: 800;
             color: var(--text-sub);
-            margin-bottom: 14px;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -275,7 +275,7 @@
         }
 
         /* ── INPUTS ── */
-        .input-group { margin-bottom: 14px; }
+        .input-group { margin-bottom: 10px; }
         .input-group:last-child { margin-bottom: 0; }
         .input-label {
             font-size: 0.75rem;
@@ -288,8 +288,8 @@
         }
         .input-field {
             width: 100%;
-            padding: 12px 14px;
-            font-size: 0.9rem;
+            padding: 10px 12px;
+            font-size: 0.88rem;
             border: 1.5px solid var(--border);
             border-radius: var(--radius-sm);
             background: var(--bg-warm);
@@ -305,7 +305,7 @@
         }
         .input-field::placeholder { color: var(--text-hint); }
         select.input-field { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394A3B8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
-        textarea.input-field { resize: none; height: 110px; line-height: 1.7; }
+        textarea.input-field { resize: none; height: 90px; line-height: 1.6; }
         .row { display: flex; gap: 10px; }
         .row > * { flex: 1; }
         .site-row { display: flex; gap: 8px; }
@@ -446,23 +446,23 @@
             background: var(--warning-bg);
             border: 1px solid #FEEBC8;
             border-radius: var(--radius-sm);
-            padding: 14px;
-            margin-top: 16px;
+            padding: 10px 12px;
+            margin-top: 12px;
         }
         .agreement-title {
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             font-weight: 800;
             color: #C05621;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             display: flex;
             align-items: center;
             gap: 6px;
         }
         .agreement-text {
-            font-size: 0.75rem;
+            font-size: 0.68rem;
             color: var(--text-sub);
-            line-height: 1.6;
-            margin-bottom: 10px;
+            line-height: 1.5;
+            margin-bottom: 8px;
         }
         .check-row {
             display: flex;
@@ -487,11 +487,11 @@
         /* ── SAVE BUTTON ── */
         .btn-save {
             width: 100%;
-            padding: 14px;
-            margin-top: 16px;
+            padding: 12px;
+            margin-top: 12px;
             border: none;
             border-radius: var(--radius-md);
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             font-weight: 800;
             cursor: pointer;
             transition: var(--transition);
@@ -516,7 +516,7 @@
         /* ── DEFECT LIST ── */
         .list-section {
             padding: 0 6px;
-            margin-top: 20px;
+            margin-top: 10px;
         }
         .list-header {
             display: flex;
@@ -644,7 +644,7 @@
             grid-template-columns: 1fr 1fr 1fr;
             gap: 8px;
             padding: 0 6px;
-            margin-top: 24px;
+            margin-top: 14px;
         }
         .action-btn {
             display: flex;
@@ -929,11 +929,9 @@
                 </div>
                 <div class="header-text">
                     <div class="header-title">청개구리 사전점검 AI앱</div>
-                    <div class="header-sub">
-                        <span class="free-tag">무료</span>
-                    </div>
                 </div>
-                <span class="version-tag" id="versionBadge" onclick="App.checkDevMode()">v17.2</span>
+                <span class="free-tag">무료</span>
+                <span class="version-tag" id="versionBadge" onclick="App.checkDevMode()">v17.3</span>
             </div>
         </header>
 
