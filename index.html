@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>청개구리 사전점검 AI앱 v17.5</title>
+    <title>청개구리 사전점검 AI앱 v17.4</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;800;900&family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -1192,7 +1192,7 @@
         // ── INIT ──
         window.addEventListener('DOMContentLoaded', () => {
             const isDev = localStorage.getItem('is_developer') === 'true';
-            if (isDev) document.getElementById('versionBadge').classList.add('dev-active');
+            document.getElementById('versionTag').classList.add('dev-active');
 
             const workSel = document.getElementById('workType');
             ['타일공사','도배공사','마루공사','창호공사','가구공사','기타공사'].forEach(t => {
@@ -1499,6 +1499,7 @@
     </script>
 </body>
 </html>
+
 
 
 
