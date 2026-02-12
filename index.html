@@ -1235,7 +1235,7 @@
             if (devClicks === 5) {
                 const isDev = localStorage.getItem('is_developer') === 'true';
                 localStorage.setItem('is_developer', !isDev);
-                const badge = document.getElementById('versionBadge');
+                const badge = document.getElementById('versionTag');
                 if (!isDev) { alert("🐸 개발자 모드 활성화!"); badge.classList.add('dev-active'); }
                 else { alert("개발자 모드 해제."); badge.classList.remove('dev-active'); }
                 devClicks = 0;
@@ -1499,6 +1499,7 @@
     </script>
 </body>
 </html>
+
 
 
 
