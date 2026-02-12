@@ -135,8 +135,10 @@ textarea.if{resize:none;height:85px;line-height:1.6}
 .bi.ed{background:#FEF3C7;color:#D97706}
 .bi.dl{background:#FEE2E2;color:#EF4444}
 .bi:active{transform:scale(.9)}
-.dc-ph{display:flex;gap:2px;background:var(--bl)}
-.dc-ph img{flex:1;aspect-ratio:4/3;object-fit:cover;background:#f9f9f9}
+.dc-ph{display:grid;grid-template-columns:1fr 1fr;gap:3px;background:var(--bl);padding:3px}
+.dc-ph img{width:100%;aspect-ratio:4/3;object-fit:cover;background:#f9f9f9;border-radius:6px}
+.dc-ph.single{grid-template-columns:1fr}
+.dc-ph.single img{aspect-ratio:16/9;max-height:140px}
 .dc-bd{padding:12px 14px}
 .dc-wk{font-size:.75rem;font-weight:700;color:var(--p);margin-bottom:4px}
 .dc-dt{font-size:.82rem;color:var(--ts);line-height:1.6;white-space:pre-wrap}
@@ -341,6 +343,7 @@ input[type="file"]{display:none}
     <div class="ag-t"><i class="fa-solid fa-shield-halved"></i> 필수 확인</div>
     <div class="ag-tx">1. <b>법적 효력 없음:</b> AI 추정치이며 전문가 실사 필요<br>2. <b>책임 제한:</b> 분석 오류에 대해 개발사 법적 책임 없음</div>
     <div class="ck"><input type="checkbox" id="fAgree" onchange="A.togSave()"><label for="fAgree">위 내용을 확인하였으며 동의합니다</label></div>
+    <div id="agreeNote" style="font-size:.62rem;color:#059669;margin-top:4px;display:none"><i class="fa-solid fa-circle-check"></i> 동의가 저장되었습니다 (최초 1회)</div>
   </div>
   <button class="btn-sv off" id="btnSv" onclick="A.save()" disabled><i class="fa-solid fa-check-circle"></i> 리스트에 저장</button>
 </div>
@@ -441,6 +444,12 @@ const $=id=>document.getElementById(id);
 // Init
 window.addEventListener('DOMContentLoaded',()=>{
   if(ls('is_dev')==='true')$('verTag').classList.add('dev');
+  // Restore agreement checkbox if previously agreed
+  if(ls('frog_agreed')==='true'){
+    $('fAgree').checked=true;
+    $('agreeNote').style.display='block';
+    A.togSave();
+  }
   loadList();
   step(1);
 });
@@ -585,7 +594,11 @@ async function runAI(){
 }
 
 // Save toggle
-A.togSave=()=>{const ok=$('fAgree').checked;$('btnSv').disabled=!ok;$('btnSv').className=ok?'btn-sv ok':'btn-sv off'};
+A.togSave=()=>{
+  const ok=$('fAgree').checked;
+  if(ok){ls('frog_agreed','true');$('agreeNote').style.display='block'}
+  $('btnSv').disabled=!ok;$('btnSv').className=ok?'btn-sv ok':'btn-sv off';
+};
 
 // Save
 A.save=()=>{
@@ -620,7 +633,7 @@ function renderItem(it){
   const h=`<div class="dc" id="i-${it.id}">
     <div class="dc-hd"><div class="dc-tag"><span class="dc-rm">${it.room}</span><span class="dc-tp${isSafe?' safe':''}">${it.type}</span>${modeLabel}</div>
     <div class="dc-act"><button class="bi ed" onclick="A.edit(${it.id})"><i class="fa-solid fa-pen"></i></button><button class="bi dl" onclick="A.del(${it.id})"><i class="fa-solid fa-trash-can"></i></button></div></div>
-    <div class="dc-ph">${it.wImg?`<img src="${it.wImg}">`:''}<img src="${it.cImg}" style="${!it.wImg?'width:100%':''}"></div>
+    <div class="dc-ph${!it.wImg?' single':''}">${it.wImg?`<img src="${it.wImg}" title="멀리서 찍기">`:''}<img src="${it.cImg}" title="가까이 찍기"></div>
     <div class="dc-bd"><div class="dc-wk">${it.work} → ${it.sub}</div><div class="dc-dt">${it.detail}</div></div></div>`;
   $('lBox').insertAdjacentHTML('beforeend',h);
   $('lCnt').textContent=list.length;
@@ -641,7 +654,12 @@ function reset(){
   ['inW','inC'].forEach(i=>$(i).value='');wF=null;cF=null;
   ['pvW','pvC'].forEach(i=>{$(i).style.display='none'});
   ['rtW','rtC'].forEach(i=>{$(i).style.display='none'});
-  $('fUser').value='';$('fDetail').value='';$('fAgree').checked=false;A.togSave();step(4);
+  $('fUser').value='';$('fDetail').value='';
+  // Keep agreement checked if previously agreed
+  if(ls('frog_agreed')!=='true'){
+    $('fAgree').checked=false;A.togSave();
+  }
+  step(4);
 }
 
 // Storage
