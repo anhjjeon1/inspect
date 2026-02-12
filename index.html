@@ -1191,8 +1191,10 @@
 
         // ── INIT ──
         window.addEventListener('DOMContentLoaded', () => {
-            const isDev = localStorage.getItem('is_developer') === 'true';
-            document.getElementById('versionTag').classList.add('dev-active');
+    const isDev = localStorage.getItem('is_developer') === 'true';
+    if (isDev) document.getElementById('versionTag').classList.add('dev-active');
+    ...
+});
 
             const workSel = document.getElementById('workType');
             ['타일공사','도배공사','마루공사','창호공사','가구공사','기타공사'].forEach(t => {
@@ -1499,6 +1501,7 @@
     </script>
 </body>
 </html>
+
 
 
 
