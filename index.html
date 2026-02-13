@@ -82,6 +82,28 @@ textarea.if{resize:none;height:85px;line-height:1.6}
 .row{display:flex;gap:9px}
 .row>*{flex:1}
 
+/* ===== Custom Compact Dropdown for Room Selector ===== */
+.cd-wrap{position:relative;width:100%}
+.cd-btn{width:100%;padding:9px 11px;font-size:.85rem;border:1.5px solid var(--bd);border-radius:10px;background:#FAFBFC;color:var(--tx);font-family:inherit;transition:var(--tr);outline:none;cursor:pointer;text-align:left;display:flex;align-items:center;justify-content:space-between}
+.cd-btn:focus,.cd-btn.open{border-color:var(--pl);background:#fff;box-shadow:0 0 0 3px var(--pg)}
+.cd-btn .cd-arrow{font-size:.6rem;color:var(--th);transition:transform .2s}
+.cd-btn.open .cd-arrow{transform:rotate(180deg)}
+.cd-btn .cd-placeholder{color:var(--th)}
+.cd-panel{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1.5px solid var(--pl);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:100;display:none;overflow:hidden;animation:cdOpen .2s ease-out}
+.cd-panel.show{display:block}
+@keyframes cdOpen{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.cd-list{max-height:260px;overflow-y:auto;padding:4px}
+.cd-list::-webkit-scrollbar{width:4px}
+.cd-list::-webkit-scrollbar-thumb{background:var(--bd);border-radius:4px}
+.cd-item{padding:7px 12px;font-size:.82rem;font-weight:600;color:var(--ts);border-radius:8px;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:8px;line-height:1.3}
+.cd-item:hover{background:var(--pg);color:var(--p)}
+.cd-item:active{background:var(--p);color:#fff}
+.cd-item.selected{background:var(--pg);color:var(--p);font-weight:800}
+.cd-item .cd-icon{font-size:.7rem;width:18px;text-align:center;flex-shrink:0}
+.cd-overlay{position:fixed;inset:0;z-index:99;display:none}
+.cd-overlay.show{display:block}
+/* ===== End Custom Dropdown ===== */
+
 /* Photo */
 .pg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .pc{aspect-ratio:3/4;border-radius:var(--r);position:relative;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;overflow:hidden;transition:var(--tr)}
@@ -281,11 +303,39 @@ input[type="file"]{display:none}
   </div>
   <div class="ig" style="margin-top:8px">
     <div class="il"><i class="fa-solid fa-location-dot"></i> 점검 위치</div>
-    <select class="if" id="fRoom">
+    <!-- Hidden select for value storage (used by JS) -->
+    <select class="if" id="fRoom" style="display:none">
       <option value="">위치 선택</option>
       <option>거실</option><option>주방</option><option>침실1</option><option>침실2</option><option>침실3</option>
       <option>안방</option><option>욕실1</option><option>욕실2</option><option>현관</option><option>발코니1</option><option>발코니2</option><option>대피공간</option><option>팬트리</option><option>다용도실</option><option>기타</option>
     </select>
+    <!-- Custom Compact Dropdown -->
+    <div class="cd-wrap" id="cdRoom">
+      <div class="cd-overlay" id="cdOverlay"></div>
+      <button type="button" class="cd-btn" id="cdBtn" onclick="A.toggleRoom()">
+        <span class="cd-placeholder" id="cdLabel">위치 선택</span>
+        <i class="fa-solid fa-chevron-down cd-arrow"></i>
+      </button>
+      <div class="cd-panel" id="cdPanel">
+        <div class="cd-list" id="cdList">
+          <div class="cd-item" data-val="거실" onclick="A.pickRoom(this)"><span class="cd-icon">🛋️</span>거실</div>
+          <div class="cd-item" data-val="주방" onclick="A.pickRoom(this)"><span class="cd-icon">🍳</span>주방</div>
+          <div class="cd-item" data-val="침실1" onclick="A.pickRoom(this)"><span class="cd-icon">🛏️</span>침실1</div>
+          <div class="cd-item" data-val="침실2" onclick="A.pickRoom(this)"><span class="cd-icon">🛏️</span>침실2</div>
+          <div class="cd-item" data-val="침실3" onclick="A.pickRoom(this)"><span class="cd-icon">🛏️</span>침실3</div>
+          <div class="cd-item" data-val="안방" onclick="A.pickRoom(this)"><span class="cd-icon">🏠</span>안방</div>
+          <div class="cd-item" data-val="욕실1" onclick="A.pickRoom(this)"><span class="cd-icon">🚿</span>욕실1</div>
+          <div class="cd-item" data-val="욕실2" onclick="A.pickRoom(this)"><span class="cd-icon">🚿</span>욕실2</div>
+          <div class="cd-item" data-val="현관" onclick="A.pickRoom(this)"><span class="cd-icon">🚪</span>현관</div>
+          <div class="cd-item" data-val="발코니1" onclick="A.pickRoom(this)"><span class="cd-icon">🌤️</span>발코니1</div>
+          <div class="cd-item" data-val="발코니2" onclick="A.pickRoom(this)"><span class="cd-icon">🌤️</span>발코니2</div>
+          <div class="cd-item" data-val="대피공간" onclick="A.pickRoom(this)"><span class="cd-icon">🧯</span>대피공간</div>
+          <div class="cd-item" data-val="팬트리" onclick="A.pickRoom(this)"><span class="cd-icon">📦</span>팬트리</div>
+          <div class="cd-item" data-val="다용도실" onclick="A.pickRoom(this)"><span class="cd-icon">🧹</span>다용도실</div>
+          <div class="cd-item" data-val="기타" onclick="A.pickRoom(this)"><span class="cd-icon">📌</span>기타</div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -448,7 +498,6 @@ const $=id=>document.getElementById(id);
 // Init
 window.addEventListener('DOMContentLoaded',()=>{
   if(ls('is_dev')==='true')$('verTag').classList.add('dev');
-  // Restore agreement checkbox if previously agreed
   if(ls('frog_agreed')==='true'){
     $('fAgree').checked=true;
     $('agreeNote').style.display='block';
@@ -474,8 +523,43 @@ function step(c){
 
 function stat(m,e){$('sMsg').textContent=m;$('sDot').classList.toggle('err',!!e)}
 
+// ===== Custom Room Dropdown =====
+A.toggleRoom=()=>{
+  const panel=$('cdPanel'), btn=$('cdBtn'), ov=$('cdOverlay');
+  const isOpen=panel.classList.contains('show');
+  if(isOpen){
+    panel.classList.remove('show');
+    btn.classList.remove('open');
+    ov.classList.remove('show');
+  }else{
+    panel.classList.add('show');
+    btn.classList.add('open');
+    ov.classList.add('show');
+  }
+};
+A.pickRoom=(el)=>{
+  const val=el.dataset.val;
+  // Update hidden select
+  $('fRoom').value=val;
+  // Update button label
+  const label=$('cdLabel');
+  label.textContent=val;
+  label.classList.remove('cd-placeholder');
+  label.style.color='var(--tx)';
+  label.style.fontWeight='700';
+  // Highlight selected
+  document.querySelectorAll('.cd-item').forEach(i=>i.classList.remove('selected'));
+  el.classList.add('selected');
+  // Close
+  A.toggleRoom();
+};
+// Close on overlay click
+document.addEventListener('click',(e)=>{
+  if(e.target.id==='cdOverlay') A.toggleRoom();
+});
+
 // Mode
-window.A={};
+window.A=window.A||{};
 A.setMode=m=>{
   if(m==='pro'){
     $('ckPro').checked=false;
@@ -485,7 +569,6 @@ A.setMode=m=>{
     setTimeout(()=>$('pwdInput').focus(),200);
     return;
   }
-  // Free mode
   mode='free';
   $('ckFree').checked=true;
   $('ckPro').checked=false;
@@ -659,6 +742,14 @@ function reset(){
   ['pvW','pvC'].forEach(i=>{$(i).style.display='none'});
   ['rtW','rtC'].forEach(i=>{$(i).style.display='none'});
   $('fUser').value='';$('fDetail').value='';
+  // Reset custom dropdown
+  $('fRoom').value='';
+  const label=$('cdLabel');
+  label.textContent='위치 선택';
+  label.classList.add('cd-placeholder');
+  label.style.color='';
+  label.style.fontWeight='';
+  document.querySelectorAll('.cd-item').forEach(i=>i.classList.remove('selected'));
   // Keep agreement checked if previously agreed
   if(ls('frog_agreed')!=='true'){
     $('fAgree').checked=false;A.togSave();
@@ -689,7 +780,18 @@ A.edit=id=>{
   const idx=list.findIndex(i=>i.id===id);if(idx===-1)return;
   if(!confirm('수정 모드로 불러오시겠습니까?'))return;
   const it=list[idx];
-  $('fRoom').value=it.room;$('fWork').value=it.work;$('fDetail').value=it.detail;
+  // Set custom dropdown
+  $('fRoom').value=it.room;
+  const label=$('cdLabel');
+  label.textContent=it.room;
+  label.classList.remove('cd-placeholder');
+  label.style.color='var(--tx)';
+  label.style.fontWeight='700';
+  document.querySelectorAll('.cd-item').forEach(i=>{
+    i.classList.toggle('selected',i.dataset.val===it.room);
+  });
+
+  $('fWork').value=it.work;$('fDetail').value=it.detail;
   if(it.wImg)show('pvW',it.wImg);
   if(it.cImg)show('pvC',it.cImg);
   $(`i-${id}`).remove();list.splice(idx,1);$('lCnt').textContent=list.length;saveList();
