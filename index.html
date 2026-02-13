@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>청개구리 사전점검 AI앱 v18.4</title>
+<title>청개구리 사전점검 AI앱 v18.5</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;800;900&family=Outfit:wght@600;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -240,7 +240,7 @@ input[type="file"]{display:none}
     </div>
     <div class="hd-tags">
       <span class="tag tag-free">무료</span>
-      <span class="tag tag-v" id="verTag" onclick="A.devTap()">v18.4</span>
+      <span class="tag tag-v" id="verTag" onclick="A.devTap()">v18.5</span>
     </div>
   </div>
 </header>
@@ -492,6 +492,7 @@ import{GoogleGenerativeAI}from"@google/generative-ai";
 const K=["AIzaSyBoHZXi7YdDmH","V6GMEw49MYi74LILPKeCI"].join('');
 const LIMIT=100;
 let list=[], wF=null, cF=null, devN=0, devT, mode='free';
+window.A={};
 
 const $=id=>document.getElementById(id);
 
@@ -559,7 +560,6 @@ document.addEventListener('click',(e)=>{
 });
 
 // Mode
-window.A=window.A||{};
 A.setMode=m=>{
   if(m==='pro'){
     $('ckPro').checked=false;
