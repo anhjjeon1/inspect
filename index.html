@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>청개구리 사전점검 AI앱 v18.7</title>
+<title>청개구리 사전점검 AI앱 v18.8</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;800;900&family=Outfit:wght@600;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -239,7 +239,7 @@ input[type="file"]{display:none}
     </div>
     <div class="hd-tags">
       <span class="tag tag-free">무료</span>
-      <span class="tag tag-v" id="verTag" onclick="A.devTap()">v18.7</span>
+      <span class="tag tag-v" id="verTag" onclick="A.devTap()">v18.8</span>
     </div>
   </div>
 </header>
@@ -366,16 +366,19 @@ input[type="file"]{display:none}
   </div>
   <div class="af">
     <div class="ig"><div class="af-l">공종</div>
-      <select class="if" id="fWork" style="font-size:.8rem;padding:9px">
+      <select class="if" id="fWork" style="font-size:.8rem;padding:9px" onchange="A.onWork()">
         <option value="">자동</option>
-        <option>타일공사</option><option>도배공사</option><option>마루공사</option><option>창호공사</option><option>가구공사</option><option>기타공사</option>
       </select>
     </div>
     <div class="ig"><div class="af-l">세부</div>
-      <select class="if" id="fSub" style="font-size:.8rem;padding:9px"><option value="">자동</option></select>
+      <select class="if" id="fSub" style="font-size:.8rem;padding:9px" onchange="A.onSub()">
+        <option value="">자동</option>
+      </select>
     </div>
     <div class="ig"><div class="af-l">유형</div>
-      <input type="text" class="if" id="fType" placeholder="자동" style="font-size:.8rem;padding:9px">
+      <select class="if" id="fType" style="font-size:.8rem;padding:9px">
+        <option value="">자동</option>
+      </select>
     </div>
   </div>
   <div class="ig">
@@ -490,7 +493,40 @@ const LIMIT=100;
 let list=[], wF=null, cF=null, devN=0, devT, mode='free';
 window.A={};
 
+// 공종→세부→유형 실데이터 매핑 (동탄60+양주 106,376건 기반)
+const WM={"도배공사":{"도배":["들뜸","마감불량","흠집/찍힘","면불량","오염","이음불량","흠집","미시공","파손","이색/변색"]},"타일공사":{"타일":["줄눈불량","틈새","구배불량","단차","들뜸","미시공","파손","마감불량","오염","흠집/찍힘"],"폴리싱타일":["파손","들뜸","줄눈불량","단차","틈새","오염","마감불량"],"아트월타일":["틈새","파손","마감불량","단차","흠집/찍힘","미시공","들뜸"],"타일코킹":["코킹불량","미시공","틈새","흠집/찍힘","마감불량"],"마블씰":["들뜸","틈새","단차","미시공","흠집/찍힘"]},"PL창호공사":{"PL창호":["고정불량","미시공","수직수평불량","흠집/찍힘","개폐불량","파손","틈새"],"분합창":["미시공","흠집/찍힘","고정불량","수직수평불량","개폐불량","파손"],"터닝도어":["미시공","개폐불량","흠집/찍힘","고정불량","틈새","파손"],"대피창":["개폐불량","고정불량","코킹불량","미시공"],"PL방충망":["개폐불량","미시공","수직수평불량","파손"]},"주방가구공사":{"주방상/하부장":["수직수평불량","미시공","개폐불량","흠집/찍힘","마감불량","고정불량","틈새"],"아일랜드장":["수직수평불량","개폐불량","미시공","흠집/찍힘","마감불량","틈새"],"냉장고장":["흠집/찍힘","수직수평불량","틈새","미시공","마감불량"],"고급장식장":["개폐불량","고정불량","수직수평불량","틈새","미시공"],"씽크볼":["미시공","마감불량","틈새","고정불량"]},"일반가구공사":{"신발장":["흠집/찍힘","미시공","틈새","수직수평불량","마감불량","개폐불량"],"붙박이장":["흠집/찍힘","미시공","수직수평불량","개폐불량","틈새","마감불량"],"화장대":["미시공","흠집/찍힘","마감불량","틈새","개폐불량","수직수평불량"],"현관팬트리도어/틀":["흠집/찍힘","수직수평불량","틈새","미시공","마감불량"],"복도팬트리도어/틀":["흠집/찍힘","틈새","수직수평불량","마감불량","미시공"],"아트월판넬":["틈새","마감불량","미시공","흠집/찍힘","파손"],"드레스룸도어/틀":["흠집/찍힘","틈새","마감불량","미시공","수직수평불량"]},"마루공사":{"강마루":["들뜸","틈새","오염","단차","파손","마감불량","미시공"],"마루코킹":["코킹불량","미시공","들뜸","틈새","오염"],"걸레받이":["틈새","파손","마감불량","미시공","들뜸","단차"]},"목창호공사":{"목문틀":["흠집/찍힘","틈새","미시공","수직수평불량","고정불량","마감불량"],"목문짝":["개폐불량","흠집/찍힘","고정불량","수직수평불량","틈새","마감불량"],"공틀":["틈새","수직수평불량","오염","미시공"]},"도장공사":{"도장":["마감불량","면불량","도장불량","균열","오염","미시공","들뜸"],"현관문틀도장":["도장불량","마감불량","오염","면불량","균열"],"외벽도장":["면불량","마감불량","균열","도장불량","오염"]},"준공청소공사":{"준공청소":["오염"]},"코킹공사":{"코킹":["코킹불량","미시공","틈새","오염","마감불량"]},"중문공사":{"슬라이딩도어/틀":["개폐불량","고정불량","마감불량","미시공","틈새","흠집/찍힘"],"스윙도어/틀":["마감불량","고정불량","개폐불량","미시공","흠집/찍힘","틈새"]},"기계설비공사":{"위생도기류":["고정불량","마감불량","작동불량","미시공","누수"],"수전류":["고정불량","미시공","작동불량","마감불량","누수"],"설비":["마감불량","미시공","악취","작동불량","누수"],"욕실액세서리":["고정불량","미시공","마감불량","수직수평불량"],"배수드레인":["마감불량","미시공","고정불량","작동불량","배수불량"]},"전기공사":{"콘센트":["작동불량","고정불량","수직수평불량","미시공","들뜸"],"스위치":["작동불량","수직수평불량","고정불량","미시공"],"네트워크스위치":["작동불량","수직수평불량","고정불량"]},"내장목공사":{"석고보드":["고정불량","마감불량","들뜸","단차","틈새"],"천정몰딩":["틈새","흠집/찍힘","마감불량","고정불량","오염"]},"방화문공사":{"현관문":["미시공","개폐불량","흠집/찍힘","고정불량","틈새"],"대피공간방화문":["미시공","개폐불량","고정불량","흠집/찍힘","틈새"],"실외기실문짝/틀":["개폐불량","고정불량","미시공","틈새"]},"시스템가구공사":{"시스템가구":["고정불량","미시공","수직수평불량","틈새","마감불량"],"월판넬":["틈새","미시공","수직수평불량","단차"]},"주방상판공사":{"주방상판/코킹":["미시공","코킹불량","틈새","흠집/찍힘","파손"],"엔지니어드상판":["미시공","틈새","마감불량","코킹불량","파손"]},"조명공사":{"세대등기구":["수직수평불량","작동불량","고정불량","미시공","점등불량"]},"내부석공사":{"석재걸레받이":["틈새","미시공","마감불량","코킹불량","파손"],"디딤판":["틈새","미시공","단차","마감불량","파손"]},"욕실장공사":{"욕실장/코킹":["미시공","개폐불량","수직수평불량","고정불량","코킹불량"]},"유리공사":{"유리":["흠집","파손","미시공","오염","코킹불량"],"유리코킹":["코킹불량","미시공"]},"에어컨공사":{"실외기":["마감불량","미시공","작동불량","고정불량"],"시스템에어컨":["작동불량","고정불량","마감불량","누수"]},"루버창호공사":{"루버창/방충망":["미시공","고정불량","개폐불량","흠집/찍힘"]},"직영공사":{"직영":["마감불량","들뜸","미시공","누수","고정불량","틈새"]}};
+
 const $=id=>document.getElementById(id);
+
+// Init dropdowns
+function initWorkSelect(){
+  const sel=$('fWork');
+  sel.innerHTML='<option value="">자동</option>';
+  for(const w of Object.keys(WM)){
+    const o=document.createElement('option');o.value=w;o.textContent=w;sel.appendChild(o);
+  }
+}
+A.onWork=()=>{
+  const w=$('fWork').value;
+  const sub=$('fSub');
+  sub.innerHTML='<option value="">자동</option>';
+  $('fType').innerHTML='<option value="">자동</option>';
+  if(w&&WM[w]){
+    for(const s of Object.keys(WM[w])){
+      const o=document.createElement('option');o.value=s;o.textContent=s;sub.appendChild(o);
+    }
+  }
+};
+A.onSub=()=>{
+  const w=$('fWork').value, s=$('fSub').value;
+  const tp=$('fType');
+  tp.innerHTML='<option value="">자동</option>';
+  if(w&&s&&WM[w]&&WM[w][s]){
+    for(const t of WM[w][s]){
+      const o=document.createElement('option');o.value=t;o.textContent=t;tp.appendChild(o);
+    }
+  }
+};
 
 // Init
 window.addEventListener('DOMContentLoaded',()=>{
@@ -500,6 +536,7 @@ window.addEventListener('DOMContentLoaded',()=>{
     $('agreeNote').style.display='block';
     A.togSave();
   }
+  initWorkSelect();
   loadList();
   step(1);
 });
@@ -633,11 +670,18 @@ async function runAI(){
     const g=new GoogleGenerativeAI(K);
     const m=g.getGenerativeModel({model:"gemini-2.5-flash"});
     const proExtra=mode==='pro'?`\n[전문 모드] 시공 기준서, KS규격, 국토부 하자판정 기준을 상세히 인용하여 전문 보고서 수준으로 작성하세요.`:'';
+    // 공종 목록 생성 (프롬프트용)
+    const workList=Object.keys(WM).map(w=>`${w}(${Object.keys(WM[w]).join(',')})`).join('; ');
     const prompt=`입주자 사전점검 AI입니다.
 사진1(Wide):공종 파악. 사진2(Close):하자유형 및 상세내용 파악.
 
 **[사용자 입력]: "${ui}"**
 (이 정보가 있으면 최우선 반영하세요.)${proExtra}
+
+[분류체계 - 반드시 아래 공종/세부공종명을 사용]
+${workList}
+
+[유형 표준]: 들뜸, 마감불량, 흠집/찍힘, 면불량, 오염, 미시공, 파손, 틈새, 코킹불량, 수직수평불량, 개폐불량, 고정불량, 작동불량, 줄눈불량, 단차, 구배불량, 이색/변색, 누수, 균열, 도장불량, 이음불량, 배수불량, 점등불량, 악취
 
 [판단기준]
 - 하자 판단 시: 현상과 사례매칭을 상세 기술
@@ -646,7 +690,7 @@ async function runAI(){
   2. ✅ 허용범위 안내: [국토부 기준 설명]
   3. 💡 참고: 허용범위 내이므로 하자 접수 대상 아님
 
-[JSON출력]
+[JSON출력 - work/sub/type은 반드시 위 분류체계 값 사용]
 {"work":"공종명","sub":"세부공종","type":"하자유형 또는 허용범위","detail":"1. 현상:...\\n2. 사례매칭 또는 허용범위안내:..."}`;
 
     const parts=[prompt];
@@ -659,9 +703,29 @@ async function runAI(){
     try{const c=txt.replace(/```json/g,'').replace(/```/g,'').trim();const mt=c.match(/\{[\s\S]*\}/);d=mt?JSON.parse(mt[0]):{}}
     catch{d={detail:'파싱 실패. 직접 입력해주세요.',work:'기타',sub:'',type:'확인필요'}}
 
-    $('fWork').value=d.work||'';
-    $('fSub').innerHTML=`<option value="${d.sub||''}">${d.sub||'자동'}</option>`;
-    $('fType').value=d.type||'';
+    // AI 결과를 연동 드롭다운에 세팅
+    const aiWork=d.work||'', aiSub=d.sub||'', aiType=d.type||'';
+    // 공종 세팅 (WM에 없으면 옵션 추가)
+    if(aiWork&&!WM[aiWork]){
+      const o=document.createElement('option');o.value=aiWork;o.textContent=aiWork;$('fWork').appendChild(o);
+    }
+    $('fWork').value=aiWork;
+    A.onWork(); // 세부 옵션 채우기
+    // 세부 세팅 (WM에 없으면 옵션 추가)
+    if(aiSub){
+      if(!$('fSub').querySelector(`option[value="${aiSub}"]`)){
+        const o=document.createElement('option');o.value=aiSub;o.textContent=aiSub;$('fSub').appendChild(o);
+      }
+      $('fSub').value=aiSub;
+      A.onSub(); // 유형 옵션 채우기
+    }
+    // 유형 세팅 (WM에 없으면 옵션 추가)
+    if(aiType){
+      if(!$('fType').querySelector(`option[value="${aiType}"]`)){
+        const o=document.createElement('option');o.value=aiType;o.textContent=aiType;$('fType').appendChild(o);
+      }
+      $('fType').value=aiType;
+    }
     det.value=(d.detail||'')+'\n\n(※ AI 분석 결과는 참고용입니다.)';
     stat('분석 완료! 확인 후 동의해주세요.');
   }catch(err){
@@ -731,7 +795,9 @@ function reset(){
   ['pvW','pvC'].forEach(i=>{$(i).style.display='none'});
   ['rtW','rtC'].forEach(i=>{$(i).style.display='none'});
   $('fUser').value='';$('fDetail').value='';
-  // Reset custom dropdown
+  // Reset work/sub/type dropdowns
+  $('fWork').value='';A.onWork();
+  // Reset custom room dropdown
   $('fRoom').value='';
   const label=$('cdLabel');
   label.textContent='위치 선택';
@@ -739,7 +805,6 @@ function reset(){
   label.style.color='';
   label.style.fontWeight='';
   document.querySelectorAll('.cd-item').forEach(i=>i.classList.remove('selected'));
-  // Keep agreement checked if previously agreed
   if(ls('frog_agreed')!=='true'){
     $('fAgree').checked=false;A.togSave();
   }
