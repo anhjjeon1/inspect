@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>청개구리 사전점검 AI앱 v18.5</title>
+<title>청개구리 사전점검 AI앱 v18.6</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;800;900&family=Outfit:wght@600;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -89,10 +89,10 @@ textarea.if{resize:none;height:85px;line-height:1.6}
 .cd-btn .cd-arrow{font-size:.6rem;color:var(--th);transition:transform .2s}
 .cd-btn.open .cd-arrow{transform:rotate(180deg)}
 .cd-btn .cd-placeholder{color:var(--th)}
-.cd-panel{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1.5px solid var(--pl);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:100;display:none;overflow:hidden;animation:cdOpen .2s ease-out}
+.cd-panel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:calc(100% - 32px);max-width:448px;background:#fff;border:1.5px solid var(--pl);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);z-index:100;display:none;overflow:hidden;animation:cdOpen .2s ease-out}
 .cd-panel.show{display:block}
 @keyframes cdOpen{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
-.cd-list{max-height:260px;overflow-y:auto;padding:4px}
+.cd-list{max-height:70vh;overflow-y:auto;padding:4px}
 .cd-list::-webkit-scrollbar{width:4px}
 .cd-list::-webkit-scrollbar-thumb{background:var(--bd);border-radius:4px}
 .cd-item{padding:7px 12px;font-size:.82rem;font-weight:600;color:var(--ts);border-radius:8px;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:8px;line-height:1.3}
@@ -100,7 +100,7 @@ textarea.if{resize:none;height:85px;line-height:1.6}
 .cd-item:active{background:var(--p);color:#fff}
 .cd-item.selected{background:var(--pg);color:var(--p);font-weight:800}
 .cd-item .cd-icon{font-size:.7rem;width:18px;text-align:center;flex-shrink:0}
-.cd-overlay{position:fixed;inset:0;z-index:99;display:none}
+.cd-overlay{position:fixed;inset:0;z-index:99;display:none;background:rgba(0,0,0,.3)}
 .cd-overlay.show{display:block}
 /* ===== End Custom Dropdown ===== */
 
@@ -240,7 +240,7 @@ input[type="file"]{display:none}
     </div>
     <div class="hd-tags">
       <span class="tag tag-free">무료</span>
-      <span class="tag tag-v" id="verTag" onclick="A.devTap()">v18.5</span>
+      <span class="tag tag-v" id="verTag" onclick="A.devTap()">v18.6</span>
     </div>
   </div>
 </header>
