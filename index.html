@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>청개구리 사전점검 AI앱 v18.6</title>
+<title>청개구리 사전점검 AI앱 v18.7</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;800;900&family=Outfit:wght@600;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -82,27 +82,26 @@ textarea.if{resize:none;height:85px;line-height:1.6}
 .row{display:flex;gap:9px}
 .row>*{flex:1}
 
-/* ===== Custom Compact Dropdown for Room Selector ===== */
-.cd-wrap{position:relative;width:100%}
+/* ===== Custom Room Selector: 2-Column Grid ===== */
+.cd-wrap{width:100%}
 .cd-btn{width:100%;padding:9px 11px;font-size:.85rem;border:1.5px solid var(--bd);border-radius:10px;background:#FAFBFC;color:var(--tx);font-family:inherit;transition:var(--tr);outline:none;cursor:pointer;text-align:left;display:flex;align-items:center;justify-content:space-between}
 .cd-btn:focus,.cd-btn.open{border-color:var(--pl);background:#fff;box-shadow:0 0 0 3px var(--pg)}
 .cd-btn .cd-arrow{font-size:.6rem;color:var(--th);transition:transform .2s}
 .cd-btn.open .cd-arrow{transform:rotate(180deg)}
 .cd-btn .cd-placeholder{color:var(--th)}
-.cd-panel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:calc(100% - 32px);max-width:448px;background:#fff;border:1.5px solid var(--pl);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);z-index:100;display:none;overflow:hidden;animation:cdOpen .2s ease-out}
-.cd-panel.show{display:block}
-@keyframes cdOpen{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
-.cd-list{max-height:70vh;overflow-y:auto;padding:4px}
-.cd-list::-webkit-scrollbar{width:4px}
-.cd-list::-webkit-scrollbar-thumb{background:var(--bd);border-radius:4px}
-.cd-item{padding:7px 12px;font-size:.82rem;font-weight:600;color:var(--ts);border-radius:8px;cursor:pointer;transition:background .15s;display:flex;align-items:center;gap:8px;line-height:1.3}
-.cd-item:hover{background:var(--pg);color:var(--p)}
-.cd-item:active{background:var(--p);color:#fff}
-.cd-item.selected{background:var(--pg);color:var(--p);font-weight:800}
-.cd-item .cd-icon{font-size:.7rem;width:18px;text-align:center;flex-shrink:0}
-.cd-overlay{position:fixed;inset:0;z-index:99;display:none;background:rgba(0,0,0,.3)}
-.cd-overlay.show{display:block}
-/* ===== End Custom Dropdown ===== */
+.cd-grid{display:none;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;animation:cdOpen .2s ease-out}
+.cd-grid.show{display:grid}
+@keyframes cdOpen{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.cd-item{display:flex;align-items:center;gap:6px;padding:9px 10px;border:1.5px solid var(--bd);border-radius:10px;background:#FAFBFC;cursor:pointer;transition:all .15s;user-select:none;-webkit-tap-highlight-color:transparent}
+.cd-item:active{transform:scale(.97)}
+.cd-item .cd-radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--bd);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.cd-item .cd-radio::after{content:'';width:9px;height:9px;border-radius:50%;background:transparent;transition:all .15s}
+.cd-item.selected{border-color:var(--pl);background:var(--pg)}
+.cd-item.selected .cd-radio{border-color:var(--p)}
+.cd-item.selected .cd-radio::after{background:var(--p)}
+.cd-item.selected .cd-label{color:var(--p);font-weight:800}
+.cd-item .cd-label{font-size:.88rem;font-weight:600;color:var(--ts)}
+/* ===== End Custom Room Selector ===== */
 
 /* Photo */
 .pg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -240,7 +239,7 @@ input[type="file"]{display:none}
     </div>
     <div class="hd-tags">
       <span class="tag tag-free">무료</span>
-      <span class="tag tag-v" id="verTag" onclick="A.devTap()">v18.6</span>
+      <span class="tag tag-v" id="verTag" onclick="A.devTap()">v18.7</span>
     </div>
   </div>
 </header>
@@ -309,31 +308,28 @@ input[type="file"]{display:none}
       <option>거실</option><option>주방</option><option>침실1</option><option>침실2</option><option>침실3</option>
       <option>안방</option><option>욕실1</option><option>욕실2</option><option>현관</option><option>발코니1</option><option>발코니2</option><option>대피공간</option><option>팬트리</option><option>다용도실</option><option>기타</option>
     </select>
-    <!-- Custom Compact Dropdown -->
+    <!-- Custom 2-Column Room Selector -->
     <div class="cd-wrap" id="cdRoom">
-      <div class="cd-overlay" id="cdOverlay"></div>
       <button type="button" class="cd-btn" id="cdBtn" onclick="A.toggleRoom()">
         <span class="cd-placeholder" id="cdLabel">위치 선택</span>
         <i class="fa-solid fa-chevron-down cd-arrow"></i>
       </button>
-      <div class="cd-panel" id="cdPanel">
-        <div class="cd-list" id="cdList">
-          <div class="cd-item" data-val="거실" onclick="A.pickRoom(this)"><span class="cd-icon">🛋️</span>거실</div>
-          <div class="cd-item" data-val="주방" onclick="A.pickRoom(this)"><span class="cd-icon">🍳</span>주방</div>
-          <div class="cd-item" data-val="침실1" onclick="A.pickRoom(this)"><span class="cd-icon">🛏️</span>침실1</div>
-          <div class="cd-item" data-val="침실2" onclick="A.pickRoom(this)"><span class="cd-icon">🛏️</span>침실2</div>
-          <div class="cd-item" data-val="침실3" onclick="A.pickRoom(this)"><span class="cd-icon">🛏️</span>침실3</div>
-          <div class="cd-item" data-val="안방" onclick="A.pickRoom(this)"><span class="cd-icon">🏠</span>안방</div>
-          <div class="cd-item" data-val="욕실1" onclick="A.pickRoom(this)"><span class="cd-icon">🚿</span>욕실1</div>
-          <div class="cd-item" data-val="욕실2" onclick="A.pickRoom(this)"><span class="cd-icon">🚿</span>욕실2</div>
-          <div class="cd-item" data-val="현관" onclick="A.pickRoom(this)"><span class="cd-icon">🚪</span>현관</div>
-          <div class="cd-item" data-val="발코니1" onclick="A.pickRoom(this)"><span class="cd-icon">🌤️</span>발코니1</div>
-          <div class="cd-item" data-val="발코니2" onclick="A.pickRoom(this)"><span class="cd-icon">🌤️</span>발코니2</div>
-          <div class="cd-item" data-val="대피공간" onclick="A.pickRoom(this)"><span class="cd-icon">🧯</span>대피공간</div>
-          <div class="cd-item" data-val="팬트리" onclick="A.pickRoom(this)"><span class="cd-icon">📦</span>팬트리</div>
-          <div class="cd-item" data-val="다용도실" onclick="A.pickRoom(this)"><span class="cd-icon">🧹</span>다용도실</div>
-          <div class="cd-item" data-val="기타" onclick="A.pickRoom(this)"><span class="cd-icon">📌</span>기타</div>
-        </div>
+      <div class="cd-grid" id="cdGrid">
+        <div class="cd-item" data-val="거실" onclick="A.pickRoom(this)"><span class="cd-radio"></span><span class="cd-label">거실</span></div>
+        <div class="cd-item" data-val="주방" onclick="A.pickRoom(this)"><span class="cd-radio"></span><span class="cd-label">주방</span></div>
+        <div class="cd-item" data-val="침실1" onclick="A.pickRoom(this)"><span class="cd-radio"></span><span class="cd-label">침실1</span></div>
+        <div class="cd-item" data-val="침실2" onclick="A.pickRoom(this)"><span class="cd-radio"></span><span class="cd-label">침실2</span></div>
+        <div class="cd-item" data-val="침실3" onclick="A.pickRoom(this)"><span class="cd-radio"></span><span class="cd-label">침실3</span></div>
+        <div class="cd-item" data-val="안방" onclick="A.pickRoom(this)"><span class="cd-radio"></span><span class="cd-label">안방</span></div>
+        <div class="cd-item" data-val="욕실1" onclick="A.pickRoom(this)"><span class="cd-radio"></span><span class="cd-label">욕실1</span></div>
+        <div class="cd-item" data-val="욕실2" onclick="A.pickRoom(this)"><span class="cd-radio"></span><span class="cd-label">욕실2</span></div>
+        <div class="cd-item" data-val="현관" onclick="A.pickRoom(this)"><span class="cd-radio"></span><span class="cd-label">현관</span></div>
+        <div class="cd-item" data-val="발코니1" onclick="A.pickRoom(this)"><span class="cd-radio"></span><span class="cd-label">발코니1</span></div>
+        <div class="cd-item" data-val="발코니2" onclick="A.pickRoom(this)"><span class="cd-radio"></span><span class="cd-label">발코니2</span></div>
+        <div class="cd-item" data-val="대피공간" onclick="A.pickRoom(this)"><span class="cd-radio"></span><span class="cd-label">대피공간</span></div>
+        <div class="cd-item" data-val="팬트리" onclick="A.pickRoom(this)"><span class="cd-radio"></span><span class="cd-label">팬트리</span></div>
+        <div class="cd-item" data-val="다용도실" onclick="A.pickRoom(this)"><span class="cd-radio"></span><span class="cd-label">다용도실</span></div>
+        <div class="cd-item" data-val="기타" onclick="A.pickRoom(this)"><span class="cd-radio"></span><span class="cd-label">기타</span></div>
       </div>
     </div>
   </div>
@@ -524,41 +520,34 @@ function step(c){
 
 function stat(m,e){$('sMsg').textContent=m;$('sDot').classList.toggle('err',!!e)}
 
-// ===== Custom Room Dropdown =====
+// ===== Custom Room Selector =====
 A.toggleRoom=()=>{
-  const panel=$('cdPanel'), btn=$('cdBtn'), ov=$('cdOverlay');
-  const isOpen=panel.classList.contains('show');
+  const grid=$('cdGrid'), btn=$('cdBtn');
+  const isOpen=grid.classList.contains('show');
   if(isOpen){
-    panel.classList.remove('show');
+    grid.classList.remove('show');
     btn.classList.remove('open');
-    ov.classList.remove('show');
   }else{
-    panel.classList.add('show');
+    grid.classList.add('show');
     btn.classList.add('open');
-    ov.classList.add('show');
   }
 };
 A.pickRoom=(el)=>{
   const val=el.dataset.val;
-  // Update hidden select
   $('fRoom').value=val;
-  // Update button label
   const label=$('cdLabel');
-  label.textContent=val;
+  label.textContent='✔ '+val;
   label.classList.remove('cd-placeholder');
-  label.style.color='var(--tx)';
-  label.style.fontWeight='700';
-  // Highlight selected
+  label.style.color='var(--p)';
+  label.style.fontWeight='800';
   document.querySelectorAll('.cd-item').forEach(i=>i.classList.remove('selected'));
   el.classList.add('selected');
-  // Close
-  A.toggleRoom();
+  // Auto close after selection
+  setTimeout(()=>{
+    $('cdGrid').classList.remove('show');
+    $('cdBtn').classList.remove('open');
+  },150);
 };
-// Close on overlay click
-document.addEventListener('click',(e)=>{
-  if(e.target.id==='cdOverlay') A.toggleRoom();
-});
-
 // Mode
 A.setMode=m=>{
   if(m==='pro'){
