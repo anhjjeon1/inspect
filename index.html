@@ -102,6 +102,8 @@ textarea.if{resize:none;height:85px;line-height:1.6}
 .cd-btn .cd-arrow{font-size:.6rem;color:var(--th);transition:transform .2s}
 .cd-btn.open .cd-arrow{transform:rotate(180deg)}
 .cd-btn .cd-placeholder{color:var(--th)}
+.cd-btn.err-shake{border-color:var(--dn);box-shadow:0 0 0 3px rgba(231,76,60,.15);animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 .cd-grid{display:none;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;animation:cdOpen .2s ease-out}
 .cd-grid.show{display:grid}
 @keyframes cdOpen{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
@@ -324,7 +326,7 @@ input[type="file"]{display:none}
     <div class="ig" style="flex:.45"><div class="il">호</div><input type="tel" class="if" id="fHo" placeholder="0000" style="text-align:center;font-weight:800"></div>
   </div>
   <div class="ig" style="margin-top:8px">
-    <div class="il"><i class="fa-solid fa-location-dot"></i> 점검 위치</div>
+    <div class="il"><i class="fa-solid fa-location-dot"></i> 점검 위치 <span style="color:var(--dn);font-size:.6rem">* 필수</span></div>
     <select class="if" id="fRoom" style="display:none">
       <option value="">위치 선택</option>
       <option>거실</option><option>주방</option><option>침실1</option><option>침실2</option><option>침실3</option>
@@ -572,7 +574,6 @@ function chkLim(){
 
   // 잔여 경고 (무료: 5건 이하, 전문가: 3인 이하)
   const warnThreshold = mode === 'pro' ? 3 : 5;
-  const unitStr = mode === 'pro' ? '인' : '건';
   if(remaining <= warnThreshold){
     const go = confirm(`⚡ AI 분석 잔여 ${remaining}${unitStr} 남았습니다.\n계속하시겠습니까?`);
     if(!go) return false;
@@ -721,6 +722,7 @@ function stat(m,e){$('sMsg').textContent=m;$('sDot').classList.toggle('err',!!e)
 // ===== Custom Room Selector =====
 A.toggleRoom=()=>{
   const grid=$('cdGrid'), btn=$('cdBtn');
+  btn.classList.remove('err-shake');
   const isOpen=grid.classList.contains('show');
   if(isOpen){grid.classList.remove('show');btn.classList.remove('open')}
   else{grid.classList.add('show');btn.classList.add('open')}
@@ -733,10 +735,27 @@ A.pickRoom=(el)=>{
   label.classList.remove('cd-placeholder');
   label.style.color='var(--p)';
   label.style.fontWeight='800';
+  $('cdBtn').classList.remove('err-shake');
   document.querySelectorAll('.cd-item').forEach(i=>i.classList.remove('selected'));
   el.classList.add('selected');
   setTimeout(()=>{$('cdGrid').classList.remove('show');$('cdBtn').classList.remove('open')},150);
 };
+
+// ★ 점검 위치 유효성 검사
+function validateRoom(){
+  if(!$('fRoom').value){
+    const btn = $('cdBtn');
+    btn.classList.remove('err-shake');
+    void btn.offsetWidth;
+    btn.classList.add('err-shake');
+    $('cdGrid').classList.add('show');
+    btn.classList.add('open');
+    stat('⚠️ 점검 위치를 선택해주세요', true);
+    btn.scrollIntoView({behavior:'smooth', block:'center'});
+    return false;
+  }
+  return true;
+}
 
 // Mode
 A.setMode=m=>{
@@ -801,7 +820,9 @@ function photo(e,t){
   r.onload=ev=>{
     if(t==='w'){wF=f;show('pvW',ev.target.result);$('rtW').style.display='block';stat('가까이 찍기를 촬영하세요');step(2)}
     else{
-      // ★ 제한 체크
+      // ★ 위치 선택 유효성 검사
+      if(!validateRoom()){$('inC').value='';return}
+      // ★ 사용량 제한 체크
       if(!chkLim()){$('inC').value='';return}
       cF=f;show('pvC',ev.target.result);$('rtC').style.display='block';step(3);runAI();
     }
@@ -895,6 +916,8 @@ A.togSave=()=>{
 // Save
 A.save=()=>{
   if(!$('fAgree').checked)return;
+  // ★ 위치 유효성 검사
+  if(!validateRoom()) return;
   const cs=$('pvC').src;
   if(!cF&&(!cs||!cs.startsWith('data:'))){alert('사진(가까이 찍기)이 필요합니다.');return}
 
@@ -954,6 +977,7 @@ function reset(){
   label.classList.add('cd-placeholder');
   label.style.color='';
   label.style.fontWeight='';
+  $('cdBtn').classList.remove('err-shake');
   document.querySelectorAll('.cd-item').forEach(i=>i.classList.remove('selected'));
   if(ls('frog_agreed')!=='true'){$('fAgree').checked=false;A.togSave()}
   step(4);
