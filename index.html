@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>청개구리 사전점검 AI앱 v19.3</title>
+<title>청개구리 사전점검 AI앱 v19.4</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;800;900&family=Outfit:wght@600;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -19,8 +19,6 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx);line-height:1.6;-webkit-font-smoothing:antialiased;display:flex;justify-content:center;min-height:100vh}
 .app{width:100%;max-width:480px;min-height:100vh;background:#FAFBFC;position:relative;padding-bottom:90px}
-
-/* Header */
 .hd{background:linear-gradient(135deg,#0A2E23 0%,#0A6B5C 35%,#12B89A 70%,#0A6B5C 100%);padding:0;position:relative;overflow:hidden}
 .hd::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 30% 40%,rgba(18,184,154,.25) 0%,transparent 50%),radial-gradient(circle at 70% 60%,rgba(255,107,53,.1) 0%,transparent 40%);animation:hdBg 8s ease-in-out infinite alternate}
 @keyframes hdBg{0%{transform:translate(0,0)}100%{transform:translate(-3%,3%)}}
@@ -35,7 +33,6 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx);
 .tag-free{background:var(--ac);color:#fff}
 .tag-v{background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.15);cursor:pointer;backdrop-filter:blur(6px)}
 .tag-v.dev{background:var(--pu);box-shadow:0 0 10px rgba(124,58,237,.5)}
-/* Mode Checkbox Bar (below header) */
 .mode-bar-out{display:flex;gap:3px;padding:5px 3px;background:var(--card);border-bottom:1px solid var(--bl)}
 .mode-ck{display:flex;align-items:center;gap:4px;padding:7px 5px;border-radius:10px;cursor:pointer;transition:var(--tr);border:1.5px solid var(--bd);background:var(--bg);justify-content:center;white-space:nowrap}
 .mode-ck.left{flex:1.5}
@@ -50,16 +47,12 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx);
 .mode-ck.active .mc-ic{color:var(--p)}
 .mode-ck.active-pro .mc-lb{color:var(--pu)}
 .mode-ck.active-pro .mc-ic{color:var(--pu)}
-
-/* Status */
 .st{display:flex;align-items:center;justify-content:space-between;padding:8px 10px}
 .st-chip{display:flex;align-items:center;gap:7px;background:var(--card);padding:7px 12px;border-radius:30px;font-size:.75rem;font-weight:600;color:var(--ts);box-shadow:0 1px 3px rgba(0,0,0,.04);border:1px solid var(--bl)}
 .st-dot{width:7px;height:7px;border-radius:50%;background:var(--pl);animation:pulse 2s infinite}
 .st-dot.err{background:var(--dn);animation:none}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .st-help{display:flex;align-items:center;gap:5px;background:var(--card);border:1px solid var(--bd);padding:7px 12px;border-radius:30px;font-size:.75rem;font-weight:700;color:var(--ts);cursor:pointer}
-
-/* Quota Bar */
 .quota-bar{display:flex;align-items:center;gap:8px;padding:4px 10px 6px;margin:0}
 .quota-pill{display:flex;align-items:center;gap:5px;background:var(--card);padding:5px 10px;border-radius:20px;font-size:.68rem;font-weight:700;color:var(--ts);border:1px solid var(--bl);box-shadow:0 1px 3px rgba(0,0,0,.03);flex:1}
 .quota-pill i{font-size:.62rem}
@@ -69,21 +62,15 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx);
 .quota-pill .q-num.ok{color:var(--p)}
 .quota-prog{height:3px;background:var(--bl);border-radius:2px;flex:1;max-width:50px;overflow:hidden}
 .quota-prog-fill{height:100%;border-radius:2px;transition:width .3s}
-
-/* Steps */
 .steps{display:flex;align-items:center;justify-content:center;gap:0;padding:4px 10px 6px}
 .sn{width:28px;height:28px;border-radius:50%;font-size:.72rem;font-weight:800;display:flex;align-items:center;justify-content:center;background:var(--bl);color:var(--th);transition:var(--tr);flex-shrink:0}
 .sn.on{background:var(--p);color:#fff;box-shadow:0 0 0 3px var(--pg)}
 .sn.ok{background:var(--pl);color:#fff}
 .sl{height:2px;width:32px;background:var(--bl);transition:var(--tr)}
 .sl.ok{background:var(--pl)}
-
-/* Section */
 .sec{background:var(--card);margin:0 6px 6px;border-radius:16px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);border:1px solid var(--bl)}
 .sec-t{font-size:.8rem;font-weight:800;color:var(--ts);margin-bottom:10px;display:flex;align-items:center;gap:7px}
 .sec-t .n{background:var(--p);color:#fff;width:20px;height:20px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:900}
-
-/* Inputs */
 .ig{margin-bottom:9px}
 .ig:last-child{margin-bottom:0}
 .il{font-size:.72rem;font-weight:700;color:var(--th);margin-bottom:5px;display:flex;align-items:center;gap:4px}
@@ -94,8 +81,6 @@ select.if{cursor:pointer;appearance:none;background-image:url("data:image/svg+xm
 textarea.if{resize:none;height:85px;line-height:1.6}
 .row{display:flex;gap:9px}
 .row>*{flex:1}
-
-/* ===== Custom Room Selector: 2-Column Grid ===== */
 .cd-wrap{width:100%}
 .cd-btn{width:100%;padding:9px 11px;font-size:.85rem;border:1.5px solid var(--bd);border-radius:10px;background:#FAFBFC;color:var(--tx);font-family:inherit;transition:var(--tr);outline:none;cursor:pointer;text-align:left;display:flex;align-items:center;justify-content:space-between}
 .cd-btn:focus,.cd-btn.open{border-color:var(--pl);background:#fff;box-shadow:0 0 0 3px var(--pg)}
@@ -116,9 +101,6 @@ textarea.if{resize:none;height:85px;line-height:1.6}
 .cd-item.selected .cd-radio::after{background:var(--p)}
 .cd-item.selected .cd-label{color:var(--p);font-weight:800}
 .cd-item .cd-label{font-size:.88rem;font-weight:600;color:var(--ts)}
-/* ===== End Custom Room Selector ===== */
-
-/* Photo */
 .pg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .pc{aspect-ratio:3/4;border-radius:var(--r);position:relative;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;overflow:hidden;transition:var(--tr)}
 .pc:active{transform:scale(.98)}
@@ -131,34 +113,25 @@ textarea.if{resize:none;height:85px;line-height:1.6}
 .pc .hn{font-size:.65rem;color:var(--th)}
 .pp{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;z-index:10;background:#fff;border-radius:var(--r)}
 .rb{position:absolute;bottom:7px;right:7px;background:rgba(0,0,0,.6);color:#fff;font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:16px;z-index:15;display:none;backdrop-filter:blur(4px)}
-
-/* AI Badge */
 .ai-b{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,var(--p),var(--pl));color:#fff;padding:2px 9px;border-radius:5px;font-size:.68rem;font-weight:700}
 .af{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:12px}
 .af-l{font-size:.66rem;font-weight:700;color:var(--th);margin-bottom:3px}
-
-/* Agreement */
 .ag{background:var(--wrb);border:1px solid #FEEBC8;border-radius:10px;padding:10px 12px;margin-top:10px}
 .ag-t{font-size:.75rem;font-weight:800;color:#C05621;margin-bottom:3px;display:flex;align-items:center;gap:5px}
 .ag-tx{font-size:.66rem;color:var(--ts);line-height:1.5;margin-bottom:7px}
 .ck{display:flex;align-items:center;gap:9px;cursor:pointer}
 .ck input{width:18px;height:18px;accent-color:var(--p);cursor:pointer;flex-shrink:0}
 .ck label{font-size:.8rem;font-weight:700;cursor:pointer}
-
-/* Save Button */
 .btn-sv{width:100%;padding:11px;margin-top:10px;border:none;border-radius:var(--r);font-size:.88rem;font-weight:800;cursor:pointer;transition:var(--tr);display:flex;align-items:center;justify-content:center;gap:7px;font-family:inherit}
 .btn-sv.ok{background:var(--p);color:#fff;box-shadow:0 4px 14px rgba(10,107,92,.3)}
 .btn-sv.ok:active{transform:translateY(2px);box-shadow:none}
 .btn-sv.off{background:var(--bd);color:var(--th);cursor:not-allowed}
-
-/* List */
 .ls{padding:0 6px;margin-top:8px}
 .lh{display:flex;justify-content:space-between;align-items:center;background:var(--card);padding:14px;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,.05);border:1px solid var(--bl);margin-bottom:10px}
 .lh-l{display:flex;align-items:center;gap:9px}
 .lc{background:var(--p);color:#fff;width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:900;font-family:'Outfit'}
 .lh-t{font-size:.9rem;font-weight:800}
 .lh-s{font-size:.75rem;color:var(--p);font-weight:600}
-
 .dc{background:var(--card);border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.05);border:1px solid var(--bl);margin-bottom:10px;animation:fi .3s ease-out}
 @keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .dc-hd{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg);border-bottom:1px solid var(--bl)}
@@ -178,8 +151,6 @@ textarea.if{resize:none;height:85px;line-height:1.6}
 .dc-bd{padding:12px 14px}
 .dc-wk{font-size:.75rem;font-weight:700;color:var(--p);margin-bottom:4px}
 .dc-dt{font-size:.82rem;color:var(--ts);line-height:1.6;white-space:pre-wrap}
-
-/* Bottom Actions */
 .ba{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;padding:0 6px;margin-top:12px}
 .ab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:14px 6px;border:none;border-radius:var(--r);cursor:pointer;font-family:inherit;transition:var(--tr);text-decoration:none}
 .ab:active{transform:scale(.96)}
@@ -188,13 +159,9 @@ textarea.if{resize:none;height:85px;line-height:1.6}
 .ab.pdf{background:#ECFDF5}.ab.pdf .ab-ic{background:linear-gradient(135deg,#059669,#10B981)}.ab.pdf .ab-tx{color:#059669}
 .ab.rv{background:var(--pub)}.ab.rv .ab-ic{background:linear-gradient(135deg,#7C3AED,#A78BFA)}.ab.rv .ab-tx{color:var(--pu)}
 .ab.cs{background:#FFF7ED}.ab.cs .ab-ic{background:linear-gradient(135deg,var(--ac),#FF8F5E)}.ab.cs .ab-tx{color:var(--ac)}
-
-/* Footer */
 .ft{text-align:center;padding:18px 10px;margin-top:24px;border-top:1px solid var(--bl)}
 .ft-b{font-size:.8rem;font-weight:800;margin-bottom:3px}
 .ft-i{font-size:.68rem;color:var(--th);line-height:1.5}
-
-/* Modal */
 .mo{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:none;align-items:center;justify-content:center;backdrop-filter:blur(5px);padding:20px}
 .mo.show{display:flex}
 .mo-b{background:#fff;width:100%;max-width:390px;border-radius:22px;padding:24px 20px;box-shadow:0 8px 40px rgba(0,0,0,.1);animation:mp .3s cubic-bezier(.34,1.56,.64,1);max-height:85vh;overflow-y:auto}
@@ -207,8 +174,6 @@ textarea.if{resize:none;height:85px;line-height:1.6}
 .nt{background:var(--wrb);border:1px solid #FEEBC8;border-radius:10px;padding:12px;font-size:.78rem;color:var(--ts);line-height:1.6;margin-bottom:14px}
 .nt b{color:#C05621}
 .btn-f{width:100%;padding:13px;border:none;border-radius:var(--r);background:linear-gradient(135deg,var(--pu),#A78BFA);color:#fff;font-size:.9rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 4px 14px rgba(124,58,237,.3)}
-
-/* Chat */
 .cf{position:fixed;bottom:18px;right:18px;width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,var(--p),var(--pl));color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;z-index:998;box-shadow:0 4px 18px rgba(10,107,92,.35);border:none}
 .cw{position:fixed;bottom:80px;right:14px;width:300px;height:420px;background:#fff;border-radius:22px;box-shadow:0 8px 40px rgba(0,0,0,.1);z-index:999;display:none;flex-direction:column;overflow:hidden;border:1px solid var(--bd);animation:su .3s ease-out}
 .cw.show{display:flex}
@@ -222,12 +187,8 @@ textarea.if{resize:none;height:85px;line-height:1.6}
 .cw-q{padding:10px;background:#fff;border-top:1px solid var(--bl);display:grid;grid-template-columns:1fr 1fr;gap:5px}
 .qb{background:var(--bg);border:1px solid var(--bd);color:var(--tx);padding:7px;border-radius:10px;font-size:.78rem;font-weight:600;cursor:pointer;text-align:center;font-family:inherit}
 .qb:active{background:var(--p);color:#fff;border-color:var(--p)}
-
-/* Storage indicator */
 .sg{display:flex;align-items:center;gap:5px;font-size:.68rem;color:var(--th);padding:2px 8px}
 .sg i{color:var(--pl)}
-
-/* Print */
 @media print{
   .app{max-width:100%;box-shadow:none;padding-bottom:0}
   .hd,.st,.steps,.sec,.ba,.ft,.cf,.cw,.dc-act,.mode-bar,.mode-bar-out,.sg,.quota-bar{display:none!important}
@@ -245,7 +206,6 @@ input[type="file"]{display:none}
 <div class="app">
 <div id="ptitle" style="display:none"></div>
 
-<!-- HEADER -->
 <header class="hd">
   <div class="hd-top">
     <div class="hd-in">
@@ -254,22 +214,22 @@ input[type="file"]{display:none}
     </div>
     <div class="hd-tags">
       <span class="tag tag-free">무료</span>
-      <span class="tag tag-v" id="verTag" onclick="A.devTap()">v19.3</span>
+      <span class="tag tag-v" id="verTag" onclick="A.devTap()">v19.4</span>
     </div>
   </div>
 </header>
 
-<!-- MODE BAR (below header) -->
+<!-- MODE BAR -->
 <div class="mode-bar-out">
   <label class="mode-ck left active" id="mcFree">
     <input type="checkbox" id="ckFree" checked onchange="A.setMode('free')">
     <span class="mc-ic"><i class="fa-solid fa-user"></i></span>
-    <span class="mc-lb" id="mcFreeLb">무료점검 <span style="font-size:.62rem;opacity:.75">(무료50인)</span></span>
+    <span class="mc-lb" id="mcFreeLb">무료점검 <span style="font-size:.62rem;opacity:.75">(무료25인)</span></span>
   </label>
   <label class="mode-ck right" id="mcPro">
     <input type="checkbox" id="ckPro" onchange="A.setMode('pro')">
     <span class="mc-ic"><i class="fa-solid fa-user-tie"></i></span>
-    <span class="mc-lb" id="mcProLb">전문가점검 <span style="font-size:.62rem;opacity:.75">(10인)</span></span>
+    <span class="mc-lb" id="mcProLb">전문가점검 <span style="font-size:.62rem;opacity:.75">(5인)</span></span>
   </label>
 </div>
 
@@ -286,26 +246,22 @@ input[type="file"]{display:none}
 </div>
 </div>
 
-<!-- STATUS -->
 <div class="st">
   <div class="st-chip"><div class="st-dot" id="sDot"></div><span id="sMsg">AI 대기 중</span></div>
   <button class="st-help" onclick="A.modal('help',1)"><i class="fa-solid fa-circle-question"></i> 도움말</button>
 </div>
 
-<!-- QUOTA BAR (남은 횟수 표시) -->
 <div class="quota-bar">
   <div class="quota-pill" id="qPill">
     <i class="fa-solid fa-bolt" style="color:var(--pl)"></i>
     <span id="qLabel">AI 분석 남은 횟수</span>
     <div class="quota-prog"><div class="quota-prog-fill" id="qBar" style="width:100%;background:var(--pl)"></div></div>
-    <span class="q-num ok" id="qNum">50/50</span>
+    <span class="q-num ok" id="qNum">50/50건</span>
   </div>
 </div>
 
-<!-- STORAGE -->
 <div class="sg"><i class="fa-solid fa-database"></i> <span id="sgTx">저장된 항목: 0건</span></div>
 
-<!-- STEPS -->
 <div class="steps">
   <div class="sn on" id="s1">1</div><div class="sl" id="l1"></div>
   <div class="sn" id="s2">2</div><div class="sl" id="l2"></div>
@@ -313,7 +269,6 @@ input[type="file"]{display:none}
   <div class="sn" id="s4">4</div>
 </div>
 
-<!-- SEC1: 현장 정보 -->
 <div class="sec">
   <div class="sec-t"><span class="n">1</span> 현장 정보</div>
   <div class="ig">
@@ -358,7 +313,6 @@ input[type="file"]{display:none}
   </div>
 </div>
 
-<!-- SEC2: 사진 -->
 <div class="sec">
   <div class="sec-t"><span class="n">2</span> 사진 촬영</div>
   <div class="pg">
@@ -377,7 +331,6 @@ input[type="file"]{display:none}
   </div>
 </div>
 
-<!-- SEC3: 하자 -->
 <div class="sec">
   <div class="sec-t"><span class="n">3</span> 하자 정보</div>
   <div class="ig">
@@ -420,7 +373,6 @@ input[type="file"]{display:none}
   <button class="btn-sv off" id="btnSv" onclick="A.save()" disabled><i class="fa-solid fa-check-circle"></i> 리스트에 저장</button>
 </div>
 
-<!-- SEC4: 리스트 -->
 <div class="ls">
   <div class="lh">
     <div class="lh-l">
@@ -435,7 +387,6 @@ input[type="file"]{display:none}
   <div id="lBox"></div>
 </div>
 
-<!-- BOTTOM -->
 <div class="ba">
   <button class="ab pdf" onclick="A.pdf()"><div class="ab-ic"><i class="fa-solid fa-file-pdf"></i></div><span class="ab-tx">전체 저장</span></button>
   <button class="ab rv" onclick="A.modal('paid',1)"><div class="ab-ic"><i class="fa-solid fa-calendar-check"></i></div><span class="ab-tx">유료 예약</span></button>
@@ -476,8 +427,8 @@ input[type="file"]{display:none}
     <b>⑤ 동의 체크 → 리스트 저장</b> 반복<br>
     <b>⑥ 전체 저장</b> → 폰 내파일 PDF 저장<br>
     <b>⑦ 전문가 점검</b> → 유료 신청<br><br>
-    💡 <b>무료 점검</b>: 무료 AI 분석 (1일 50건 제한)<br>
-    💡 <b>전문가 점검</b>: 전문가 상세 분석 (1일 10인)
+    💡 <b>무료 점검</b>: 무료 AI 분석 (1일 25인, 1인당 50건)<br>
+    💡 <b>전문가 점검</b>: 전문가 상세 분석 (1일 5인, 1인당 50건)
   </div>
   <div class="ck" style="margin-top:14px;padding:10px;background:var(--bg);border-radius:10px">
     <input type="checkbox" id="hpCk" onchange="if(this.checked)A.modal('help',0)">
@@ -486,7 +437,6 @@ input[type="file"]{display:none}
 </div>
 </div>
 
-<!-- CHAT -->
 <button class="cf" onclick="A.chat()"><i class="fa-solid fa-comment-dots"></i></button>
 <div class="cw" id="chatW">
   <div class="cw-h"><span>🐸 청개구리 상담</span><button class="cw-hc" onclick="A.chat()"><i class="fa-solid fa-xmark"></i></button></div>
@@ -512,19 +462,24 @@ import{GoogleGenerativeAI}from"@google/generative-ai";
 const K=["AIzaSyBoHZXi7YdDmH","V6GMEw49MYi74LILPKeCI"].join('');
 
 /* ============================================
-   🔒 사용량 제한 설정 (v19.3)
+   🔒 사용량 제한 설정 (v19.4)
    ============================================
-   무료 점검 (free): 폰당 하루 50건
-   전문가 점검 (pro): 폰당 하루 10인
+   Google API Tier 1 RPD = 1,500 제한 맞춤
+   ─────────────────────────────────────────
+   무료 점검 (free): 25인 × 50건 = 1,250 RPD
+   전문가 점검 (pro): 5인 × 50건 =   250 RPD
+   ─────────────────────────────────────────
+   합계:                            1,500 RPD
    개발자 모드 (dev): 무제한
    ============================================ */
 const LIMIT_FREE = 50;   // 무료점검: 폰당 1일 최대 50건 AI 분석
-const LIMIT_PRO  = 10;   // 전문가: 폰당 1일 최대 10건 AI 분석
+const LIMIT_PRO  = 50;   // 전문가: 폰당 1일 최대 50건 AI 분석
+const MAX_FREE_USERS = 25; // 무료 최대 동시 사용자 수 (표시용)
+const MAX_PRO_USERS  = 5;  // 전문가 최대 동시 사용자 수 (표시용)
 
 let list=[], wF=null, cF=null, devN=0, devT, mode='free';
 window.A={};
 
-// 공종→세부→유형 실데이터 매핑
 const WM={"도배공사":{"도배":["들뜸","마감불량","흠집/찍힘","면불량","오염","이음불량","흠집","미시공","파손","이색/변색"]},"타일공사":{"타일":["줄눈불량","틈새","구배불량","단차","들뜸","미시공","파손","마감불량","오염","흠집/찍힘"],"폴리싱타일":["파손","들뜸","줄눈불량","단차","틈새","오염","마감불량"],"아트월타일":["틈새","파손","마감불량","단차","흠집/찍힘","미시공","들뜸"],"타일코킹":["코킹불량","미시공","틈새","흠집/찍힘","마감불량"],"마블씰":["들뜸","틈새","단차","미시공","흠집/찍힘"]},"PL창호공사":{"PL창호":["고정불량","미시공","수직수평불량","흠집/찍힘","개폐불량","파손","틈새"],"분합창":["미시공","흠집/찍힘","고정불량","수직수평불량","개폐불량","파손"],"터닝도어":["미시공","개폐불량","흠집/찍힘","고정불량","틈새","파손"],"대피창":["개폐불량","고정불량","코킹불량","미시공"],"PL방충망":["개폐불량","미시공","수직수평불량","파손"]},"주방가구공사":{"주방상/하부장":["수직수평불량","미시공","개폐불량","흠집/찍힘","마감불량","고정불량","틈새"],"아일랜드장":["수직수평불량","개폐불량","미시공","흠집/찍힘","마감불량","틈새"],"냉장고장":["흠집/찍힘","수직수평불량","틈새","미시공","마감불량"],"고급장식장":["개폐불량","고정불량","수직수평불량","틈새","미시공"],"씽크볼":["미시공","마감불량","틈새","고정불량"]},"일반가구공사":{"신발장":["흠집/찍힘","미시공","틈새","수직수평불량","마감불량","개폐불량"],"붙박이장":["흠집/찍힘","미시공","수직수평불량","개폐불량","틈새","마감불량"],"화장대":["미시공","흠집/찍힘","마감불량","틈새","개폐불량","수직수평불량"],"현관팬트리도어/틀":["흠집/찍힘","수직수평불량","틈새","미시공","마감불량"],"복도팬트리도어/틀":["흠집/찍힘","틈새","수직수평불량","마감불량","미시공"],"아트월판넬":["틈새","마감불량","미시공","흠집/찍힘","파손"],"드레스룸도어/틀":["흠집/찍힘","틈새","마감불량","미시공","수직수평불량"]},"마루공사":{"강마루":["들뜸","틈새","오염","단차","파손","마감불량","미시공"],"마루코킹":["코킹불량","미시공","들뜸","틈새","오염"],"걸레받이":["틈새","파손","마감불량","미시공","들뜸","단차"]},"목창호공사":{"목문틀":["흠집/찍힘","틈새","미시공","수직수평불량","고정불량","마감불량"],"목문짝":["개폐불량","흠집/찍힘","고정불량","수직수평불량","틈새","마감불량"],"공틀":["틈새","수직수평불량","오염","미시공"]},"도장공사":{"도장":["마감불량","면불량","도장불량","균열","오염","미시공","들뜸"],"현관문틀도장":["도장불량","마감불량","오염","면불량","균열"],"외벽도장":["면불량","마감불량","균열","도장불량","오염"]},"준공청소공사":{"준공청소":["오염"]},"코킹공사":{"코킹":["코킹불량","미시공","틈새","오염","마감불량"]},"중문공사":{"슬라이딩도어/틀":["개폐불량","고정불량","마감불량","미시공","틈새","흠집/찍힘"],"스윙도어/틀":["마감불량","고정불량","개폐불량","미시공","흠집/찍힘","틈새"]},"기계설비공사":{"위생도기류":["고정불량","마감불량","작동불량","미시공","누수"],"수전류":["고정불량","미시공","작동불량","마감불량","누수"],"설비":["마감불량","미시공","악취","작동불량","누수"],"욕실액세서리":["고정불량","미시공","마감불량","수직수평불량"],"배수드레인":["마감불량","미시공","고정불량","작동불량","배수불량"]},"전기공사":{"콘센트":["작동불량","고정불량","수직수평불량","미시공","들뜸"],"스위치":["작동불량","수직수평불량","고정불량","미시공"],"네트워크스위치":["작동불량","수직수평불량","고정불량"]},"내장목공사":{"석고보드":["고정불량","마감불량","들뜸","단차","틈새"],"천정몰딩":["틈새","흠집/찍힘","마감불량","고정불량","오염"]},"방화문공사":{"현관문":["미시공","개폐불량","흠집/찍힘","고정불량","틈새"],"대피공간방화문":["미시공","개폐불량","고정불량","흠집/찍힘","틈새"],"실외기실문짝/틀":["개폐불량","고정불량","미시공","틈새"]},"시스템가구공사":{"시스템가구":["고정불량","미시공","수직수평불량","틈새","마감불량"],"월판넬":["틈새","미시공","수직수평불량","단차"]},"주방상판공사":{"주방상판/코킹":["미시공","코킹불량","틈새","흠집/찍힘","파손"],"엔지니어드상판":["미시공","틈새","마감불량","코킹불량","파손"]},"조명공사":{"세대등기구":["수직수평불량","작동불량","고정불량","미시공","점등불량"]},"내부석공사":{"석재걸레받이":["틈새","미시공","마감불량","코킹불량","파손"],"디딤판":["틈새","미시공","단차","마감불량","파손"]},"욕실장공사":{"욕실장/코킹":["미시공","개폐불량","수직수평불량","고정불량","코킹불량"]},"유리공사":{"유리":["흠집","파손","미시공","오염","코킹불량"],"유리코킹":["코킹불량","미시공"]},"에어컨공사":{"실외기":["마감불량","미시공","작동불량","고정불량"],"시스템에어컨":["작동불량","고정불량","마감불량","누수"]},"루버창호공사":{"루버창/방충망":["미시공","고정불량","개폐불량","흠집/찍힘"]},"직영공사":{"직영":["마감불량","들뜸","미시공","누수","고정불량","틈새"]}};
 
 const $=id=>document.getElementById(id);
@@ -561,30 +516,25 @@ function useQuota(){
 }
 
 function chkLim(){
-  // 개발자 모드: 무제한
   if(ls('is_dev') === 'true') return true;
 
   const remaining = getRemaining();
   const limit = getLimit();
   const modeStr = mode === 'pro' ? '전문가' : '무료';
-  const unitStr = mode === 'pro' ? '인' : '건';
 
   if(remaining <= 0){
-    alert(`⚠️ ${modeStr} 점검 일일 한도(${limit}${unitStr}) 초과!\n\n내일 자정(00:00)에 초기화됩니다.\n추가 점검이 필요하시면 010-2322-0949로 연락주세요.`);
+    alert(`⚠️ ${modeStr} 점검 일일 한도(${limit}건) 초과!\n\n내일 자정(00:00)에 초기화됩니다.\n추가 점검이 필요하시면 010-2322-0949로 연락주세요.`);
     return false;
   }
 
-  // 잔여 경고 (무료: 5건 이하, 전문가: 3인 이하)
-  const warnThreshold = mode === 'pro' ? 3 : 5;
-  if(remaining <= warnThreshold){
-    const go = confirm(`⚡ AI 분석 잔여 ${remaining}${unitStr} 남았습니다.\n계속하시겠습니까?`);
+  if(remaining <= 5){
+    const go = confirm(`⚡ AI 분석 잔여 ${remaining}건 남았습니다.\n계속하시겠습니까?`);
     if(!go) return false;
   }
 
   return true;
 }
 
-// 쿼터 UI 업데이트
 function updateQuotaUI(){
   const limit = getLimit();
   const q = getQuota();
@@ -596,26 +546,25 @@ function updateQuotaUI(){
   const barEl = $('qBar');
   const labelEl = $('qLabel');
 
-  // 모드별 라벨
   if(ls('is_dev') === 'true'){
     labelEl.textContent = '🛠️ 개발자 모드 (무제한)';
     numEl.textContent = `${used}건 사용`;
     numEl.className = 'q-num ok';
     barEl.style.width = '100%';
     barEl.style.background = 'var(--pu)';
+    updateModeBarLabels();
     return;
   }
 
   const modeStr = mode === 'pro' ? '전문가' : '무료';
-  const unitStr = mode === 'pro' ? '인' : '건';
   labelEl.textContent = `${modeStr} AI 분석`;
 
-  numEl.textContent = `${remaining}/${limit}${unitStr}`;
+  numEl.textContent = `${remaining}/${limit}건`;
 
   if(remaining <= 0){
     numEl.className = 'q-num out';
     barEl.style.background = 'var(--dn)';
-  } else if(remaining <= (mode === 'pro' ? 3 : 10)){
+  } else if(remaining <= 10){
     numEl.className = 'q-num low';
     barEl.style.background = 'var(--wr)';
   } else {
@@ -624,7 +573,6 @@ function updateQuotaUI(){
   }
   barEl.style.width = pct + '%';
 
-  // ★ 모드 바 라벨에도 남은 횟수 표시
   updateModeBarLabels();
 }
 
@@ -632,36 +580,35 @@ function updateModeBarLabels(){
   const isDev = ls('is_dev') === 'true';
   const today = new Date().toDateString();
 
-  // 무료 점검 남은 횟수
+  // 무료 점검
   const freeQ = JSON.parse(ls('frog_use_free') || '{}');
   const freeUsed = (freeQ.date === today) ? (freeQ.count || 0) : 0;
   const freeRem = isDev ? 99999 : Math.max(0, LIMIT_FREE - freeUsed);
 
   if(isDev){
-    $('mcFreeLb').innerHTML = `무료점검 <span style="font-size:.62rem;opacity:.85;font-weight:900;color:var(--pu)">(무료∞인)</span>`;
+    $('mcFreeLb').innerHTML = `무료점검 <span style="font-size:.62rem;opacity:.85;font-weight:900;color:var(--pu)">(∞건)</span>`;
   } else if(freeRem <= 0){
     $('mcFreeLb').innerHTML = `<span style="font-size:.72rem;font-weight:900;color:var(--dn)">무료점검 초과</span>`;
   } else {
     const fColor = freeRem <= 10 ? 'color:var(--wr)' : '';
-    $('mcFreeLb').innerHTML = `무료점검 <span style="font-size:.62rem;opacity:.85;font-weight:900;${fColor}">(무료${freeRem}인)</span>`;
+    $('mcFreeLb').innerHTML = `무료점검 <span style="font-size:.62rem;opacity:.85;font-weight:900;${fColor}">(${freeRem}건)</span>`;
   }
 
-  // 전문가 점검 남은 횟수
+  // 전문가 점검
   const proQ = JSON.parse(ls('frog_use_pro') || '{}');
   const proUsed = (proQ.date === today) ? (proQ.count || 0) : 0;
   const proRem = isDev ? 99999 : Math.max(0, LIMIT_PRO - proUsed);
 
   if(isDev){
-    $('mcProLb').innerHTML = `전문가점검 <span style="font-size:.62rem;opacity:.85;font-weight:900;color:var(--pu)">(∞인)</span>`;
+    $('mcProLb').innerHTML = `전문가점검 <span style="font-size:.62rem;opacity:.85;font-weight:900;color:var(--pu)">(∞건)</span>`;
   } else if(proRem <= 0){
     $('mcProLb').innerHTML = `<span style="font-size:.72rem;font-weight:900;color:var(--dn)">전문가점검 초과</span>`;
   } else {
-    const pColor = proRem <= 3 ? 'color:var(--wr)' : '';
-    $('mcProLb').innerHTML = `전문가점검 <span style="font-size:.62rem;opacity:.85;font-weight:900;${pColor}">(${proRem}인)</span>`;
+    const pColor = proRem <= 10 ? 'color:var(--wr)' : '';
+    $('mcProLb').innerHTML = `전문가점검 <span style="font-size:.62rem;opacity:.85;font-weight:900;${pColor}">(${proRem}건)</span>`;
   }
 }
 
-// Init dropdowns
 function initWorkSelect(){
   const sel=$('fWork');
   sel.innerHTML='<option value="">자동</option>';
@@ -691,7 +638,6 @@ A.onSub=()=>{
   }
 };
 
-// Init
 window.addEventListener('DOMContentLoaded',()=>{
   if(ls('is_dev')==='true')$('verTag').classList.add('dev');
   if(ls('frog_agreed')==='true'){
@@ -709,11 +655,8 @@ window.addEventListener('DOMContentLoaded',()=>{
 
 function ls(k,v){if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}
 
-// ============================================
-// 📋 입력 자동저장 (하루 유지) 시스템
-// ============================================
 const DRAFT_KEY = 'frog_draft';
-const DRAFT_TTL = 24 * 60 * 60 * 1000; // 24시간(ms)
+const DRAFT_TTL = 24 * 60 * 60 * 1000;
 
 function saveDraft(){
   try{
@@ -729,7 +672,7 @@ function saveDraft(){
     };
     ls(DRAFT_KEY, JSON.stringify(draft));
   }catch(e){
-    try{ // 용량 초과 시 사진 제외 저장
+    try{
       const lite = {ts:Date.now(),addr:$('fAddr').value,apt:$('fApt').value,
         dong:$('fDong').value,ho:$('fHo').value,room:$('fRoom').value,
         user:$('fUser').value,work:$('fWork').value,sub:$('fSub').value,
@@ -745,12 +688,10 @@ function loadDraft(){
     if(!raw) return;
     const d = JSON.parse(raw);
     if(Date.now() - d.ts > DRAFT_TTL){ localStorage.removeItem(DRAFT_KEY); return; }
-    // 현장 정보
     if(d.addr) $('fAddr').value = d.addr;
     if(d.apt)  $('fApt').value  = d.apt;
     if(d.dong) $('fDong').value = d.dong;
     if(d.ho)   $('fHo').value   = d.ho;
-    // 위치
     if(d.room){
       $('fRoom').value = d.room;
       const lb=$('cdLabel'); lb.textContent='✔ '+d.room;
@@ -770,7 +711,6 @@ function loadDraft(){
       }
     }
     if(d.detail) $('fDetail').value = d.detail;
-    // 사진 복원
     if(d.wImg && d.wImg.startsWith('data:')){show('pvW',d.wImg);$('rtW').style.display='block'}
     if(d.cImg && d.cImg.startsWith('data:')){show('pvC',d.cImg);$('rtC').style.display='block'}
     if(d.cImg) step(3); else if(d.wImg) step(2);
@@ -801,7 +741,6 @@ function initDraftListeners(){
   window.addEventListener('pagehide',saveDraft);
 }
 
-// Steps
 function step(c){
   for(let i=1;i<=4;i++){
     const n=$(`s${i}`),l=$(`l${i}`);
@@ -815,7 +754,6 @@ function step(c){
 
 function stat(m,e){$('sMsg').textContent=m;$('sDot').classList.toggle('err',!!e)}
 
-// ===== Custom Room Selector =====
 A.toggleRoom=()=>{
   const grid=$('cdGrid'), btn=$('cdBtn');
   btn.classList.remove('err-shake');
@@ -838,7 +776,6 @@ A.pickRoom=(el)=>{
   saveDraft();
 };
 
-// ★ 점검 위치 유효성 검사
 function validateRoom(){
   if(!$('fRoom').value){
     const btn = $('cdBtn');
@@ -854,7 +791,6 @@ function validateRoom(){
   return true;
 }
 
-// Mode
 A.setMode=m=>{
   if(m==='pro'){
     $('ckPro').checked=false;
@@ -893,7 +829,6 @@ A.cancelPwd=()=>{
   $('moPwd').classList.remove('show');
 };
 
-// Dev
 A.devTap=()=>{
   clearTimeout(devT);devN++;
   if(devN===5){
@@ -907,7 +842,6 @@ A.devTap=()=>{
   devT=setTimeout(()=>devN=0,1000);
 };
 
-// Photo
 $('inW').addEventListener('change',e=>photo(e,'w'));
 $('inC').addEventListener('change',e=>photo(e,'c'));
 
@@ -917,9 +851,7 @@ function photo(e,t){
   r.onload=ev=>{
     if(t==='w'){wF=f;show('pvW',ev.target.result);$('rtW').style.display='block';stat('가까이 찍기를 촬영하세요');step(2);saveDraft()}
     else{
-      // ★ 위치 선택 유효성 검사
       if(!validateRoom()){$('inC').value='';return}
-      // ★ 사용량 제한 체크
       if(!chkLim()){$('inC').value='';return}
       cF=f;show('pvC',ev.target.result);$('rtC').style.display='block';step(3);saveDraft();runAI();
     }
@@ -929,7 +861,7 @@ function show(id,src){const p=$(id);p.src=src;p.style.display='block'}
 
 async function toPart(f){return new Promise(r=>{const x=new FileReader();x.onloadend=()=>r({inlineData:{data:x.result.split(',')[1],mimeType:f.type}});x.readAsDataURL(f)})}
 
-// AI
+// AI (v19.4 - 429 에러 처리 추가)
 async function runAI(){
   const det=$('fDetail'), ui=$('fUser').value;
   det.value='🔍 AI 정밀 분석 중...';
@@ -991,30 +923,34 @@ ${workList}
     }
     det.value=(d.detail||'')+'\n\n(※ AI 분석 결과는 참고용입니다.)';
 
-    // ★ AI 호출 성공 시 쿼터 차감
     useQuota();
     updateQuotaUI();
     saveDraft();
 
     const rem = getRemaining();
-    const remUnit = mode === 'pro' ? '인' : '건';
-    stat(`분석 완료! (잔여 ${rem}${remUnit})`);
+    stat(`분석 완료! (잔여 ${rem}건)`);
   }catch(err){
-    console.error(err);stat('분석 실패',true);det.value='일시적 오류가 발생했습니다.';
+    console.error(err);
+    const errMsg = err?.message || err?.toString() || '';
+    // ★ Tier 1 RPD 1500 초과 시 429 에러 처리
+    if(errMsg.includes('429') || errMsg.includes('quota') || errMsg.includes('RESOURCE_EXHAUSTED')){
+      stat('⚠️ 오늘 전체 사용량 초과', true);
+      det.value='⚠️ 오늘 전체 AI 분석 한도(1,500건/일)에 도달했습니다.\n\n내일 자정(00:00) 이후 다시 이용해주세요.\n긴급 점검이 필요하시면 010-2322-0949로 연락주세요.';
+    } else {
+      stat('분석 실패',true);
+      det.value='일시적 오류가 발생했습니다.\n잠시 후 다시 시도해주세요.';
+    }
   }
 }
 
-// Save toggle
 A.togSave=()=>{
   const ok=$('fAgree').checked;
   if(ok){ls('frog_agreed','true');$('agreeNote').style.display='block'}
   $('btnSv').disabled=!ok;$('btnSv').className=ok?'btn-sv ok':'btn-sv off';
 };
 
-// Save
 A.save=()=>{
   if(!$('fAgree').checked)return;
-  // ★ 위치 유효성 검사
   if(!validateRoom()) return;
   const cs=$('pvC').src;
   if(!cF&&(!cs||!cs.startsWith('data:'))){alert('사진(가까이 찍기)이 필요합니다.');return}
@@ -1082,7 +1018,6 @@ function reset(){
   step(4);
 }
 
-// Storage
 function saveList(){
   try{
     const data=list.map(it=>({...it,wImg:null,cImg:null}));
@@ -1100,7 +1035,6 @@ function loadList(){
   }catch(e){list=[]}
 }
 
-// Edit/Delete
 A.edit=id=>{
   const idx=list.findIndex(i=>i.id===id);if(idx===-1)return;
   if(!confirm('수정 모드로 불러오시겠습니까?'))return;
@@ -1127,7 +1061,6 @@ A.clearAll=()=>{
   list=[];$('lBox').innerHTML='';$('lCnt').textContent=0;updateModeLabel();saveList();
 };
 
-// PDF 저장 (사전점검_동_호_날짜.pdf) — v19.3
 A.pdf=()=>{
   if(!list.length){alert('저장할 내용이 없습니다.');return}
 
@@ -1141,13 +1074,11 @@ A.pdf=()=>{
   const info = `${addr} ${apt} ${dong}동 ${ho}호`.trim();
   const dateStr = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
 
-  // ★ 1단계: 로딩 오버레이 (사용자에게 대기 안내)
   const overlay = document.createElement('div');
   overlay.style.cssText = 'position:fixed;inset:0;background:#fff;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px';
   overlay.innerHTML = '<div style="font-size:2rem">📄</div><div style="font-size:1rem;font-weight:800;color:#0A6B5C">PDF 생성 중...</div><div style="font-size:.8rem;color:#94A3B8">잠시만 기다려주세요</div>';
   document.body.appendChild(overlay);
 
-  // ★ 2단계: 렌더링 컨테이너 — 실제 DOM에 보이게 배치 (오버레이 뒤)
   const wrap = document.createElement('div');
   wrap.style.cssText = 'position:absolute;top:0;left:0;width:800px;padding:28px 24px;font-family:Noto Sans KR,sans-serif;color:#1A2332;background:#fff;z-index:1;line-height:1.5';
 
@@ -1202,7 +1133,6 @@ A.pdf=()=>{
   wrap.innerHTML = h;
   document.body.appendChild(wrap);
 
-  // ★ 3단계: 이미지 로딩 완료 대기
   const imgs = wrap.querySelectorAll('img');
   const imgP = Array.from(imgs).map(img =>
     img.complete && img.naturalHeight > 0
@@ -1211,50 +1141,27 @@ A.pdf=()=>{
   );
 
   Promise.all(imgP).then(() => {
-    // ★ 4단계: 렌더링 안정화 대기 (rAF 2회 + 800ms)
     requestAnimationFrame(() => {
     requestAnimationFrame(() => {
     setTimeout(() => {
-
-      // ★ 5단계: html2canvas 캡처
       html2canvas(wrap, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-        backgroundColor: '#ffffff',
-        width: 800,
-        height: wrap.scrollHeight,
-        windowWidth: 800
+        scale: 2, useCORS: true, allowTaint: true, logging: false,
+        backgroundColor: '#ffffff', width: 800, height: wrap.scrollHeight, windowWidth: 800
       }).then(canvas => {
-
-        // ★ 6단계: jsPDF로 변환 (A4 멀티페이지)
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF('p', 'mm', 'a4');
-        const pageW = 210; // A4 너비(mm)
-        const pageH = 297; // A4 높이(mm)
-        const margin = 5;
+        const pageW = 210, pageH = 297, margin = 5;
         const usableW = pageW - margin * 2;
         const usableH = pageH - margin * 2;
-
-        const imgData = canvas.toDataURL('image/jpeg', 0.92);
-        const imgW = canvas.width;
-        const imgH = canvas.height;
+        const imgW = canvas.width, imgH = canvas.height;
         const ratio = usableW / imgW;
-        const scaledH = imgH * ratio;
-
-        // 한 페이지에 들어갈 이미지 높이(px)
         const pageImgH = usableH / ratio;
-        let remainH = imgH;
-        let srcY = 0;
-        let page = 0;
+        let remainH = imgH, srcY = 0, page = 0;
 
         while(remainH > 0){
           if(page > 0) pdf.addPage();
           const sliceH = Math.min(pageImgH, remainH);
           const sliceHmm = sliceH * ratio;
-
-          // 슬라이스 캔버스 생성
           const sliceCanvas = document.createElement('canvas');
           sliceCanvas.width = imgW;
           sliceCanvas.height = Math.ceil(sliceH);
@@ -1262,48 +1169,37 @@ A.pdf=()=>{
           ctx.fillStyle = '#ffffff';
           ctx.fillRect(0, 0, sliceCanvas.width, sliceCanvas.height);
           ctx.drawImage(canvas, 0, srcY, imgW, sliceH, 0, 0, imgW, sliceH);
-
           const sliceData = sliceCanvas.toDataURL('image/jpeg', 0.92);
           pdf.addImage(sliceData, 'JPEG', margin, margin, usableW, sliceHmm);
-
           srcY += sliceH;
           remainH -= sliceH;
           page++;
         }
-
         pdf.save(fileName);
-
-        // ★ 7단계: 정리
         wrap.remove();
         overlay.remove();
         stat(`✅ ${fileName} 저장 완료!`);
-
       }).catch(err => {
         console.error('html2canvas err:', err);
-        wrap.remove();
-        overlay.remove();
+        wrap.remove(); overlay.remove();
         stat('PDF 생성 실패', true);
         if(confirm('PDF 저장 실패.\n브라우저 인쇄로 저장할까요?')) window.print();
       });
-
     }, 800);
     });
     });
   }).catch(() => {
-    wrap.remove();
-    overlay.remove();
+    wrap.remove(); overlay.remove();
     stat('이미지 로딩 실패', true);
   });
 };
 
-// Modal
 A.modal=(n,s)=>{
   const el=$(n==='paid'?'moPaid':'moHelp');
   el.classList.toggle('show',!!s);
   if(n==='help'&&s)$('hpCk').checked=false;
 };
 
-// Chat
 A.chat=()=>{$('chatW').classList.toggle('show')};
 const ans={
   cost:{q:'점검 비용이 궁금해요.',a:'💰 <b>점검 비용 안내</b><br>29평 이하: 13만원<br>30평 이상: 15만원<br>50평 이상: 20만원<br><br>※ 수도권 외 추가 출장비 발생 가능'},
@@ -1312,7 +1208,7 @@ const ans={
   booking:{q:'예약은 어떻게 하나요?',a:'📅 <b>예약 방법</b><br>1. 하단 유료예약 버튼 클릭<br>2. 신청서 작성 및 입금<br>3. 010-2322-0949로 문자<br><br>확인 후 확정 안내드립니다!'},
   time:{q:'점검 시간은 얼마나 걸려요?',a:'⏱️ <b>점검 소요시간</b><br>20평 기준: 약 1시간30분~2시간<br>30평 이상: 약 2시간~3시간<br><br>꼼꼼하게 진행하되 입주 일정에 맞춰 효율적으로 완료합니다.'},
   after:{q:'점검 후 하자 발견하면?',a:'📋 <b>점검 후 절차</b><br>1. 현장에서 고객에게 PDF파일 전송<br>2. 고객의 폰에서 저장된 파일 하자관리<br>3. 보수 완료 후 재점검 가능 (별도 비용)<br><br>리포트가 공식 보수 요청 근거 자료로 활용됩니다.'},
-  diff:{q:'AI 점검 vs 유료 점검 차이?',a:'🔍 <b>서비스 비교</b><br><b>무료 AI 점검:</b> 사진 기반 AI 분석, 간편 하자 판별 (1일 50건)<br><b>유료 전문가 점검:</b> 현장 방문 + 전문 장비 측정 + 법적 기준 리포트 (1일 10인)<br><br>AI로 먼저 확인 → 필요 시 전문가 점검 추천!'},
+  diff:{q:'AI 점검 vs 유료 점검 차이?',a:'🔍 <b>서비스 비교</b><br><b>무료 AI 점검:</b> 사진 기반 AI 분석 (1일 25인, 1인당 50건)<br><b>유료 전문가 점검:</b> 현장 방문 + 전문 장비 측정 + 법적 기준 리포트 (1일 5인, 1인당 50건)<br><br>AI로 먼저 확인 → 필요 시 전문가 점검 추천!'},
   cancel:{q:'예약 취소/환불 규정은?',a:'💳 <b>취소 및 환불 안내</b><br>방문 <b>7일 전</b> 취소: 100% 환불<br>7일 이내 취소: 환불 불가<br><br>일정 변경은 사전 협의 시 가능합니다.<br>📞 010-2322-0949'}
 };
 A.ask=t=>{
@@ -1322,10 +1218,8 @@ A.ask=t=>{
 };
 
 /* ============================================
-   🔧 Console 관리 명령어 (개발자용)
+   🔧 Console 관리 명령어 (개발자용) v19.4
    ============================================
-   아래 명령어를 브라우저 Console에서 실행하세요.
-
    ▶ 사용량 확인:
    JSON.parse(localStorage.getItem('frog_use_free'))
    JSON.parse(localStorage.getItem('frog_use_pro'))
@@ -1336,19 +1230,22 @@ A.ask=t=>{
    ▶ 전문가 사용량 초기화:
    localStorage.setItem('frog_use_pro', JSON.stringify({date: new Date().toDateString(), count: 0}))
 
-   ▶ 개발자 모드 (무제한):
+   ▶ 개발자 모드 ON/OFF:
    localStorage.setItem('is_dev', 'true')
-
-   ▶ 개발자 모드 해제:
    localStorage.setItem('is_dev', 'false')
 
-   ▶ 전체 현황 보기:
+   ▶ 전체 현황:
    console.table({
      무료_사용량: JSON.parse(localStorage.getItem('frog_use_free') || '{}'),
      전문가_사용량: JSON.parse(localStorage.getItem('frog_use_pro') || '{}'),
      개발자모드: localStorage.getItem('is_dev'),
      저장항목: JSON.parse(localStorage.getItem('frog_list') || '[]').length
    })
+
+   ▶ v19.4 제한 설정:
+   무료: 25인 × 50건/인 = 1,250 RPD
+   전문가: 5인 × 50건/인 = 250 RPD
+   합계: 1,500 RPD (Google Tier 1 맞춤)
    ============================================ */
 </script>
 </body>
