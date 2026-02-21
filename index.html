@@ -36,14 +36,16 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx);
 .tag-v{background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.15);cursor:pointer;backdrop-filter:blur(6px)}
 .tag-v.dev{background:var(--pu);box-shadow:0 0 10px rgba(124,58,237,.5)}
 /* Mode Checkbox Bar (below header) */
-.mode-bar-out{display:flex;gap:6px;padding:6px 8px;background:var(--card);border-bottom:1px solid var(--bl)}
-.mode-ck{display:flex;align-items:center;gap:7px;padding:8px 14px;border-radius:10px;cursor:pointer;transition:var(--tr);border:1.5px solid var(--bd);background:var(--bg);flex:1;justify-content:center}
+.mode-bar-out{display:flex;gap:3px;padding:5px 3px;background:var(--card);border-bottom:1px solid var(--bl)}
+.mode-ck{display:flex;align-items:center;gap:4px;padding:7px 5px;border-radius:10px;cursor:pointer;transition:var(--tr);border:1.5px solid var(--bd);background:var(--bg);justify-content:center;white-space:nowrap}
+.mode-ck.left{flex:1.5}
+.mode-ck.right{flex:0.6}
 .mode-ck:hover{border-color:var(--pl)}
 .mode-ck.active{background:var(--pg);border-color:var(--pl);box-shadow:0 0 8px rgba(18,184,154,.1)}
 .mode-ck.active-pro{background:var(--pub);border-color:var(--pu);box-shadow:0 0 8px rgba(124,58,237,.1)}
-.mode-ck input[type="checkbox"]{width:16px;height:16px;accent-color:var(--p);cursor:pointer;flex-shrink:0}
-.mode-ck .mc-lb{font-size:.78rem;font-weight:700;color:var(--ts)}
-.mode-ck .mc-ic{font-size:.72rem;color:var(--th);margin-right:2px}
+.mode-ck input[type="checkbox"]{width:14px;height:14px;accent-color:var(--p);cursor:pointer;flex-shrink:0}
+.mode-ck .mc-lb{font-size:.73rem;font-weight:700;color:var(--ts);white-space:nowrap}
+.mode-ck .mc-ic{font-size:.68rem;color:var(--th);margin-right:1px}
 .mode-ck.active .mc-lb{color:var(--p)}
 .mode-ck.active .mc-ic{color:var(--p)}
 .mode-ck.active-pro .mc-lb{color:var(--pu)}
@@ -257,12 +259,12 @@ input[type="file"]{display:none}
 
 <!-- MODE BAR (below header) -->
 <div class="mode-bar-out">
-  <label class="mode-ck active" id="mcFree">
+  <label class="mode-ck left active" id="mcFree">
     <input type="checkbox" id="ckFree" checked onchange="A.setMode('free')">
     <span class="mc-ic"><i class="fa-solid fa-user"></i></span>
-    <span class="mc-lb" id="mcFreeLb">일반점검 <span style="font-size:.62rem;opacity:.75">(무료50인)</span></span>
+    <span class="mc-lb" id="mcFreeLb">무료점검 <span style="font-size:.62rem;opacity:.75">(무료50인)</span></span>
   </label>
-  <label class="mode-ck" id="mcPro">
+  <label class="mode-ck right" id="mcPro">
     <input type="checkbox" id="ckPro" onchange="A.setMode('pro')">
     <span class="mc-ic"><i class="fa-solid fa-user-tie"></i></span>
     <span class="mc-lb" id="mcProLb">전문가점검 <span style="font-size:.62rem;opacity:.75">(10인)</span></span>
@@ -424,7 +426,7 @@ input[type="file"]{display:none}
       <div><div class="lh-t">점검 리스트</div><div class="lh-s" id="lInfo">정보 입력 대기</div></div>
     </div>
     <div style="display:flex;align-items:center;gap:6px">
-      <span id="lMode" style="font-size:.68rem;font-weight:800;padding:3px 8px;border-radius:6px;background:var(--pg);color:var(--p);display:none">일반점검</span>
+      <span id="lMode" style="font-size:.68rem;font-weight:800;padding:3px 8px;border-radius:6px;background:var(--pg);color:var(--p);display:none">무료점검</span>
       <button style="background:none;border:1px solid var(--bd);border-radius:8px;padding:6px 10px;font-size:.7rem;font-weight:700;cursor:pointer;color:var(--ts);font-family:inherit" onclick="A.clearAll()"><i class="fa-solid fa-trash"></i> 전체삭제</button>
     </div>
   </div>
@@ -472,7 +474,7 @@ input[type="file"]{display:none}
     <b>⑤ 동의 체크 → 리스트 저장</b> 반복<br>
     <b>⑥ 전체 저장</b> → 폰 내파일 PDF 저장<br>
     <b>⑦ 전문가 점검</b> → 유료 신청<br><br>
-    💡 <b>일반 점검</b>: 무료 AI 분석 (1일 50건 제한)<br>
+    💡 <b>무료 점검</b>: 무료 AI 분석 (1일 50건 제한)<br>
     💡 <b>전문가 점검</b>: 전문가 상세 분석 (1일 10인)
   </div>
   <div class="ck" style="margin-top:14px;padding:10px;background:var(--bg);border-radius:10px">
@@ -508,11 +510,11 @@ const K=["AIzaSyBoHZXi7YdDmH","V6GMEw49MYi74LILPKeCI"].join('');
 /* ============================================
    🔒 사용량 제한 설정 (v19.0)
    ============================================
-   일반 점검 (free): 폰당 하루 50건
+   무료 점검 (free): 폰당 하루 50건
    전문가 점검 (pro): 폰당 하루 10인
    개발자 모드 (dev): 무제한
    ============================================ */
-const LIMIT_FREE = 50;   // 일반인: 폰당 1일 최대 50건 AI 분석
+const LIMIT_FREE = 50;   // 무료점검: 폰당 1일 최대 50건 AI 분석
 const LIMIT_PRO  = 10;   // 전문가: 폰당 1일 최대 10건 AI 분석
 
 let list=[], wF=null, cF=null, devN=0, devT, mode='free';
@@ -560,15 +562,15 @@ function chkLim(){
 
   const remaining = getRemaining();
   const limit = getLimit();
-  const modeStr = mode === 'pro' ? '전문가' : '일반';
+  const modeStr = mode === 'pro' ? '전문가' : '무료';
+  const unitStr = mode === 'pro' ? '인' : '건';
 
   if(remaining <= 0){
-    const unitStr = mode === 'pro' ? '인' : '건';
     alert(`⚠️ ${modeStr} 점검 일일 한도(${limit}${unitStr}) 초과!\n\n내일 자정(00:00)에 초기화됩니다.\n추가 점검이 필요하시면 010-2322-0949로 연락주세요.`);
     return false;
   }
 
-  // 잔여 경고 (일반: 5건 이하, 전문가: 3인 이하)
+  // 잔여 경고 (무료: 5건 이하, 전문가: 3인 이하)
   const warnThreshold = mode === 'pro' ? 3 : 5;
   const unitStr = mode === 'pro' ? '인' : '건';
   if(remaining <= warnThreshold){
@@ -601,7 +603,7 @@ function updateQuotaUI(){
     return;
   }
 
-  const modeStr = mode === 'pro' ? '전문가' : '일반';
+  const modeStr = mode === 'pro' ? '전문가' : '무료';
   const unitStr = mode === 'pro' ? '인' : '건';
   labelEl.textContent = `${modeStr} AI 분석`;
 
@@ -627,18 +629,18 @@ function updateModeBarLabels(){
   const isDev = ls('is_dev') === 'true';
   const today = new Date().toDateString();
 
-  // 일반 점검 남은 횟수
+  // 무료 점검 남은 횟수
   const freeQ = JSON.parse(ls('frog_use_free') || '{}');
   const freeUsed = (freeQ.date === today) ? (freeQ.count || 0) : 0;
   const freeRem = isDev ? 99999 : Math.max(0, LIMIT_FREE - freeUsed);
 
   if(isDev){
-    $('mcFreeLb').innerHTML = `일반점검 <span style="font-size:.62rem;opacity:.85;font-weight:900;color:var(--pu)">(무료∞인)</span>`;
+    $('mcFreeLb').innerHTML = `무료점검 <span style="font-size:.62rem;opacity:.85;font-weight:900;color:var(--pu)">(무료∞인)</span>`;
   } else if(freeRem <= 0){
     $('mcFreeLb').innerHTML = `<span style="font-size:.72rem;font-weight:900;color:var(--dn)">무료점검 초과</span>`;
   } else {
     const fColor = freeRem <= 10 ? 'color:var(--wr)' : '';
-    $('mcFreeLb').innerHTML = `일반점검 <span style="font-size:.62rem;opacity:.85;font-weight:900;${fColor}">(무료${freeRem}인)</span>`;
+    $('mcFreeLb').innerHTML = `무료점검 <span style="font-size:.62rem;opacity:.85;font-weight:900;${fColor}">(무료${freeRem}인)</span>`;
   }
 
   // 전문가 점검 남은 횟수
@@ -919,7 +921,7 @@ A.save=()=>{
 
 function renderItem(it){
   const isSafe=it.type==='허용범위';
-  const modeLabel=it.mode==='pro'?'<span style="font-size:.62rem;background:linear-gradient(135deg,var(--pu),#A78BFA);color:#fff;padding:2px 7px;border-radius:4px;font-weight:700">전문가점검</span>':'<span style="font-size:.62rem;background:var(--pg);color:var(--p);padding:2px 7px;border-radius:4px;font-weight:700">일반점검</span>';
+  const modeLabel=it.mode==='pro'?'<span style="font-size:.62rem;background:linear-gradient(135deg,var(--pu),#A78BFA);color:#fff;padding:2px 7px;border-radius:4px;font-weight:700">전문가점검</span>':'<span style="font-size:.62rem;background:var(--pg);color:var(--p);padding:2px 7px;border-radius:4px;font-weight:700">무료점검</span>';
   const h=`<div class="dc" id="i-${it.id}">
     <div class="dc-hd"><div class="dc-tag"><span class="dc-rm">${it.room}</span><span class="dc-tp${isSafe?' safe':''}">${it.type}</span>${modeLabel}</div>
     <div class="dc-act"><button class="bi ed" onclick="A.edit(${it.id})"><i class="fa-solid fa-pen"></i></button><button class="bi dl" onclick="A.del(${it.id})"><i class="fa-solid fa-trash-can"></i></button></div></div>
@@ -934,9 +936,9 @@ function updateModeLabel(){
   if(!list.length){el.style.display='none';return}
   const hasPro=list.some(i=>i.mode==='pro');
   const hasFree=list.some(i=>i.mode==='free');
-  if(hasPro&&hasFree){el.textContent='일반+전문가점검';el.style.background='linear-gradient(135deg,var(--pg),var(--pub))';el.style.color='var(--pu)'}
+  if(hasPro&&hasFree){el.textContent='무료+전문가점검';el.style.background='linear-gradient(135deg,var(--pg),var(--pub))';el.style.color='var(--pu)'}
   else if(hasPro){el.textContent='전문가점검';el.style.background='var(--pub)';el.style.color='var(--pu)'}
-  else{el.textContent='일반점검';el.style.background='var(--pg)';el.style.color='var(--p)'}
+  else{el.textContent='무료점검';el.style.background='var(--pg)';el.style.color='var(--p)'}
   el.style.display='inline-block';
 }
 
@@ -1039,7 +1041,7 @@ A.ask=t=>{
    JSON.parse(localStorage.getItem('frog_use_free'))
    JSON.parse(localStorage.getItem('frog_use_pro'))
 
-   ▶ 일반 사용량 초기화:
+   ▶ 무료 사용량 초기화:
    localStorage.setItem('frog_use_free', JSON.stringify({date: new Date().toDateString(), count: 0}))
 
    ▶ 전문가 사용량 초기화:
@@ -1053,7 +1055,7 @@ A.ask=t=>{
 
    ▶ 전체 현황 보기:
    console.table({
-     일반_사용량: JSON.parse(localStorage.getItem('frog_use_free') || '{}'),
+     무료_사용량: JSON.parse(localStorage.getItem('frog_use_free') || '{}'),
      전문가_사용량: JSON.parse(localStorage.getItem('frog_use_pro') || '{}'),
      개발자모드: localStorage.getItem('is_dev'),
      저장항목: JSON.parse(localStorage.getItem('frog_list') || '[]').length
