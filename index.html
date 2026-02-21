@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>청개구리 사전점검 AI앱 v19.0</title>
+<title>청개구리 사전점검 AI앱 v19.2</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;800;900&family=Outfit:wght@600;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -254,7 +254,7 @@ input[type="file"]{display:none}
     </div>
     <div class="hd-tags">
       <span class="tag tag-free">무료</span>
-      <span class="tag tag-v" id="verTag" onclick="A.devTap()">v19.0</span>
+      <span class="tag tag-v" id="verTag" onclick="A.devTap()">v19.2</span>
     </div>
   </div>
 </header>
@@ -503,6 +503,7 @@ input[type="file"]{display:none}
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.2/html2pdf.bundle.min.js"></script>
 <script type="importmap">{"imports":{"@google/generative-ai":"https://esm.run/@google/generative-ai"}}</script>
 <script type="module">
 import{GoogleGenerativeAI}from"@google/generative-ai";
@@ -510,7 +511,7 @@ import{GoogleGenerativeAI}from"@google/generative-ai";
 const K=["AIzaSyBoHZXi7YdDmH","V6GMEw49MYi74LILPKeCI"].join('');
 
 /* ============================================
-   🔒 사용량 제한 설정 (v19.0)
+   🔒 사용량 제한 설정 (v19.2)
    ============================================
    무료 점검 (free): 폰당 하루 50건
    전문가 점검 (pro): 폰당 하루 10인
@@ -699,11 +700,105 @@ window.addEventListener('DOMContentLoaded',()=>{
   }
   initWorkSelect();
   loadList();
+  loadDraft();
+  initDraftListeners();
   step(1);
   updateQuotaUI();
 });
 
 function ls(k,v){if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}
+
+// ============================================
+// 📋 입력 자동저장 (하루 유지) 시스템
+// ============================================
+const DRAFT_KEY = 'frog_draft';
+const DRAFT_TTL = 24 * 60 * 60 * 1000; // 24시간(ms)
+
+function saveDraft(){
+  try{
+    const draft = {
+      ts: Date.now(),
+      addr: $('fAddr').value, apt: $('fApt').value,
+      dong: $('fDong').value, ho: $('fHo').value,
+      room: $('fRoom').value, user: $('fUser').value,
+      work: $('fWork').value, sub: $('fSub').value,
+      type: $('fType').value, detail: $('fDetail').value,
+      wImg: ($('pvW').style.display!=='none' && $('pvW').src.startsWith('data:')) ? $('pvW').src : null,
+      cImg: ($('pvC').style.display!=='none' && $('pvC').src.startsWith('data:')) ? $('pvC').src : null
+    };
+    ls(DRAFT_KEY, JSON.stringify(draft));
+  }catch(e){
+    try{ // 용량 초과 시 사진 제외 저장
+      const lite = {ts:Date.now(),addr:$('fAddr').value,apt:$('fApt').value,
+        dong:$('fDong').value,ho:$('fHo').value,room:$('fRoom').value,
+        user:$('fUser').value,work:$('fWork').value,sub:$('fSub').value,
+        type:$('fType').value,detail:$('fDetail').value,wImg:null,cImg:null};
+      ls(DRAFT_KEY, JSON.stringify(lite));
+    }catch(e2){}
+  }
+}
+
+function loadDraft(){
+  try{
+    const raw = ls(DRAFT_KEY);
+    if(!raw) return;
+    const d = JSON.parse(raw);
+    if(Date.now() - d.ts > DRAFT_TTL){ localStorage.removeItem(DRAFT_KEY); return; }
+    // 현장 정보
+    if(d.addr) $('fAddr').value = d.addr;
+    if(d.apt)  $('fApt').value  = d.apt;
+    if(d.dong) $('fDong').value = d.dong;
+    if(d.ho)   $('fHo').value   = d.ho;
+    // 위치
+    if(d.room){
+      $('fRoom').value = d.room;
+      const lb=$('cdLabel'); lb.textContent='✔ '+d.room;
+      lb.classList.remove('cd-placeholder'); lb.style.color='var(--p)'; lb.style.fontWeight='800';
+      document.querySelectorAll('.cd-item').forEach(i=>i.classList.toggle('selected',i.dataset.val===d.room));
+    }
+    if(d.user) $('fUser').value = d.user;
+    if(d.work){
+      $('fWork').value = d.work; A.onWork();
+      if(d.sub){
+        if(!$('fSub').querySelector(`option[value="${d.sub}"]`)){const o=document.createElement('option');o.value=d.sub;o.textContent=d.sub;$('fSub').appendChild(o)}
+        $('fSub').value = d.sub; A.onSub();
+        if(d.type){
+          if(!$('fType').querySelector(`option[value="${d.type}"]`)){const o=document.createElement('option');o.value=d.type;o.textContent=d.type;$('fType').appendChild(o)}
+          $('fType').value = d.type;
+        }
+      }
+    }
+    if(d.detail) $('fDetail').value = d.detail;
+    // 사진 복원
+    if(d.wImg && d.wImg.startsWith('data:')){show('pvW',d.wImg);$('rtW').style.display='block'}
+    if(d.cImg && d.cImg.startsWith('data:')){show('pvC',d.cImg);$('rtC').style.display='block'}
+    if(d.cImg) step(3); else if(d.wImg) step(2);
+    const hasData = d.addr || d.room || d.wImg || d.cImg || d.detail;
+    if(hasData) stat('💾 이전 입력 내용이 복원되었습니다');
+  }catch(e){console.warn('Draft load failed')}
+}
+
+function clearItemDraft(){
+  try{
+    const raw = ls(DRAFT_KEY); if(!raw) return;
+    const d = JSON.parse(raw);
+    d.room=null;d.user=null;d.work=null;d.sub=null;
+    d.type=null;d.detail=null;d.wImg=null;d.cImg=null;
+    d.ts=Date.now();
+    ls(DRAFT_KEY, JSON.stringify(d));
+  }catch(e){}
+}
+
+let _draftTimer;
+function draftDebounce(){clearTimeout(_draftTimer);_draftTimer=setTimeout(saveDraft,500)}
+function initDraftListeners(){
+  ['fAddr','fApt','fDong','fHo','fUser','fDetail'].forEach(id=>$(id).addEventListener('input',draftDebounce));
+  ['fWork','fSub','fType'].forEach(id=>$(id).addEventListener('change',draftDebounce));
+  window.addEventListener('beforeunload',saveDraft);
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')saveDraft()});
+  window.addEventListener('blur',saveDraft);
+  window.addEventListener('pagehide',saveDraft);
+}
 
 // Steps
 function step(c){
@@ -739,6 +834,7 @@ A.pickRoom=(el)=>{
   document.querySelectorAll('.cd-item').forEach(i=>i.classList.remove('selected'));
   el.classList.add('selected');
   setTimeout(()=>{$('cdGrid').classList.remove('show');$('cdBtn').classList.remove('open')},150);
+  saveDraft();
 };
 
 // ★ 점검 위치 유효성 검사
@@ -818,13 +914,13 @@ function photo(e,t){
   const f=e.target.files[0];if(!f)return;
   const r=new FileReader();
   r.onload=ev=>{
-    if(t==='w'){wF=f;show('pvW',ev.target.result);$('rtW').style.display='block';stat('가까이 찍기를 촬영하세요');step(2)}
+    if(t==='w'){wF=f;show('pvW',ev.target.result);$('rtW').style.display='block';stat('가까이 찍기를 촬영하세요');step(2);saveDraft()}
     else{
       // ★ 위치 선택 유효성 검사
       if(!validateRoom()){$('inC').value='';return}
       // ★ 사용량 제한 체크
       if(!chkLim()){$('inC').value='';return}
-      cF=f;show('pvC',ev.target.result);$('rtC').style.display='block';step(3);runAI();
+      cF=f;show('pvC',ev.target.result);$('rtC').style.display='block';step(3);saveDraft();runAI();
     }
   };r.readAsDataURL(f);
 }
@@ -897,6 +993,7 @@ ${workList}
     // ★ AI 호출 성공 시 쿼터 차감
     useQuota();
     updateQuotaUI();
+    saveDraft();
 
     const rem = getRemaining();
     const remUnit = mode === 'pro' ? '인' : '건';
@@ -980,6 +1077,7 @@ function reset(){
   $('cdBtn').classList.remove('err-shake');
   document.querySelectorAll('.cd-item').forEach(i=>i.classList.remove('selected'));
   if(ls('frog_agreed')!=='true'){$('fAgree').checked=false;A.togSave()}
+  clearItemDraft();
   step(4);
 }
 
@@ -1028,8 +1126,112 @@ A.clearAll=()=>{
   list=[];$('lBox').innerHTML='';$('lCnt').textContent=0;updateModeLabel();saveList();
 };
 
-// PDF
-A.pdf=()=>{if(!list.length){alert('저장할 내용이 없습니다.');return}window.print()};
+// PDF 저장 (사전점검_동_호_날짜.pdf)
+A.pdf=()=>{
+  if(!list.length){alert('저장할 내용이 없습니다.');return}
+
+  // 파일명 생성: 사전점검_101동_1201호_20260221.pdf
+  const dong = $('fDong').value || '000';
+  const ho   = $('fHo').value   || '0000';
+  const now  = new Date();
+  const ymd  = now.getFullYear()
+    + String(now.getMonth()+1).padStart(2,'0')
+    + String(now.getDate()).padStart(2,'0');
+  const fileName = `사전점검_${dong}동_${ho}호_${ymd}.pdf`;
+
+  // 리포트 헤더 정보
+  const addr = $('fAddr').value || '';
+  const apt  = $('fApt').value  || '';
+  const info = `${addr} ${apt} ${dong}동 ${ho}호`.trim();
+
+  // 인쇄용 컨테이너 생성
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'width:700px;padding:24px;font-family:Noto Sans KR,sans-serif;color:#1A2332;background:#fff';
+
+  // 헤더
+  wrap.innerHTML = `
+    <div style="text-align:center;margin-bottom:20px;padding-bottom:14px;border-bottom:3px solid #0A6B5C">
+      <div style="font-size:22px;font-weight:900;color:#0A6B5C;margin-bottom:6px">🐸 청개구리 사전점검 리포트</div>
+      <div style="font-size:14px;font-weight:700;color:#5A6B7F">${info}</div>
+      <div style="font-size:11px;color:#94A3B8;margin-top:4px">${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} 작성 | 총 ${list.length}건</div>
+    </div>`;
+
+  // 각 항목 카드
+  list.forEach((it, idx) => {
+    const isSafe = it.type === '허용범위';
+    const modeTag = it.mode==='pro'
+      ? '<span style="font-size:10px;background:#7C3AED;color:#fff;padding:2px 6px;border-radius:3px">전문가</span>'
+      : '<span style="font-size:10px;background:#E6F7F3;color:#0A6B5C;padding:2px 6px;border-radius:3px">무료</span>';
+    const typeColor = isSafe ? '#059669' : '#E74C3C';
+    const typeBg    = isSafe ? '#ECFDF5' : '#FFF5F5';
+
+    let card = `<div style="border:1px solid #E8ECF1;border-radius:12px;overflow:hidden;margin-bottom:14px;page-break-inside:avoid">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#F4F6F9;border-bottom:1px solid #E8ECF1">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:11px;font-weight:900;background:#0A6B5C;color:#fff;width:22px;height:22px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center">${idx+1}</span>
+          <span style="font-size:14px;font-weight:800">${it.room}</span>
+          <span style="font-size:11px;font-weight:700;color:${typeColor};background:${typeBg};padding:2px 7px;border-radius:4px">${it.type}</span>
+          ${modeTag}
+        </div>
+      </div>`;
+
+    // 사진
+    const hasW = it.wImg && it.wImg.startsWith('data:');
+    const hasC = it.cImg && it.cImg.startsWith('data:');
+    if(hasW || hasC){
+      card += `<div style="display:flex;gap:3px;padding:3px;background:#F1F4F8">`;
+      if(hasW) card += `<img src="${it.wImg}" style="flex:1;max-height:160px;object-fit:cover;border-radius:6px">`;
+      if(hasC) card += `<img src="${it.cImg}" style="flex:1;max-height:160px;object-fit:cover;border-radius:6px">`;
+      card += `</div>`;
+    }
+
+    // 내용
+    card += `<div style="padding:12px 14px">
+      <div style="font-size:12px;font-weight:700;color:#0A6B5C;margin-bottom:4px">${it.work||''} → ${it.sub||''}</div>
+      <div style="font-size:12px;color:#5A6B7F;line-height:1.7;white-space:pre-wrap">${it.detail||''}</div>
+    </div></div>`;
+
+    wrap.innerHTML += card;
+  });
+
+  // 푸터
+  wrap.innerHTML += `
+    <div style="text-align:center;font-size:9px;color:#94A3B8;margin-top:16px;padding-top:10px;border-top:1px solid #E8ECF1;line-height:1.6">
+      ※ 본 리포트는 입주자 사전점검 보조 자료이며 법적 효력이 없습니다.<br>
+      제공: 청개구리샤시 | 대표: 전영웅 | 📞 010-2322-0949<br>
+      ⓒ 2026 Cheong-gaeguri Corp.
+    </div>`;
+
+  // 로딩 표시
+  stat('📄 PDF 생성 중...');
+  const btnEl = document.querySelector('.ab.pdf');
+  if(btnEl) btnEl.style.pointerEvents = 'none';
+
+  // html2pdf 옵션
+  const opt = {
+    margin:       [8, 6, 8, 6],
+    filename:     fileName,
+    image:        { type: 'jpeg', quality: 0.92 },
+    html2canvas:  { scale: 2, useCORS: true, logging: false },
+    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+  };
+
+  document.body.appendChild(wrap);
+
+  html2pdf().set(opt).from(wrap).save().then(()=>{
+    document.body.removeChild(wrap);
+    stat(`✅ ${fileName} 저장 완료!`);
+    if(btnEl) btnEl.style.pointerEvents = '';
+  }).catch(err=>{
+    console.error('PDF 생성 실패:', err);
+    document.body.removeChild(wrap);
+    stat('PDF 생성 실패. 다시 시도해주세요.', true);
+    if(btnEl) btnEl.style.pointerEvents = '';
+    // 폴백: 브라우저 인쇄
+    if(confirm('PDF 저장에 실패했습니다.\n브라우저 인쇄 기능으로 저장하시겠습니까?')) window.print();
+  });
+};
 
 // Modal
 A.modal=(n,s)=>{
