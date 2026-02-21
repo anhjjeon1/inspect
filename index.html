@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>청개구리 사전점검 AI앱 v19.2</title>
+<title>청개구리 사전점검 AI앱 v19.3</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;800;900&family=Outfit:wght@600;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -254,7 +254,7 @@ input[type="file"]{display:none}
     </div>
     <div class="hd-tags">
       <span class="tag tag-free">무료</span>
-      <span class="tag tag-v" id="verTag" onclick="A.devTap()">v19.2</span>
+      <span class="tag tag-v" id="verTag" onclick="A.devTap()">v19.3</span>
     </div>
   </div>
 </header>
@@ -503,7 +503,8 @@ input[type="file"]{display:none}
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.2/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script type="importmap">{"imports":{"@google/generative-ai":"https://esm.run/@google/generative-ai"}}</script>
 <script type="module">
 import{GoogleGenerativeAI}from"@google/generative-ai";
@@ -511,7 +512,7 @@ import{GoogleGenerativeAI}from"@google/generative-ai";
 const K=["AIzaSyBoHZXi7YdDmH","V6GMEw49MYi74LILPKeCI"].join('');
 
 /* ============================================
-   🔒 사용량 제한 설정 (v19.2)
+   🔒 사용량 제한 설정 (v19.3)
    ============================================
    무료 점검 (free): 폰당 하루 50건
    전문가 점검 (pro): 폰당 하루 10인
@@ -1126,35 +1127,34 @@ A.clearAll=()=>{
   list=[];$('lBox').innerHTML='';$('lCnt').textContent=0;updateModeLabel();saveList();
 };
 
-// PDF 저장 (사전점검_동_호_날짜.pdf)
+// PDF 저장 (사전점검_동_호_날짜.pdf) — v19.3
 A.pdf=()=>{
   if(!list.length){alert('저장할 내용이 없습니다.');return}
 
   const dong = $('fDong').value || '000';
   const ho   = $('fHo').value   || '0000';
   const now  = new Date();
-  const ymd  = now.getFullYear()
-    + String(now.getMonth()+1).padStart(2,'0')
-    + String(now.getDate()).padStart(2,'0');
+  const ymd  = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`;
   const fileName = `사전점검_${dong}동_${ho}호_${ymd}.pdf`;
-
   const addr = $('fAddr').value || '';
   const apt  = $('fApt').value  || '';
   const info = `${addr} ${apt} ${dong}동 ${ho}호`.trim();
+  const dateStr = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
 
-  stat('📄 PDF 생성 중...');
-  const btnEl = document.querySelector('.ab.pdf');
-  if(btnEl){btnEl.style.pointerEvents='none';btnEl.style.opacity='.5'}
+  // ★ 1단계: 로딩 오버레이 (사용자에게 대기 안내)
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:#fff;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px';
+  overlay.innerHTML = '<div style="font-size:2rem">📄</div><div style="font-size:1rem;font-weight:800;color:#0A6B5C">PDF 생성 중...</div><div style="font-size:.8rem;color:#94A3B8">잠시만 기다려주세요</div>';
+  document.body.appendChild(overlay);
 
-  // ★ 렌더링용 컨테이너 (position:fixed + z-index:-1 = 화면 안보이지만 렌더링됨)
+  // ★ 2단계: 렌더링 컨테이너 — 실제 DOM에 보이게 배치 (오버레이 뒤)
   const wrap = document.createElement('div');
-  wrap.id = 'pdf-render';
-  wrap.style.cssText = 'position:fixed;left:0;top:0;width:794px;padding:28px 24px;font-family:Noto Sans KR,sans-serif;color:#1A2332;background:#fff;z-index:-1;overflow:visible';
+  wrap.style.cssText = 'position:absolute;top:0;left:0;width:800px;padding:28px 24px;font-family:Noto Sans KR,sans-serif;color:#1A2332;background:#fff;z-index:1;line-height:1.5';
 
   let h = `<div style="text-align:center;margin-bottom:22px;padding-bottom:16px;border-bottom:3px solid #0A6B5C">
     <div style="font-size:20px;font-weight:900;color:#0A6B5C;margin-bottom:6px">🐸 청개구리 사전점검 리포트</div>
     <div style="font-size:13px;font-weight:700;color:#5A6B7F">${info}</div>
-    <div style="font-size:10px;color:#94A3B8;margin-top:4px">${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} 작성 | 총 ${list.length}건</div>
+    <div style="font-size:10px;color:#94A3B8;margin-top:4px">${dateStr} 작성 | 총 ${list.length}건</div>
   </div>`;
 
   list.forEach((it, idx) => {
@@ -1165,26 +1165,32 @@ A.pdf=()=>{
     const tc = isSafe ? '#059669' : '#E74C3C';
     const tb = isSafe ? '#ECFDF5' : '#FFF5F5';
 
-    h += `<div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:12px;page-break-inside:avoid">
+    h += `<div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:14px">
       <div style="padding:8px 12px;background:#F4F6F9;border-bottom:1px solid #eee">
-        <span style="display:inline-block;font-size:10px;font-weight:900;background:#0A6B5C;color:#fff;width:20px;height:20px;border-radius:5px;text-align:center;line-height:20px;margin-right:6px">${idx+1}</span>
-        <span style="font-size:13px;font-weight:800">${it.room}</span>
-        <span style="font-size:10px;font-weight:700;color:${tc};background:${tb};padding:2px 6px;border-radius:4px;margin-left:6px">${it.type||''}</span>
+        <span style="display:inline-block;font-size:10px;font-weight:900;background:#0A6B5C;color:#fff;width:20px;height:20px;border-radius:5px;text-align:center;line-height:20px;margin-right:6px;vertical-align:middle">${idx+1}</span>
+        <span style="font-size:13px;font-weight:800;vertical-align:middle">${it.room}</span>
+        <span style="font-size:10px;font-weight:700;color:${tc};background:${tb};padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle">${it.type||''}</span>
         ${mTag}
       </div>`;
 
     const hasW = it.wImg && it.wImg.startsWith('data:');
     const hasC = it.cImg && it.cImg.startsWith('data:');
     if(hasW || hasC){
-      h += `<div style="padding:4px;background:#F1F4F8;display:flex;gap:4px">`;
-      if(hasW) h += `<img src="${it.wImg}" style="width:${hasC?'50%':'100%'};height:150px;object-fit:cover;border-radius:6px;display:block">`;
-      if(hasC) h += `<img src="${it.cImg}" style="width:${hasW?'50%':'100%'};height:150px;object-fit:cover;border-radius:6px;display:block">`;
-      h += `</div>`;
+      if(hasW && hasC){
+        h += `<table style="width:100%;border-collapse:collapse;background:#F1F4F8"><tr>
+          <td style="width:50%;padding:4px"><img src="${it.wImg}" style="width:100%;height:150px;object-fit:cover;border-radius:6px;display:block"></td>
+          <td style="width:50%;padding:4px"><img src="${it.cImg}" style="width:100%;height:150px;object-fit:cover;border-radius:6px;display:block"></td>
+        </tr></table>`;
+      } else {
+        const src = hasW ? it.wImg : it.cImg;
+        h += `<div style="padding:4px;background:#F1F4F8"><img src="${src}" style="width:100%;height:180px;object-fit:cover;border-radius:6px;display:block"></div>`;
+      }
     }
 
+    const safeDetail = (it.detail||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     h += `<div style="padding:10px 12px">
       <div style="font-size:11px;font-weight:700;color:#0A6B5C;margin-bottom:3px">${it.work||''} → ${it.sub||''}</div>
-      <div style="font-size:11px;color:#5A6B7F;line-height:1.6;white-space:pre-wrap">${(it.detail||'').replace(/</g,'&lt;')}</div>
+      <div style="font-size:11px;color:#5A6B7F;line-height:1.6;white-space:pre-wrap">${safeDetail}</div>
     </div></div>`;
   });
 
@@ -1196,38 +1202,97 @@ A.pdf=()=>{
   wrap.innerHTML = h;
   document.body.appendChild(wrap);
 
-  // ★ 핵심: 이미지 로딩 완료 대기 → 렌더링 보장 → 캡처
+  // ★ 3단계: 이미지 로딩 완료 대기
   const imgs = wrap.querySelectorAll('img');
   const imgP = Array.from(imgs).map(img =>
-    img.complete ? Promise.resolve() : new Promise(r=>{img.onload=r;img.onerror=r})
+    img.complete && img.naturalHeight > 0
+      ? Promise.resolve()
+      : new Promise(r => { img.onload = r; img.onerror = r; })
   );
 
   Promise.all(imgP).then(() => {
-    // requestAnimationFrame 2회 = 브라우저 실제 페인트 보장
+    // ★ 4단계: 렌더링 안정화 대기 (rAF 2회 + 800ms)
     requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        setTimeout(() => {
-          html2pdf().set({
-            margin:      [6, 5, 6, 5],
-            filename:    fileName,
-            image:       { type:'jpeg', quality:0.88 },
-            html2canvas: { scale:2, useCORS:true, logging:false, width:794, windowWidth:794, scrollY:0, scrollX:0 },
-            jsPDF:       { unit:'mm', format:'a4', orientation:'portrait' },
-            pagebreak:   { mode:['avoid-all','css','legacy'] }
-          }).from(wrap).save().then(()=>{
-            wrap.remove();
-            stat(`✅ ${fileName} 저장 완료!`);
-            if(btnEl){btnEl.style.pointerEvents='';btnEl.style.opacity=''}
-          }).catch(err=>{
-            console.error('PDF err:', err);
-            wrap.remove();
-            stat('PDF 생성 실패', true);
-            if(btnEl){btnEl.style.pointerEvents='';btnEl.style.opacity=''}
-            if(confirm('PDF 저장 실패. 브라우저 인쇄로 저장할까요?')) window.print();
-          });
-        }, 500); // ★ 500ms 안전 대기 (모바일 렌더링 여유)
+    requestAnimationFrame(() => {
+    setTimeout(() => {
+
+      // ★ 5단계: html2canvas 캡처
+      html2canvas(wrap, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+        width: 800,
+        height: wrap.scrollHeight,
+        windowWidth: 800
+      }).then(canvas => {
+
+        // ★ 6단계: jsPDF로 변환 (A4 멀티페이지)
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pageW = 210; // A4 너비(mm)
+        const pageH = 297; // A4 높이(mm)
+        const margin = 5;
+        const usableW = pageW - margin * 2;
+        const usableH = pageH - margin * 2;
+
+        const imgData = canvas.toDataURL('image/jpeg', 0.92);
+        const imgW = canvas.width;
+        const imgH = canvas.height;
+        const ratio = usableW / imgW;
+        const scaledH = imgH * ratio;
+
+        // 한 페이지에 들어갈 이미지 높이(px)
+        const pageImgH = usableH / ratio;
+        let remainH = imgH;
+        let srcY = 0;
+        let page = 0;
+
+        while(remainH > 0){
+          if(page > 0) pdf.addPage();
+          const sliceH = Math.min(pageImgH, remainH);
+          const sliceHmm = sliceH * ratio;
+
+          // 슬라이스 캔버스 생성
+          const sliceCanvas = document.createElement('canvas');
+          sliceCanvas.width = imgW;
+          sliceCanvas.height = Math.ceil(sliceH);
+          const ctx = sliceCanvas.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, sliceCanvas.width, sliceCanvas.height);
+          ctx.drawImage(canvas, 0, srcY, imgW, sliceH, 0, 0, imgW, sliceH);
+
+          const sliceData = sliceCanvas.toDataURL('image/jpeg', 0.92);
+          pdf.addImage(sliceData, 'JPEG', margin, margin, usableW, sliceHmm);
+
+          srcY += sliceH;
+          remainH -= sliceH;
+          page++;
+        }
+
+        pdf.save(fileName);
+
+        // ★ 7단계: 정리
+        wrap.remove();
+        overlay.remove();
+        stat(`✅ ${fileName} 저장 완료!`);
+
+      }).catch(err => {
+        console.error('html2canvas err:', err);
+        wrap.remove();
+        overlay.remove();
+        stat('PDF 생성 실패', true);
+        if(confirm('PDF 저장 실패.\n브라우저 인쇄로 저장할까요?')) window.print();
       });
+
+    }, 800);
     });
+    });
+  }).catch(() => {
+    wrap.remove();
+    overlay.remove();
+    stat('이미지 로딩 실패', true);
   });
 };
 
