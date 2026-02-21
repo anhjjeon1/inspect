@@ -1130,7 +1130,6 @@ A.clearAll=()=>{
 A.pdf=()=>{
   if(!list.length){alert('저장할 내용이 없습니다.');return}
 
-  // 파일명 생성: 사전점검_101동_1201호_20260221.pdf
   const dong = $('fDong').value || '000';
   const ho   = $('fHo').value   || '0000';
   const now  = new Date();
@@ -1139,97 +1138,96 @@ A.pdf=()=>{
     + String(now.getDate()).padStart(2,'0');
   const fileName = `사전점검_${dong}동_${ho}호_${ymd}.pdf`;
 
-  // 리포트 헤더 정보
   const addr = $('fAddr').value || '';
   const apt  = $('fApt').value  || '';
   const info = `${addr} ${apt} ${dong}동 ${ho}호`.trim();
 
-  // 인쇄용 컨테이너 생성
+  stat('📄 PDF 생성 중...');
+  const btnEl = document.querySelector('.ab.pdf');
+  if(btnEl){btnEl.style.pointerEvents='none';btnEl.style.opacity='.5'}
+
+  // ★ 렌더링용 컨테이너 (position:fixed + z-index:-1 = 화면 안보이지만 렌더링됨)
   const wrap = document.createElement('div');
-  wrap.style.cssText = 'width:700px;padding:24px;font-family:Noto Sans KR,sans-serif;color:#1A2332;background:#fff';
+  wrap.id = 'pdf-render';
+  wrap.style.cssText = 'position:fixed;left:0;top:0;width:794px;padding:28px 24px;font-family:Noto Sans KR,sans-serif;color:#1A2332;background:#fff;z-index:-1;overflow:visible';
 
-  // 헤더
-  wrap.innerHTML = `
-    <div style="text-align:center;margin-bottom:20px;padding-bottom:14px;border-bottom:3px solid #0A6B5C">
-      <div style="font-size:22px;font-weight:900;color:#0A6B5C;margin-bottom:6px">🐸 청개구리 사전점검 리포트</div>
-      <div style="font-size:14px;font-weight:700;color:#5A6B7F">${info}</div>
-      <div style="font-size:11px;color:#94A3B8;margin-top:4px">${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} 작성 | 총 ${list.length}건</div>
-    </div>`;
+  let h = `<div style="text-align:center;margin-bottom:22px;padding-bottom:16px;border-bottom:3px solid #0A6B5C">
+    <div style="font-size:20px;font-weight:900;color:#0A6B5C;margin-bottom:6px">🐸 청개구리 사전점검 리포트</div>
+    <div style="font-size:13px;font-weight:700;color:#5A6B7F">${info}</div>
+    <div style="font-size:10px;color:#94A3B8;margin-top:4px">${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')} 작성 | 총 ${list.length}건</div>
+  </div>`;
 
-  // 각 항목 카드
   list.forEach((it, idx) => {
     const isSafe = it.type === '허용범위';
-    const modeTag = it.mode==='pro'
-      ? '<span style="font-size:10px;background:#7C3AED;color:#fff;padding:2px 6px;border-radius:3px">전문가</span>'
-      : '<span style="font-size:10px;background:#E6F7F3;color:#0A6B5C;padding:2px 6px;border-radius:3px">무료</span>';
-    const typeColor = isSafe ? '#059669' : '#E74C3C';
-    const typeBg    = isSafe ? '#ECFDF5' : '#FFF5F5';
+    const mTag = it.mode==='pro'
+      ? '<span style="font-size:9px;background:#7C3AED;color:#fff;padding:2px 6px;border-radius:3px;margin-left:4px">전문가</span>'
+      : '<span style="font-size:9px;background:#E6F7F3;color:#0A6B5C;padding:2px 6px;border-radius:3px;margin-left:4px">무료</span>';
+    const tc = isSafe ? '#059669' : '#E74C3C';
+    const tb = isSafe ? '#ECFDF5' : '#FFF5F5';
 
-    let card = `<div style="border:1px solid #E8ECF1;border-radius:12px;overflow:hidden;margin-bottom:14px;page-break-inside:avoid">
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#F4F6F9;border-bottom:1px solid #E8ECF1">
-        <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:11px;font-weight:900;background:#0A6B5C;color:#fff;width:22px;height:22px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center">${idx+1}</span>
-          <span style="font-size:14px;font-weight:800">${it.room}</span>
-          <span style="font-size:11px;font-weight:700;color:${typeColor};background:${typeBg};padding:2px 7px;border-radius:4px">${it.type}</span>
-          ${modeTag}
-        </div>
+    h += `<div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:12px;page-break-inside:avoid">
+      <div style="padding:8px 12px;background:#F4F6F9;border-bottom:1px solid #eee">
+        <span style="display:inline-block;font-size:10px;font-weight:900;background:#0A6B5C;color:#fff;width:20px;height:20px;border-radius:5px;text-align:center;line-height:20px;margin-right:6px">${idx+1}</span>
+        <span style="font-size:13px;font-weight:800">${it.room}</span>
+        <span style="font-size:10px;font-weight:700;color:${tc};background:${tb};padding:2px 6px;border-radius:4px;margin-left:6px">${it.type||''}</span>
+        ${mTag}
       </div>`;
 
-    // 사진
     const hasW = it.wImg && it.wImg.startsWith('data:');
     const hasC = it.cImg && it.cImg.startsWith('data:');
     if(hasW || hasC){
-      card += `<div style="display:flex;gap:3px;padding:3px;background:#F1F4F8">`;
-      if(hasW) card += `<img src="${it.wImg}" style="flex:1;max-height:160px;object-fit:cover;border-radius:6px">`;
-      if(hasC) card += `<img src="${it.cImg}" style="flex:1;max-height:160px;object-fit:cover;border-radius:6px">`;
-      card += `</div>`;
+      h += `<div style="padding:4px;background:#F1F4F8;display:flex;gap:4px">`;
+      if(hasW) h += `<img src="${it.wImg}" style="width:${hasC?'50%':'100%'};height:150px;object-fit:cover;border-radius:6px;display:block">`;
+      if(hasC) h += `<img src="${it.cImg}" style="width:${hasW?'50%':'100%'};height:150px;object-fit:cover;border-radius:6px;display:block">`;
+      h += `</div>`;
     }
 
-    // 내용
-    card += `<div style="padding:12px 14px">
-      <div style="font-size:12px;font-weight:700;color:#0A6B5C;margin-bottom:4px">${it.work||''} → ${it.sub||''}</div>
-      <div style="font-size:12px;color:#5A6B7F;line-height:1.7;white-space:pre-wrap">${it.detail||''}</div>
+    h += `<div style="padding:10px 12px">
+      <div style="font-size:11px;font-weight:700;color:#0A6B5C;margin-bottom:3px">${it.work||''} → ${it.sub||''}</div>
+      <div style="font-size:11px;color:#5A6B7F;line-height:1.6;white-space:pre-wrap">${(it.detail||'').replace(/</g,'&lt;')}</div>
     </div></div>`;
-
-    wrap.innerHTML += card;
   });
 
-  // 푸터
-  wrap.innerHTML += `
-    <div style="text-align:center;font-size:9px;color:#94A3B8;margin-top:16px;padding-top:10px;border-top:1px solid #E8ECF1;line-height:1.6">
-      ※ 본 리포트는 입주자 사전점검 보조 자료이며 법적 효력이 없습니다.<br>
-      제공: 청개구리샤시 | 대표: 전영웅 | 📞 010-2322-0949<br>
-      ⓒ 2026 Cheong-gaeguri Corp.
-    </div>`;
+  h += `<div style="text-align:center;font-size:8px;color:#94A3B8;margin-top:14px;padding-top:10px;border-top:1px solid #E8ECF1;line-height:1.6">
+    ※ 본 리포트는 입주자 사전점검 보조 자료이며 법적 효력이 없습니다.<br>
+    제공: 청개구리샤시 | 대표: 전영웅 | 📞 010-2322-0949 | ⓒ 2026 Cheong-gaeguri Corp.
+  </div>`;
 
-  // 로딩 표시
-  stat('📄 PDF 생성 중...');
-  const btnEl = document.querySelector('.ab.pdf');
-  if(btnEl) btnEl.style.pointerEvents = 'none';
-
-  // html2pdf 옵션
-  const opt = {
-    margin:       [8, 6, 8, 6],
-    filename:     fileName,
-    image:        { type: 'jpeg', quality: 0.92 },
-    html2canvas:  { scale: 2, useCORS: true, logging: false },
-    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-    pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
-  };
-
+  wrap.innerHTML = h;
   document.body.appendChild(wrap);
 
-  html2pdf().set(opt).from(wrap).save().then(()=>{
-    document.body.removeChild(wrap);
-    stat(`✅ ${fileName} 저장 완료!`);
-    if(btnEl) btnEl.style.pointerEvents = '';
-  }).catch(err=>{
-    console.error('PDF 생성 실패:', err);
-    document.body.removeChild(wrap);
-    stat('PDF 생성 실패. 다시 시도해주세요.', true);
-    if(btnEl) btnEl.style.pointerEvents = '';
-    // 폴백: 브라우저 인쇄
-    if(confirm('PDF 저장에 실패했습니다.\n브라우저 인쇄 기능으로 저장하시겠습니까?')) window.print();
+  // ★ 핵심: 이미지 로딩 완료 대기 → 렌더링 보장 → 캡처
+  const imgs = wrap.querySelectorAll('img');
+  const imgP = Array.from(imgs).map(img =>
+    img.complete ? Promise.resolve() : new Promise(r=>{img.onload=r;img.onerror=r})
+  );
+
+  Promise.all(imgP).then(() => {
+    // requestAnimationFrame 2회 = 브라우저 실제 페인트 보장
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          html2pdf().set({
+            margin:      [6, 5, 6, 5],
+            filename:    fileName,
+            image:       { type:'jpeg', quality:0.88 },
+            html2canvas: { scale:2, useCORS:true, logging:false, width:794, windowWidth:794, scrollY:0, scrollX:0 },
+            jsPDF:       { unit:'mm', format:'a4', orientation:'portrait' },
+            pagebreak:   { mode:['avoid-all','css','legacy'] }
+          }).from(wrap).save().then(()=>{
+            wrap.remove();
+            stat(`✅ ${fileName} 저장 완료!`);
+            if(btnEl){btnEl.style.pointerEvents='';btnEl.style.opacity=''}
+          }).catch(err=>{
+            console.error('PDF err:', err);
+            wrap.remove();
+            stat('PDF 생성 실패', true);
+            if(btnEl){btnEl.style.pointerEvents='';btnEl.style.opacity=''}
+            if(confirm('PDF 저장 실패. 브라우저 인쇄로 저장할까요?')) window.print();
+          });
+        }, 500); // ★ 500ms 안전 대기 (모바일 렌더링 여유)
+      });
+    });
   });
 };
 
