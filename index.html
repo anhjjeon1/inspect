@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>청개구리 사전점검 AI앱 v19.4</title>
+<title>청개구리 사전점검 AI앱 v19.5</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;800;900&family=Outfit:wght@600;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -52,7 +52,85 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx);
 .st-dot{width:7px;height:7px;border-radius:50%;background:var(--pl);animation:pulse 2s infinite}
 .st-dot.err{background:var(--dn);animation:none}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.st-help{display:flex;align-items:center;gap:5px;background:var(--card);border:1px solid var(--bd);padding:7px 12px;border-radius:30px;font-size:.75rem;font-weight:700;color:var(--ts);cursor:pointer}
+
+/* ★ 음성안내 버튼 - 시인성 강화 */
+.st-voice{
+  display:flex;align-items:center;gap:6px;
+  background:linear-gradient(135deg,#FF6B35,#FF8F5E);
+  border:none;padding:8px 14px;border-radius:30px;
+  font-size:.78rem;font-weight:800;color:#fff;
+  cursor:pointer;font-family:inherit;
+  box-shadow:0 2px 10px rgba(255,107,53,.35);
+  transition:all .2s ease;
+  position:relative;overflow:hidden;
+}
+.st-voice:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(255,107,53,.45)}
+.st-voice:active{transform:scale(.96)}
+.st-voice i{font-size:.85rem}
+.st-voice.playing{
+  background:linear-gradient(135deg,#E74C3C,#FF6B6B);
+  animation:voicePulse 1.5s ease-in-out infinite;
+}
+@keyframes voicePulse{
+  0%,100%{box-shadow:0 2px 10px rgba(231,76,60,.35)}
+  50%{box-shadow:0 2px 20px rgba(231,76,60,.6)}
+}
+
+/* ★ 음성안내 컨트롤 바 */
+.voice-ctrl{
+  display:none;align-items:center;gap:6px;
+  padding:6px 10px;margin:0 6px 4px;
+  background:linear-gradient(135deg,#FFF7ED,#FFEDD5);
+  border:1.5px solid #FDBA74;border-radius:12px;
+  animation:slideDown .3s ease-out;
+}
+.voice-ctrl.show{display:flex}
+@keyframes slideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.vc-btn{
+  width:32px;height:32px;border-radius:8px;border:none;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:.82rem;transition:all .15s;
+  font-family:inherit;
+}
+.vc-btn:active{transform:scale(.9)}
+.vc-btn.pause{background:#FEF3C7;color:#D97706}
+.vc-btn.stop{background:#FEE2E2;color:#EF4444}
+.vc-btn.prev{background:#E0F2FE;color:#0284C7}
+.vc-btn.next{background:#E0F2FE;color:#0284C7}
+.vc-progress{
+  flex:1;display:flex;flex-direction:column;gap:2px;
+}
+.vc-step-text{
+  font-size:.7rem;font-weight:700;color:#C05621;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.vc-bar{height:4px;background:#FED7AA;border-radius:2px;overflow:hidden}
+.vc-bar-fill{height:100%;background:linear-gradient(90deg,#F97316,#FB923C);border-radius:2px;transition:width .3s}
+
+/* ★ 음성 하이라이트 효과 */
+.voice-highlight{
+  position:relative;
+  outline:3px solid #FF6B35 !important;
+  outline-offset:4px;
+  border-radius:16px;
+  animation:highlightPulse 1.2s ease-in-out infinite;
+  z-index:10;
+}
+.voice-highlight::before{
+  content:'🔊';
+  position:absolute;top:-14px;right:-6px;
+  font-size:1.1rem;z-index:20;
+  animation:speakerBounce 1s ease-in-out infinite;
+}
+@keyframes highlightPulse{
+  0%,100%{outline-color:rgba(255,107,53,.8);box-shadow:0 0 0 0 rgba(255,107,53,0)}
+  50%{outline-color:rgba(255,107,53,1);box-shadow:0 0 20px rgba(255,107,53,.2)}
+}
+@keyframes speakerBounce{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.2)}
+}
+
 .quota-bar{display:flex;align-items:center;gap:8px;padding:4px 10px 6px;margin:0}
 .quota-pill{display:flex;align-items:center;gap:5px;background:var(--card);padding:5px 10px;border-radius:20px;font-size:.68rem;font-weight:700;color:var(--ts);border:1px solid var(--bl);box-shadow:0 1px 3px rgba(0,0,0,.03);flex:1}
 .quota-pill i{font-size:.62rem}
@@ -191,7 +269,7 @@ textarea.if{resize:none;height:85px;line-height:1.6}
 .sg i{color:var(--pl)}
 @media print{
   .app{max-width:100%;box-shadow:none;padding-bottom:0}
-  .hd,.st,.steps,.sec,.ba,.ft,.cf,.cw,.dc-act,.mode-bar,.mode-bar-out,.sg,.quota-bar{display:none!important}
+  .hd,.st,.steps,.sec,.ba,.ft,.cf,.cw,.dc-act,.mode-bar,.mode-bar-out,.sg,.quota-bar,.voice-ctrl{display:none!important}
   .ls{padding:0;margin:0}
   .lh{border:none;box-shadow:none;margin-bottom:20px;border-bottom:2px solid #333;border-radius:0}
   .dc{break-inside:avoid;box-shadow:none;border:1px solid #ccc;margin-bottom:16px}
@@ -214,7 +292,7 @@ input[type="file"]{display:none}
     </div>
     <div class="hd-tags">
       <span class="tag tag-free">무료</span>
-      <span class="tag tag-v" id="verTag" onclick="A.devTap()">v19.4</span>
+      <span class="tag tag-v" id="verTag" onclick="A.devTap()">v19.5</span>
     </div>
   </div>
 </header>
@@ -248,7 +326,22 @@ input[type="file"]{display:none}
 
 <div class="st">
   <div class="st-chip"><div class="st-dot" id="sDot"></div><span id="sMsg">AI 대기 중</span></div>
-  <button class="st-help" onclick="A.modal('help',1)"><i class="fa-solid fa-circle-question"></i> 도움말</button>
+  <!-- ★ 변경: 도움말 → 음성안내 (시인성 강화 오렌지 버튼) -->
+  <button class="st-voice" id="voiceBtn" onclick="A.voiceGuide()">
+    <i class="fa-solid fa-volume-high"></i> 음성안내
+  </button>
+</div>
+
+<!-- ★ 음성안내 컨트롤 바 (NEW) -->
+<div class="voice-ctrl" id="voiceCtrl">
+  <button class="vc-btn prev" onclick="A.voicePrev()" title="이전 단계"><i class="fa-solid fa-backward-step"></i></button>
+  <button class="vc-btn pause" id="vcPause" onclick="A.voicePause()" title="일시정지"><i class="fa-solid fa-pause"></i></button>
+  <button class="vc-btn next" onclick="A.voiceNext()" title="다음 단계"><i class="fa-solid fa-forward-step"></i></button>
+  <div class="vc-progress">
+    <div class="vc-step-text" id="vcText">준비 중...</div>
+    <div class="vc-bar"><div class="vc-bar-fill" id="vcBar" style="width:0%"></div></div>
+  </div>
+  <button class="vc-btn stop" onclick="A.voiceStop()" title="중지"><i class="fa-solid fa-xmark"></i></button>
 </div>
 
 <div class="quota-bar">
@@ -269,7 +362,8 @@ input[type="file"]{display:none}
   <div class="sn" id="s4">4</div>
 </div>
 
-<div class="sec">
+<!-- ★ 각 섹션에 data-voice-id 추가 (음성안내 대상) -->
+<div class="sec" data-voice-id="step1">
   <div class="sec-t"><span class="n">1</span> 현장 정보</div>
   <div class="ig">
     <div class="il"><i class="fa-solid fa-map-pin"></i> 전체 주소</div>
@@ -313,7 +407,7 @@ input[type="file"]{display:none}
   </div>
 </div>
 
-<div class="sec">
+<div class="sec" data-voice-id="step2">
   <div class="sec-t"><span class="n">2</span> 사진 촬영</div>
   <div class="pg">
     <input type="file" id="inW" accept="image/*">
@@ -331,7 +425,7 @@ input[type="file"]{display:none}
   </div>
 </div>
 
-<div class="sec">
+<div class="sec" data-voice-id="step3">
   <div class="sec-t"><span class="n">3</span> 하자 정보</div>
   <div class="ig">
     <div class="il"><i class="fa-solid fa-pen"></i> 하자 내용 (직접 입력)</div>
@@ -364,16 +458,16 @@ input[type="file"]{display:none}
     </div>
     <textarea class="if" id="fDetail" placeholder="사진 촬영 시 AI가 자동 분석합니다."></textarea>
   </div>
-  <div class="ag">
+  <div class="ag" data-voice-id="step4">
     <div class="ag-t"><i class="fa-solid fa-shield-halved"></i> 필수 확인</div>
     <div class="ag-tx">1. <b>법적 효력 없음:</b> AI 추정치이며 전문가 실사 필요<br>2. <b>책임 제한:</b> 분석 오류에 대해 개발사 법적 책임 없음</div>
     <div class="ck"><input type="checkbox" id="fAgree" onchange="A.togSave()"><label for="fAgree">위 내용을 확인하였으며 동의합니다</label></div>
     <div id="agreeNote" style="font-size:.62rem;color:#059669;margin-top:4px;display:none"><i class="fa-solid fa-circle-check"></i> 동의가 저장되었습니다 (최초 1회)</div>
   </div>
-  <button class="btn-sv off" id="btnSv" onclick="A.save()" disabled><i class="fa-solid fa-check-circle"></i> 리스트에 저장</button>
+  <button class="btn-sv off" id="btnSv" onclick="A.save()" disabled data-voice-id="step5"><i class="fa-solid fa-check-circle"></i> 리스트에 저장</button>
 </div>
 
-<div class="ls">
+<div class="ls" data-voice-id="step6">
   <div class="lh">
     <div class="lh-l">
       <div class="lc" id="lCnt">0</div>
@@ -387,7 +481,7 @@ input[type="file"]{display:none}
   <div id="lBox"></div>
 </div>
 
-<div class="ba">
+<div class="ba" data-voice-id="step7">
   <button class="ab pdf" onclick="A.pdf()"><div class="ab-ic"><i class="fa-solid fa-file-pdf"></i></div><span class="ab-tx">전체 저장</span></button>
   <button class="ab rv" onclick="A.modal('paid',1)"><div class="ab-ic"><i class="fa-solid fa-calendar-check"></i></div><span class="ab-tx">유료 예약</span></button>
   <button class="ab cs" onclick="A.chat()"><div class="ab-ic"><i class="fa-solid fa-comments"></i></div><span class="ab-tx">AI 상담</span></button>
@@ -415,7 +509,7 @@ input[type="file"]{display:none}
 </div>
 </div>
 
-<!-- MODAL: HELP -->
+<!-- MODAL: HELP (기존 도움말 모달 유지 - 음성안내 실패 시 대체) -->
 <div class="mo" id="moHelp">
 <div class="mo-b">
   <div class="mo-h">🐸 앱 사용법</div>
@@ -461,21 +555,10 @@ import{GoogleGenerativeAI}from"@google/generative-ai";
 
 const K=["AIzaSyBoHZXi7YdDmH","V6GMEw49MYi74LILPKeCI"].join('');
 
-/* ============================================
-   🔒 사용량 제한 설정 (v19.4)
-   ============================================
-   Google API Tier 1 RPD = 1,500 제한 맞춤
-   ─────────────────────────────────────────
-   무료 점검 (free): 25인 × 50건 = 1,250 RPD
-   전문가 점검 (pro): 5인 × 50건 =   250 RPD
-   ─────────────────────────────────────────
-   합계:                            1,500 RPD
-   개발자 모드 (dev): 무제한
-   ============================================ */
-const LIMIT_FREE = 50;   // 무료점검: 폰당 1일 최대 50건 AI 분석
-const LIMIT_PRO  = 50;   // 전문가: 폰당 1일 최대 50건 AI 분석
-const MAX_FREE_USERS = 25; // 무료 최대 동시 사용자 수 (표시용)
-const MAX_PRO_USERS  = 5;  // 전문가 최대 동시 사용자 수 (표시용)
+const LIMIT_FREE = 50;
+const LIMIT_PRO  = 50;
+const MAX_FREE_USERS = 25;
+const MAX_PRO_USERS  = 5;
 
 let list=[], wF=null, cF=null, devN=0, devT, mode='free';
 window.A={};
@@ -485,7 +568,201 @@ const WM={"도배공사":{"도배":["들뜸","마감불량","흠집/찍힘","면
 const $=id=>document.getElementById(id);
 
 // ============================================
-// 🔒 사용량 제한 시스템 (핵심)
+// 🔊 음성안내 시스템 (v19.5 NEW)
+// ============================================
+const VOICE_STEPS = [
+  {
+    id: 'step1',
+    title: '1단계: 현장 정보 입력',
+    text: '첫 번째 단계입니다. 현장 정보를 입력해주세요. 전체 주소, 아파트명, 동 번호, 호수를 입력하고, 점검할 위치를 선택해주세요. 위치 선택은 필수입니다. 거실, 주방, 침실, 욕실 등 점검할 방을 선택하세요.'
+  },
+  {
+    id: 'step2',
+    title: '2단계: 사진 촬영',
+    text: '두 번째 단계입니다. 사진을 촬영합니다. 왼쪽의 멀리서 찍기 버튼을 눌러 하자 위치가 보이도록 넓게 촬영하세요. 그 다음 오른쪽의 가까이 찍기 버튼을 눌러 하자 부분을 가까이 촬영하면, AI 분석이 자동으로 시작됩니다.'
+  },
+  {
+    id: 'step3',
+    title: '3단계: 하자 정보 확인',
+    text: '세 번째 단계입니다. 하자 정보를 확인합니다. AI가 자동으로 공종, 세부, 유형을 분류하고 상세 분석을 제공합니다. 하자 내용을 직접 입력하면 AI가 더 정확하게 분석합니다. 공종, 세부, 유형은 직접 수정할 수도 있습니다.'
+  },
+  {
+    id: 'step4',
+    title: '4단계: 동의 체크',
+    text: '네 번째 단계입니다. 필수 확인 사항에 동의해주세요. AI 분석은 참고용이며 법적 효력이 없습니다. 동의에 체크하면 저장 버튼이 활성화됩니다. 동의는 최초 1회만 하면 됩니다.'
+  },
+  {
+    id: 'step5',
+    title: '5단계: 리스트에 저장',
+    text: '다섯 번째 단계입니다. 리스트에 저장 버튼을 눌러 점검 항목을 저장하세요. 저장 후 자동으로 입력창이 초기화되어 다음 하자를 바로 입력할 수 있습니다. 이 과정을 반복하여 여러 하자를 등록하세요.'
+  },
+  {
+    id: 'step6',
+    title: '6단계: 점검 리스트 확인',
+    text: '여섯 번째 단계입니다. 점검 리스트에서 저장된 항목을 확인할 수 있습니다. 수정 버튼으로 내용을 고치거나, 삭제 버튼으로 항목을 제거할 수 있습니다. 전체 삭제도 가능합니다.'
+  },
+  {
+    id: 'step7',
+    title: '7단계: 최종 저장 및 서비스',
+    text: '마지막 단계입니다. 전체 저장 버튼을 눌러 PDF 파일로 저장하세요. 유료 예약 버튼으로 전문가 현장 점검을 신청할 수 있고, AI 상담 버튼으로 궁금한 점을 물어볼 수 있습니다. 이상으로 앱 사용 안내를 마칩니다. 감사합니다!'
+  }
+];
+
+let voiceState = {
+  isPlaying: false,
+  isPaused: false,
+  currentStep: 0,
+  utterance: null,
+  supported: ('speechSynthesis' in window)
+};
+
+A.voiceGuide = () => {
+  if (!voiceState.supported) {
+    alert('이 브라우저에서는 음성안내를 지원하지 않습니다.\n텍스트 도움말을 표시합니다.');
+    A.modal('help', 1);
+    return;
+  }
+
+  if (voiceState.isPlaying) {
+    A.voiceStop();
+    return;
+  }
+
+  voiceState.currentStep = 0;
+  voiceState.isPlaying = true;
+  voiceState.isPaused = false;
+
+  $('voiceBtn').classList.add('playing');
+  $('voiceBtn').innerHTML = '<i class="fa-solid fa-volume-high"></i> 안내 중...';
+  $('voiceCtrl').classList.add('show');
+
+  speakStep(0);
+};
+
+A.voicePause = () => {
+  if (!voiceState.isPlaying) return;
+  const synth = window.speechSynthesis;
+  const btn = $('vcPause');
+
+  if (voiceState.isPaused) {
+    synth.resume();
+    voiceState.isPaused = false;
+    btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+    btn.title = '일시정지';
+  } else {
+    synth.pause();
+    voiceState.isPaused = true;
+    btn.innerHTML = '<i class="fa-solid fa-play"></i>';
+    btn.title = '재생';
+  }
+};
+
+A.voicePrev = () => {
+  if (voiceState.currentStep > 0) {
+    window.speechSynthesis.cancel();
+    voiceState.isPaused = false;
+    $('vcPause').innerHTML = '<i class="fa-solid fa-pause"></i>';
+    speakStep(voiceState.currentStep - 1);
+  }
+};
+
+A.voiceNext = () => {
+  if (voiceState.currentStep < VOICE_STEPS.length - 1) {
+    window.speechSynthesis.cancel();
+    voiceState.isPaused = false;
+    $('vcPause').innerHTML = '<i class="fa-solid fa-pause"></i>';
+    speakStep(voiceState.currentStep + 1);
+  }
+};
+
+A.voiceStop = () => {
+  window.speechSynthesis.cancel();
+  voiceState.isPlaying = false;
+  voiceState.isPaused = false;
+  voiceState.currentStep = 0;
+
+  $('voiceBtn').classList.remove('playing');
+  $('voiceBtn').innerHTML = '<i class="fa-solid fa-volume-high"></i> 음성안내';
+  $('voiceCtrl').classList.remove('show');
+  $('vcPause').innerHTML = '<i class="fa-solid fa-pause"></i>';
+
+  // 하이라이트 제거
+  document.querySelectorAll('.voice-highlight').forEach(el => el.classList.remove('voice-highlight'));
+};
+
+function speakStep(idx) {
+  if (idx < 0 || idx >= VOICE_STEPS.length) {
+    A.voiceStop();
+    return;
+  }
+
+  voiceState.currentStep = idx;
+  const step = VOICE_STEPS[idx];
+  const pct = ((idx + 1) / VOICE_STEPS.length * 100).toFixed(0);
+
+  // UI 업데이트
+  $('vcText').textContent = step.title;
+  $('vcBar').style.width = pct + '%';
+
+  // 하이라이트 처리
+  document.querySelectorAll('.voice-highlight').forEach(el => el.classList.remove('voice-highlight'));
+  const target = document.querySelector(`[data-voice-id="${step.id}"]`);
+  if (target) {
+    target.classList.add('voice-highlight');
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // 음성 출력
+  const synth = window.speechSynthesis;
+  synth.cancel();
+
+  const utter = new SpeechSynthesisUtterance(step.text);
+  utter.lang = 'ko-KR';
+  utter.rate = 0.95;
+  utter.pitch = 1.05;
+  utter.volume = 1;
+
+  // 한국어 음성 찾기
+  const voices = synth.getVoices();
+  const koVoice = voices.find(v => v.lang.startsWith('ko')) || voices[0];
+  if (koVoice) utter.voice = koVoice;
+
+  utter.onend = () => {
+    if (voiceState.isPlaying && !voiceState.isPaused) {
+      // 다음 단계로 자동 진행 (0.8초 대기)
+      if (idx < VOICE_STEPS.length - 1) {
+        setTimeout(() => {
+          if (voiceState.isPlaying) speakStep(idx + 1);
+        }, 800);
+      } else {
+        // 마지막 단계 완료
+        setTimeout(() => A.voiceStop(), 1000);
+      }
+    }
+  };
+
+  utter.onerror = (e) => {
+    console.warn('TTS Error:', e);
+    if (e.error !== 'canceled') {
+      A.voiceStop();
+      alert('음성안내 중 오류가 발생했습니다.\n텍스트 도움말을 표시합니다.');
+      A.modal('help', 1);
+    }
+  };
+
+  voiceState.utterance = utter;
+  synth.speak(utter);
+}
+
+// 음성 목록 미리 로드 (일부 브라우저에서 필요)
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+}
+
+
+// ============================================
+// 🔒 사용량 제한 시스템
 // ============================================
 function getQuota(){
   const today = new Date().toDateString();
@@ -517,21 +794,17 @@ function useQuota(){
 
 function chkLim(){
   if(ls('is_dev') === 'true') return true;
-
   const remaining = getRemaining();
   const limit = getLimit();
   const modeStr = mode === 'pro' ? '전문가' : '무료';
-
   if(remaining <= 0){
     alert(`⚠️ ${modeStr} 점검 일일 한도(${limit}건) 초과!\n\n내일 자정(00:00)에 초기화됩니다.\n추가 점검이 필요하시면 010-2322-0949로 연락주세요.`);
     return false;
   }
-
   if(remaining <= 5){
     const go = confirm(`⚡ AI 분석 잔여 ${remaining}건 남았습니다.\n계속하시겠습니까?`);
     if(!go) return false;
   }
-
   return true;
 }
 
@@ -541,11 +814,9 @@ function updateQuotaUI(){
   const used = q.count || 0;
   const remaining = Math.max(0, limit - used);
   const pct = (remaining / limit) * 100;
-
   const numEl = $('qNum');
   const barEl = $('qBar');
   const labelEl = $('qLabel');
-
   if(ls('is_dev') === 'true'){
     labelEl.textContent = '🛠️ 개발자 모드 (무제한)';
     numEl.textContent = `${used}건 사용`;
@@ -555,12 +826,9 @@ function updateQuotaUI(){
     updateModeBarLabels();
     return;
   }
-
   const modeStr = mode === 'pro' ? '전문가' : '무료';
   labelEl.textContent = `${modeStr} AI 분석`;
-
   numEl.textContent = `${remaining}/${limit}건`;
-
   if(remaining <= 0){
     numEl.className = 'q-num out';
     barEl.style.background = 'var(--dn)';
@@ -572,19 +840,15 @@ function updateQuotaUI(){
     barEl.style.background = mode === 'pro' ? 'var(--pu)' : 'var(--pl)';
   }
   barEl.style.width = pct + '%';
-
   updateModeBarLabels();
 }
 
 function updateModeBarLabels(){
   const isDev = ls('is_dev') === 'true';
   const today = new Date().toDateString();
-
-  // 무료 점검
   const freeQ = JSON.parse(ls('frog_use_free') || '{}');
   const freeUsed = (freeQ.date === today) ? (freeQ.count || 0) : 0;
   const freeRem = isDev ? 99999 : Math.max(0, LIMIT_FREE - freeUsed);
-
   if(isDev){
     $('mcFreeLb').innerHTML = `무료점검 <span style="font-size:.62rem;opacity:.85;font-weight:900;color:var(--pu)">(∞건)</span>`;
   } else if(freeRem <= 0){
@@ -593,12 +857,9 @@ function updateModeBarLabels(){
     const fColor = freeRem <= 10 ? 'color:var(--wr)' : '';
     $('mcFreeLb').innerHTML = `무료점검 <span style="font-size:.62rem;opacity:.85;font-weight:900;${fColor}">(${freeRem}건)</span>`;
   }
-
-  // 전문가 점검
   const proQ = JSON.parse(ls('frog_use_pro') || '{}');
   const proUsed = (proQ.date === today) ? (proQ.count || 0) : 0;
   const proRem = isDev ? 99999 : Math.max(0, LIMIT_PRO - proUsed);
-
   if(isDev){
     $('mcProLb').innerHTML = `전문가점검 <span style="font-size:.62rem;opacity:.85;font-weight:900;color:var(--pu)">(∞건)</span>`;
   } else if(proRem <= 0){
@@ -735,7 +996,7 @@ function draftDebounce(){clearTimeout(_draftTimer);_draftTimer=setTimeout(saveDr
 function initDraftListeners(){
   ['fAddr','fApt','fDong','fHo','fUser','fDetail'].forEach(id=>$(id).addEventListener('input',draftDebounce));
   ['fWork','fSub','fType'].forEach(id=>$(id).addEventListener('change',draftDebounce));
-  window.addEventListener('beforeunload',saveDraft);
+  window.addEventListener('beforeunload',()=>{saveDraft();if(voiceState.isPlaying)A.voiceStop()});
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')saveDraft()});
   window.addEventListener('blur',saveDraft);
   window.addEventListener('pagehide',saveDraft);
@@ -861,7 +1122,6 @@ function show(id,src){const p=$(id);p.src=src;p.style.display='block'}
 
 async function toPart(f){return new Promise(r=>{const x=new FileReader();x.onloadend=()=>r({inlineData:{data:x.result.split(',')[1],mimeType:f.type}});x.readAsDataURL(f)})}
 
-// AI (v19.4 - 429 에러 처리 추가)
 async function runAI(){
   const det=$('fDetail'), ui=$('fUser').value;
   det.value='🔍 AI 정밀 분석 중...';
@@ -932,7 +1192,6 @@ ${workList}
   }catch(err){
     console.error(err);
     const errMsg = err?.message || err?.toString() || '';
-    // ★ Tier 1 RPD 1500 초과 시 429 에러 처리
     if(errMsg.includes('429') || errMsg.includes('quota') || errMsg.includes('RESOURCE_EXHAUSTED')){
       stat('⚠️ 오늘 전체 사용량 초과', true);
       det.value='⚠️ 오늘 전체 AI 분석 한도(1,500건/일)에 도달했습니다.\n\n내일 자정(00:00) 이후 다시 이용해주세요.\n긴급 점검이 필요하시면 010-2322-0949로 연락주세요.';
@@ -1216,37 +1475,6 @@ A.ask=t=>{
   b.innerHTML+=`<div class="bb us">${q}</div>`;
   setTimeout(()=>{b.innerHTML+=`<div class="bb bt">${a}</div>`;b.scrollTop=b.scrollHeight},300);
 };
-
-/* ============================================
-   🔧 Console 관리 명령어 (개발자용) v19.4
-   ============================================
-   ▶ 사용량 확인:
-   JSON.parse(localStorage.getItem('frog_use_free'))
-   JSON.parse(localStorage.getItem('frog_use_pro'))
-
-   ▶ 무료 사용량 초기화:
-   localStorage.setItem('frog_use_free', JSON.stringify({date: new Date().toDateString(), count: 0}))
-
-   ▶ 전문가 사용량 초기화:
-   localStorage.setItem('frog_use_pro', JSON.stringify({date: new Date().toDateString(), count: 0}))
-
-   ▶ 개발자 모드 ON/OFF:
-   localStorage.setItem('is_dev', 'true')
-   localStorage.setItem('is_dev', 'false')
-
-   ▶ 전체 현황:
-   console.table({
-     무료_사용량: JSON.parse(localStorage.getItem('frog_use_free') || '{}'),
-     전문가_사용량: JSON.parse(localStorage.getItem('frog_use_pro') || '{}'),
-     개발자모드: localStorage.getItem('is_dev'),
-     저장항목: JSON.parse(localStorage.getItem('frog_list') || '[]').length
-   })
-
-   ▶ v19.4 제한 설정:
-   무료: 25인 × 50건/인 = 1,250 RPD
-   전문가: 5인 × 50건/인 = 250 RPD
-   합계: 1,500 RPD (Google Tier 1 맞춤)
-   ============================================ */
 </script>
 </body>
 </html>
