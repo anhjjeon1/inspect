@@ -3,10 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>청개구리 사전점검 AI앱 v19.5</title>
+<meta name="theme-color" content="#0A6B5C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>청개구리 사전점검 AI앱 v20.0</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;800;900&family=Outfit:wght@600;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
+/* ============================================================
+   청개구리 사전점검 AI v20.0
+   유료화 구조: 무료체험(3회) / 1일이용권(₩10,000·50회)
+   결제: 네이버 스마트스토어 → 인증코드 → GAS 검증
+   50% 공익기부 모델 적용
+   ============================================================ */
 :root{
   --p:#0A6B5C;--pl:#12B89A;--pg:rgba(18,184,154,.12);
   --ac:#FF6B35;--bg:#F4F6F9;--card:#FFF;
@@ -14,46 +23,147 @@
   --bd:#E8ECF1;--bl:#F1F4F8;
   --dn:#E74C3C;--dnb:#FFF5F5;--wr:#F39C12;--wrb:#FFFBE6;
   --pu:#7C3AED;--pub:#F5F0FF;
+  --nv:#03C75A;--nvb:#E8FAF0; /* 네이버 그린 */
+  --gold:#F59E0B;--goldb:#FFFBEB;
   --r:14px;--tr:all .2s ease;
+  --safe-bottom:env(safe-area-inset-bottom, 0px);
 }
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx);line-height:1.6;-webkit-font-smoothing:antialiased;display:flex;justify-content:center;min-height:100vh}
-.app{width:100%;max-width:480px;min-height:100vh;background:#FAFBFC;position:relative;padding-bottom:90px}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Noto Sans KR',sans-serif;
+  background:var(--bg);color:var(--tx);
+  line-height:1.6;-webkit-font-smoothing:antialiased;
+  display:flex;justify-content:center;min-height:100vh;
+  overscroll-behavior:none;
+}
+.app{
+  width:100%;max-width:480px;min-height:100vh;
+  background:#FAFBFC;position:relative;
+  padding-bottom:calc(96px + var(--safe-bottom));
+}
+
+/* ── HEADER ── */
 .hd{background:linear-gradient(135deg,#0A2E23 0%,#0A6B5C 35%,#12B89A 70%,#0A6B5C 100%);padding:0;position:relative;overflow:hidden}
 .hd::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 30% 40%,rgba(18,184,154,.25) 0%,transparent 50%),radial-gradient(circle at 70% 60%,rgba(255,107,53,.1) 0%,transparent 40%);animation:hdBg 8s ease-in-out infinite alternate}
 @keyframes hdBg{0%{transform:translate(0,0)}100%{transform:translate(-3%,3%)}}
 .hd::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:14px;background:#FAFBFC;border-radius:14px 14px 0 0}
-.hd-top{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 18px;position:relative;z-index:2}
-.hd-in{display:flex;align-items:center;gap:10px}
-.hd-logo{width:42px;height:42px;border-radius:11px;background:rgba(255,255,255,.95);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 12px rgba(0,0,0,.15);flex-shrink:0;overflow:hidden;backdrop-filter:blur(10px)}
+/* ── 헤더 좌우 수평 배치 (높이 최소화) ── */
+.hd-top{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px 16px;position:relative;z-index:2;
+  gap:10px;
+}
+.hd-in{
+  display:flex;align-items:center;gap:10px;
+  flex:1;
+}
+.hd-logo{
+  width:44px;height:44px;border-radius:11px;
+  background:rgba(255,255,255,.95);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 3px 12px rgba(0,0,0,.18);
+  flex-shrink:0;overflow:hidden;backdrop-filter:blur(10px);
+}
 .hd-logo img{width:100%;height:100%;object-fit:cover}
-.hd-title{color:#fff;font-family:'Outfit',sans-serif;font-size:1.05rem;font-weight:800;letter-spacing:-.02em;text-shadow:0 1px 8px rgba(0,0,0,.15)}
-.hd-tags{display:flex;gap:5px;flex-shrink:0}
+.hd-text{display:flex;flex-direction:column;gap:1px}
+.hd-title{
+  color:#fff;font-family:'Outfit',sans-serif;
+  font-size:1.08rem;font-weight:900;
+  letter-spacing:-.02em;text-shadow:0 1px 8px rgba(0,0,0,.2);
+  white-space:nowrap;
+}
+.hd-sub{color:rgba(255,255,255,.72);font-size:.6rem;font-weight:600}
+.hd-tags{
+  display:flex;gap:5px;align-items:center;flex-shrink:0;
+}
 .tag{font-size:.6rem;padding:2px 7px;border-radius:5px;font-weight:700}
 .tag-free{background:var(--ac);color:#fff}
 .tag-v{background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.15);cursor:pointer;backdrop-filter:blur(6px)}
 .tag-v.dev{background:var(--pu);box-shadow:0 0 10px rgba(124,58,237,.5)}
-.mode-bar-out{display:flex;gap:3px;padding:5px 3px;background:var(--card);border-bottom:1px solid var(--bl)}
-.mode-ck{display:flex;align-items:center;gap:4px;padding:7px 5px;border-radius:10px;cursor:pointer;transition:var(--tr);border:1.5px solid var(--bd);background:var(--bg);justify-content:center;white-space:nowrap}
-.mode-ck.left{flex:1.5}
-.mode-ck.right{flex:0.6}
-.mode-ck:hover{border-color:var(--pl)}
-.mode-ck.active{background:var(--pg);border-color:var(--pl);box-shadow:0 0 8px rgba(18,184,154,.1)}
-.mode-ck.active-pro{background:var(--pub);border-color:var(--pu);box-shadow:0 0 8px rgba(124,58,237,.1)}
-.mode-ck input[type="checkbox"]{width:14px;height:14px;accent-color:var(--p);cursor:pointer;flex-shrink:0}
-.mode-ck .mc-lb{font-size:.73rem;font-weight:700;color:var(--ts);white-space:nowrap}
-.mode-ck .mc-ic{font-size:.68rem;color:var(--th);margin-right:1px}
-.mode-ck.active .mc-lb{color:var(--p)}
-.mode-ck.active .mc-ic{color:var(--p)}
-.mode-ck.active-pro .mc-lb{color:var(--pu)}
-.mode-ck.active-pro .mc-ic{color:var(--pu)}
+
+/* ── 기부 배너 ── */
+.donate-bar{
+  background:linear-gradient(90deg,#0A2E23,#0A6B5C);
+  padding:6px 14px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  position:relative;z-index:1;
+}
+.donate-bar .db-icon{font-size:.9rem}
+.donate-bar .db-text{
+  font-size:.68rem;font-weight:700;color:rgba(255,255,255,.9);
+  display:flex;align-items:center;gap:5px;
+}
+.donate-bar .db-badge{
+  background:var(--gold);color:#1A2332;
+  font-size:.6rem;font-weight:900;
+  padding:1px 6px;border-radius:4px;
+}
+
+/* ── 이용권 상태 바 ── */
+.pass-bar{
+  display:flex;align-items:center;gap:6px;
+  padding:8px 10px;
+  background:var(--card);
+  border-bottom:1px solid var(--bl);
+}
+.pass-status{
+  flex:1;display:flex;align-items:center;gap:7px;
+  padding:8px 12px;border-radius:10px;
+  border:1.5px solid var(--bd);background:var(--bg);
+  transition:var(--tr);
+}
+.pass-status.free{border-color:var(--bd)}
+.pass-status.paid{
+  border-color:var(--nv);background:var(--nvb);
+}
+.pass-status.pro{
+  border-color:var(--pu);background:var(--pub);
+}
+.pass-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.pass-status.free .pass-dot{background:var(--th)}
+.pass-status.paid .pass-dot{background:var(--nv);box-shadow:0 0 6px rgba(3,199,90,.5);animation:pulse 2s infinite}
+.pass-status.pro .pass-dot{background:var(--pu);box-shadow:0 0 6px rgba(124,58,237,.5);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.pass-label{font-size:.75rem;font-weight:800;flex:1}
+.pass-status.free .pass-label{color:var(--ts)}
+.pass-status.paid .pass-label{color:#059669}
+.pass-status.pro .pass-label{color:var(--pu)}
+.pass-count{font-size:.68rem;font-weight:900;font-family:'Outfit';color:var(--th)}
+.pass-count.ok{color:var(--p)}
+.pass-count.low{color:var(--wr)}
+.pass-count.out{color:var(--dn)}
+.pass-count.paid-ok{color:var(--nv)}
+
+/* 구매 버튼 */
+.btn-buy{
+  display:flex;align-items:center;gap:5px;
+  padding:9px 14px;border-radius:10px;border:none;
+  background:linear-gradient(135deg,var(--nv),#02A54E);
+  color:#fff;font-size:.75rem;font-weight:800;
+  cursor:pointer;font-family:inherit;white-space:nowrap;
+  box-shadow:0 3px 12px rgba(3,199,90,.35);
+  transition:var(--tr);flex-shrink:0;
+}
+.btn-buy:active{transform:scale(.95)}
+.btn-buy i{font-size:.8rem}
+
+/* 이미 구매한 경우 코드 재입력 버튼 */
+.btn-code{
+  display:flex;align-items:center;gap:5px;
+  padding:9px 12px;border-radius:10px;
+  border:1.5px solid var(--bd);background:var(--bg);
+  color:var(--ts);font-size:.72rem;font-weight:700;
+  cursor:pointer;font-family:inherit;white-space:nowrap;
+  transition:var(--tr);flex-shrink:0;
+}
+.btn-code:active{background:var(--bl)}
+
+/* ── STATUS & QUOTA ── */
 .st{display:flex;align-items:center;justify-content:space-between;padding:8px 10px}
 .st-chip{display:flex;align-items:center;gap:7px;background:var(--card);padding:7px 12px;border-radius:30px;font-size:.75rem;font-weight:600;color:var(--ts);box-shadow:0 1px 3px rgba(0,0,0,.04);border:1px solid var(--bl)}
 .st-dot{width:7px;height:7px;border-radius:50%;background:var(--pl);animation:pulse 2s infinite}
 .st-dot.err{background:var(--dn);animation:none}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-
-/* ★ 음성안내 버튼 - 시인성 강화 */
 .st-voice{
   display:flex;align-items:center;gap:6px;
   background:linear-gradient(135deg,#FF6B35,#FF8F5E);
@@ -62,105 +172,69 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx);
   cursor:pointer;font-family:inherit;
   box-shadow:0 2px 10px rgba(255,107,53,.35);
   transition:all .2s ease;
-  position:relative;overflow:hidden;
 }
-.st-voice:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(255,107,53,.45)}
 .st-voice:active{transform:scale(.96)}
-.st-voice i{font-size:.85rem}
-.st-voice.playing{
-  background:linear-gradient(135deg,#E74C3C,#FF6B6B);
-  animation:voicePulse 1.5s ease-in-out infinite;
-}
-@keyframes voicePulse{
-  0%,100%{box-shadow:0 2px 10px rgba(231,76,60,.35)}
-  50%{box-shadow:0 2px 20px rgba(231,76,60,.6)}
-}
+.st-voice.playing{background:linear-gradient(135deg,#E74C3C,#FF6B6B);animation:voicePulse 1.5s ease-in-out infinite}
+@keyframes voicePulse{0%,100%{box-shadow:0 2px 10px rgba(231,76,60,.35)}50%{box-shadow:0 2px 20px rgba(231,76,60,.6)}}
 
-/* ★ 음성안내 컨트롤 바 */
-.voice-ctrl{
-  display:none;align-items:center;gap:6px;
-  padding:6px 10px;margin:0 6px 4px;
-  background:linear-gradient(135deg,#FFF7ED,#FFEDD5);
-  border:1.5px solid #FDBA74;border-radius:12px;
-  animation:slideDown .3s ease-out;
-}
+/* 음성 컨트롤 바 */
+.voice-ctrl{display:none;align-items:center;gap:6px;padding:6px 10px;margin:0 6px 4px;background:linear-gradient(135deg,#FFF7ED,#FFEDD5);border:1.5px solid #FDBA74;border-radius:12px;animation:slideDown .3s ease-out}
 .voice-ctrl.show{display:flex}
 @keyframes slideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
-.vc-btn{
-  width:32px;height:32px;border-radius:8px;border:none;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;font-size:.82rem;transition:all .15s;
-  font-family:inherit;
-}
+.vc-btn{width:32px;height:32px;border-radius:8px;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.82rem;transition:all .15s;font-family:inherit}
 .vc-btn:active{transform:scale(.9)}
 .vc-btn.pause{background:#FEF3C7;color:#D97706}
 .vc-btn.stop{background:#FEE2E2;color:#EF4444}
 .vc-btn.prev{background:#E0F2FE;color:#0284C7}
 .vc-btn.next{background:#E0F2FE;color:#0284C7}
-.vc-progress{
-  flex:1;display:flex;flex-direction:column;gap:2px;
-}
-.vc-step-text{
-  font-size:.7rem;font-weight:700;color:#C05621;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
+.vc-progress{flex:1;display:flex;flex-direction:column;gap:2px}
+.vc-step-text{font-size:.7rem;font-weight:700;color:#C05621;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .vc-bar{height:4px;background:#FED7AA;border-radius:2px;overflow:hidden}
 .vc-bar-fill{height:100%;background:linear-gradient(90deg,#F97316,#FB923C);border-radius:2px;transition:width .3s}
 
-/* ★ 음성 하이라이트 효과 */
-.voice-highlight{
-  position:relative;
-  outline:3px solid #FF6B35 !important;
-  outline-offset:4px;
-  border-radius:16px;
-  animation:highlightPulse 1.2s ease-in-out infinite;
-  z-index:10;
-}
-.voice-highlight::before{
-  content:'🔊';
-  position:absolute;top:-14px;right:-6px;
-  font-size:1.1rem;z-index:20;
-  animation:speakerBounce 1s ease-in-out infinite;
-}
-@keyframes highlightPulse{
-  0%,100%{outline-color:rgba(255,107,53,.8);box-shadow:0 0 0 0 rgba(255,107,53,0)}
-  50%{outline-color:rgba(255,107,53,1);box-shadow:0 0 20px rgba(255,107,53,.2)}
-}
-@keyframes speakerBounce{
-  0%,100%{transform:scale(1)}
-  50%{transform:scale(1.2)}
-}
+/* 음성 하이라이트 */
+.voice-highlight{position:relative;outline:3px solid #FF6B35 !important;outline-offset:4px;border-radius:16px;animation:highlightPulse 1.2s ease-in-out infinite;z-index:10}
+.voice-highlight::before{content:'🔊';position:absolute;top:-14px;right:-6px;font-size:1.1rem;z-index:20;animation:speakerBounce 1s ease-in-out infinite}
+@keyframes highlightPulse{0%,100%{outline-color:rgba(255,107,53,.8);box-shadow:0 0 0 0 rgba(255,107,53,0)}50%{outline-color:rgba(255,107,53,1);box-shadow:0 0 20px rgba(255,107,53,.2)}}
+@keyframes speakerBounce{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
 
 .quota-bar{display:flex;align-items:center;gap:8px;padding:4px 10px 6px;margin:0}
 .quota-pill{display:flex;align-items:center;gap:5px;background:var(--card);padding:5px 10px;border-radius:20px;font-size:.68rem;font-weight:700;color:var(--ts);border:1px solid var(--bl);box-shadow:0 1px 3px rgba(0,0,0,.03);flex:1}
 .quota-pill i{font-size:.62rem}
-.quota-pill .q-num{font-weight:900;font-family:'Outfit',sans-serif;margin-left:auto}
+.quota-pill .q-num{font-weight:900;font-family:'Outfit';margin-left:auto}
 .quota-pill .q-num.low{color:var(--wr)}
 .quota-pill .q-num.out{color:var(--dn)}
 .quota-pill .q-num.ok{color:var(--p)}
+.quota-pill .q-num.nv{color:var(--nv)}
 .quota-prog{height:3px;background:var(--bl);border-radius:2px;flex:1;max-width:50px;overflow:hidden}
 .quota-prog-fill{height:100%;border-radius:2px;transition:width .3s}
+
+/* ── STEPS ── */
 .steps{display:flex;align-items:center;justify-content:center;gap:0;padding:4px 10px 6px}
 .sn{width:28px;height:28px;border-radius:50%;font-size:.72rem;font-weight:800;display:flex;align-items:center;justify-content:center;background:var(--bl);color:var(--th);transition:var(--tr);flex-shrink:0}
 .sn.on{background:var(--p);color:#fff;box-shadow:0 0 0 3px var(--pg)}
 .sn.ok{background:var(--pl);color:#fff}
 .sl{height:2px;width:32px;background:var(--bl);transition:var(--tr)}
 .sl.ok{background:var(--pl)}
+
+/* ── SECTIONS ── */
 .sec{background:var(--card);margin:0 6px 6px;border-radius:16px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.05);border:1px solid var(--bl)}
 .sec-t{font-size:.8rem;font-weight:800;color:var(--ts);margin-bottom:10px;display:flex;align-items:center;gap:7px}
 .sec-t .n{background:var(--p);color:#fff;width:20px;height:20px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:900}
 .ig{margin-bottom:9px}
 .ig:last-child{margin-bottom:0}
 .il{font-size:.72rem;font-weight:700;color:var(--th);margin-bottom:5px;display:flex;align-items:center;gap:4px}
-.if{width:100%;padding:9px 11px;font-size:.85rem;border:1.5px solid var(--bd);border-radius:10px;background:#FAFBFC;color:var(--tx);font-family:inherit;transition:var(--tr);outline:none}
+.if{width:100%;padding:10px 12px;font-size:.85rem;border:1.5px solid var(--bd);border-radius:10px;background:#FAFBFC;color:var(--tx);font-family:inherit;transition:var(--tr);outline:none;-webkit-appearance:none}
 .if:focus{border-color:var(--pl);background:#fff;box-shadow:0 0 0 3px var(--pg)}
 .if::placeholder{color:var(--th)}
 select.if{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394A3B8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;padding-right:30px}
 textarea.if{resize:none;height:85px;line-height:1.6}
 .row{display:flex;gap:9px}
 .row>*{flex:1}
+
+/* 커스텀 드롭다운 */
 .cd-wrap{width:100%}
-.cd-btn{width:100%;padding:9px 11px;font-size:.85rem;border:1.5px solid var(--bd);border-radius:10px;background:#FAFBFC;color:var(--tx);font-family:inherit;transition:var(--tr);outline:none;cursor:pointer;text-align:left;display:flex;align-items:center;justify-content:space-between}
+.cd-btn{width:100%;padding:10px 12px;font-size:.85rem;border:1.5px solid var(--bd);border-radius:10px;background:#FAFBFC;color:var(--tx);font-family:inherit;transition:var(--tr);outline:none;cursor:pointer;text-align:left;display:flex;align-items:center;justify-content:space-between;min-height:44px}
 .cd-btn:focus,.cd-btn.open{border-color:var(--pl);background:#fff;box-shadow:0 0 0 3px var(--pg)}
 .cd-btn .cd-arrow{font-size:.6rem;color:var(--th);transition:transform .2s}
 .cd-btn.open .cd-arrow{transform:rotate(180deg)}
@@ -170,7 +244,7 @@ textarea.if{resize:none;height:85px;line-height:1.6}
 .cd-grid{display:none;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;animation:cdOpen .2s ease-out}
 .cd-grid.show{display:grid}
 @keyframes cdOpen{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
-.cd-item{display:flex;align-items:center;gap:6px;padding:9px 10px;border:1.5px solid var(--bd);border-radius:10px;background:#FAFBFC;cursor:pointer;transition:all .15s;user-select:none;-webkit-tap-highlight-color:transparent}
+.cd-item{display:flex;align-items:center;gap:6px;padding:10px;border:1.5px solid var(--bd);border-radius:10px;background:#FAFBFC;cursor:pointer;transition:all .15s;user-select:none;min-height:44px}
 .cd-item:active{transform:scale(.97)}
 .cd-item .cd-radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--bd);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
 .cd-item .cd-radio::after{content:'';width:9px;height:9px;border-radius:50%;background:transparent;transition:all .15s}
@@ -179,6 +253,8 @@ textarea.if{resize:none;height:85px;line-height:1.6}
 .cd-item.selected .cd-radio::after{background:var(--p)}
 .cd-item.selected .cd-label{color:var(--p);font-weight:800}
 .cd-item .cd-label{font-size:.88rem;font-weight:600;color:var(--ts)}
+
+/* 사진 */
 .pg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .pc{aspect-ratio:3/4;border-radius:var(--r);position:relative;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;overflow:hidden;transition:var(--tr)}
 .pc:active{transform:scale(.98)}
@@ -191,6 +267,8 @@ textarea.if{resize:none;height:85px;line-height:1.6}
 .pc .hn{font-size:.65rem;color:var(--th)}
 .pp{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;z-index:10;background:#fff;border-radius:var(--r)}
 .rb{position:absolute;bottom:7px;right:7px;background:rgba(0,0,0,.6);color:#fff;font-size:.68rem;font-weight:700;padding:3px 9px;border-radius:16px;z-index:15;display:none;backdrop-filter:blur(4px)}
+
+/* AI 배지 */
 .ai-b{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,var(--p),var(--pl));color:#fff;padding:2px 9px;border-radius:5px;font-size:.68rem;font-weight:700}
 .af{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:12px}
 .af-l{font-size:.66rem;font-weight:700;color:var(--th);margin-bottom:3px}
@@ -200,10 +278,16 @@ textarea.if{resize:none;height:85px;line-height:1.6}
 .ck{display:flex;align-items:center;gap:9px;cursor:pointer}
 .ck input{width:18px;height:18px;accent-color:var(--p);cursor:pointer;flex-shrink:0}
 .ck label{font-size:.8rem;font-weight:700;cursor:pointer}
-.btn-sv{width:100%;padding:11px;margin-top:10px;border:none;border-radius:var(--r);font-size:.88rem;font-weight:800;cursor:pointer;transition:var(--tr);display:flex;align-items:center;justify-content:center;gap:7px;font-family:inherit}
+
+/* 저장 버튼 */
+.btn-sv{width:100%;padding:13px;margin-top:10px;border:none;border-radius:var(--r);font-size:.9rem;font-weight:800;cursor:pointer;transition:var(--tr);display:flex;align-items:center;justify-content:center;gap:7px;font-family:inherit;min-height:50px}
 .btn-sv.ok{background:var(--p);color:#fff;box-shadow:0 4px 14px rgba(10,107,92,.3)}
 .btn-sv.ok:active{transform:translateY(2px);box-shadow:none}
 .btn-sv.off{background:var(--bd);color:var(--th);cursor:not-allowed}
+
+/* 리스트 */
+.sg{display:flex;align-items:center;gap:5px;font-size:.68rem;color:var(--th);padding:2px 8px}
+.sg i{color:var(--pl)}
 .ls{padding:0 6px;margin-top:8px}
 .lh{display:flex;justify-content:space-between;align-items:center;background:var(--card);padding:14px;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,.05);border:1px solid var(--bl);margin-bottom:10px}
 .lh-l{display:flex;align-items:center;gap:9px}
@@ -213,12 +297,12 @@ textarea.if{resize:none;height:85px;line-height:1.6}
 .dc{background:var(--card);border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.05);border:1px solid var(--bl);margin-bottom:10px;animation:fi .3s ease-out}
 @keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .dc-hd{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg);border-bottom:1px solid var(--bl)}
-.dc-tag{display:flex;align-items:center;gap:7px}
+.dc-tag{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 .dc-rm{font-size:.82rem;font-weight:800}
 .dc-tp{font-size:.7rem;font-weight:700;color:var(--dn);background:var(--dnb);padding:2px 7px;border-radius:4px}
 .dc-tp.safe{color:#059669;background:#ECFDF5}
-.dc-act{display:flex;gap:5px}
-.bi{width:30px;height:30px;border-radius:7px;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.78rem;transition:var(--tr)}
+.dc-act{display:flex;gap:5px;flex-shrink:0}
+.bi{width:36px;height:36px;border-radius:7px;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.82rem;transition:var(--tr)}
 .bi.ed{background:#FEF3C7;color:#D97706}
 .bi.dl{background:#FEE2E2;color:#EF4444}
 .bi:active{transform:scale(.9)}
@@ -229,47 +313,303 @@ textarea.if{resize:none;height:85px;line-height:1.6}
 .dc-bd{padding:12px 14px}
 .dc-wk{font-size:.75rem;font-weight:700;color:var(--p);margin-bottom:4px}
 .dc-dt{font-size:.82rem;color:var(--ts);line-height:1.6;white-space:pre-wrap}
-.ba{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;padding:0 6px;margin-top:12px}
-.ab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:14px 6px;border:none;border-radius:var(--r);cursor:pointer;font-family:inherit;transition:var(--tr);text-decoration:none}
+
+/* 하단 버튼 */
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 6px;margin-top:12px}
+.ab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:14px 6px;border:none;border-radius:var(--r);cursor:pointer;font-family:inherit;transition:var(--tr);text-decoration:none;min-height:70px}
 .ab:active{transform:scale(.96)}
 .ab-ic{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;color:#fff}
 .ab-tx{font-size:.75rem;font-weight:700}
 .ab.pdf{background:#ECFDF5}.ab.pdf .ab-ic{background:linear-gradient(135deg,#059669,#10B981)}.ab.pdf .ab-tx{color:#059669}
 .ab.rv{background:var(--pub)}.ab.rv .ab-ic{background:linear-gradient(135deg,#7C3AED,#A78BFA)}.ab.rv .ab-tx{color:var(--pu)}
 .ab.cs{background:#FFF7ED}.ab.cs .ab-ic{background:linear-gradient(135deg,var(--ac),#FF8F5E)}.ab.cs .ab-tx{color:var(--ac)}
-.ft{text-align:center;padding:18px 10px;margin-top:24px;border-top:1px solid var(--bl)}
+
+/* ── FOOTER ── */
+.ft{text-align:center;padding:18px 10px 10px;margin-top:24px;border-top:1px solid var(--bl)}
 .ft-b{font-size:.8rem;font-weight:800;margin-bottom:3px}
 .ft-i{font-size:.68rem;color:var(--th);line-height:1.5}
-.mo{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:none;align-items:center;justify-content:center;backdrop-filter:blur(5px);padding:20px}
+.ft-donate{
+  margin-top:12px;padding:10px 14px;
+  background:linear-gradient(135deg,#F0FDF4,#DCFCE7);
+  border:1px solid #BBF7D0;border-radius:12px;
+  display:flex;align-items:center;gap:8px;
+}
+.ft-donate i{color:#16A34A;font-size:1rem;flex-shrink:0}
+.ft-donate-text{font-size:.68rem;color:#166534;font-weight:700;text-align:left;line-height:1.5}
+
+/* ── MODALS ── */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(5px);padding:0}
 .mo.show{display:flex}
-.mo-b{background:#fff;width:100%;max-width:390px;border-radius:22px;padding:24px 20px;box-shadow:0 8px 40px rgba(0,0,0,.1);animation:mp .3s cubic-bezier(.34,1.56,.64,1);max-height:85vh;overflow-y:auto}
+.mo-b{
+  background:#fff;width:100%;max-width:480px;
+  border-radius:22px 22px 0 0;
+  padding:24px 20px calc(20px + var(--safe-bottom));
+  box-shadow:0 -8px 40px rgba(0,0,0,.1);
+  animation:slideUp .35s cubic-bezier(.34,1.56,.64,1);
+  max-height:90vh;overflow-y:auto;
+}
+.mo-b.center{border-radius:22px;margin:20px;max-height:85vh;animation:mp .3s cubic-bezier(.34,1.56,.64,1)}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 @keyframes mp{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
-.mo-h{font-size:1.15rem;font-weight:900;text-align:center;margin-bottom:16px}
-.mo-cls{display:block;text-align:center;margin-top:12px;background:none;border:none;color:var(--th);font-size:.82rem;cursor:pointer;text-decoration:underline;font-family:inherit}
+.mo-h{font-size:1.1rem;font-weight:900;text-align:center;margin-bottom:16px}
+.mo-cls{display:block;text-align:center;margin-top:14px;background:none;border:none;color:var(--th);font-size:.82rem;cursor:pointer;text-decoration:underline;font-family:inherit;padding:8px;width:100%}
+.mo-drag{width:36px;height:4px;background:var(--bd);border-radius:2px;margin:0 auto 16px}
 .pr{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--bg);border-radius:10px;margin-bottom:6px}
 .pr-l{font-size:.85rem;font-weight:700;color:var(--ts)}
 .pr-v{font-size:.9rem;font-weight:900;color:var(--pu)}
 .nt{background:var(--wrb);border:1px solid #FEEBC8;border-radius:10px;padding:12px;font-size:.78rem;color:var(--ts);line-height:1.6;margin-bottom:14px}
 .nt b{color:#C05621}
-.btn-f{width:100%;padding:13px;border:none;border-radius:var(--r);background:linear-gradient(135deg,var(--pu),#A78BFA);color:#fff;font-size:.9rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 4px 14px rgba(124,58,237,.3)}
-.cf{position:fixed;bottom:18px;right:18px;width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,var(--p),var(--pl));color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;z-index:998;box-shadow:0 4px 18px rgba(10,107,92,.35);border:none}
-.cw{position:fixed;bottom:80px;right:14px;width:300px;height:420px;background:#fff;border-radius:22px;box-shadow:0 8px 40px rgba(0,0,0,.1);z-index:999;display:none;flex-direction:column;overflow:hidden;border:1px solid var(--bd);animation:su .3s ease-out}
-.cw.show{display:flex}
-@keyframes su{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
-.cw-h{background:var(--p);color:#fff;padding:14px;display:flex;justify-content:space-between;align-items:center;font-weight:800;font-size:.85rem}
-.cw-hc{cursor:pointer;font-size:1rem;opacity:.8;background:none;border:none;color:#fff}
-.cw-bd{flex:1;padding:14px;overflow-y:auto;background:var(--bg);display:flex;flex-direction:column;gap:8px}
-.bb{max-width:82%;padding:9px 12px;border-radius:12px;font-size:.82rem;line-height:1.5;box-shadow:0 1px 3px rgba(0,0,0,.04)}
-.bb.bt{background:#fff;align-self:flex-start;border-top-left-radius:3px;border:1px solid var(--bl)}
-.bb.us{background:var(--p);color:#fff;align-self:flex-end;border-top-right-radius:3px}
-.cw-q{padding:10px;background:#fff;border-top:1px solid var(--bl);display:grid;grid-template-columns:1fr 1fr;gap:5px}
-.qb{background:var(--bg);border:1px solid var(--bd);color:var(--tx);padding:7px;border-radius:10px;font-size:.78rem;font-weight:600;cursor:pointer;text-align:center;font-family:inherit}
-.qb:active{background:var(--p);color:#fff;border-color:var(--p)}
-.sg{display:flex;align-items:center;gap:5px;font-size:.68rem;color:var(--th);padding:2px 8px}
-.sg i{color:var(--pl)}
+.btn-f{width:100%;padding:14px;border:none;border-radius:var(--r);background:linear-gradient(135deg,var(--pu),#A78BFA);color:#fff;font-size:.9rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 4px 14px rgba(124,58,237,.3);min-height:50px}
+.btn-nv{width:100%;padding:14px;border:none;border-radius:var(--r);background:linear-gradient(135deg,var(--nv),#02A54E);color:#fff;font-size:.9rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 4px 14px rgba(3,199,90,.3);min-height:50px;transition:var(--tr)}
+.btn-nv:active{transform:scale(.98)}
+
+/* ── 결제 모달 전용 ── */
+.pay-steps{display:flex;align-items:flex-start;gap:10px;margin-bottom:16px}
+.pay-step-num{
+  width:24px;height:24px;border-radius:50%;
+  background:var(--nv);color:#fff;
+  font-size:.72rem;font-weight:900;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:2px;
+}
+.pay-step-content{flex:1}
+.pay-step-title{font-size:.82rem;font-weight:800;color:var(--tx);margin-bottom:2px}
+.pay-step-desc{font-size:.72rem;color:var(--ts);line-height:1.5}
+
+.price-box{
+  background:linear-gradient(135deg,var(--nvb),#D1FAE5);
+  border:2px solid var(--nv);border-radius:14px;
+  padding:16px;text-align:center;margin-bottom:16px;
+}
+.price-box .price-main{font-size:1.8rem;font-weight:900;color:#059669;font-family:'Outfit'}
+.price-box .price-sub{font-size:.75rem;color:var(--ts);margin-top:2px}
+.price-box .price-donate{
+  margin-top:8px;padding:6px 12px;
+  background:rgba(255,255,255,.7);border-radius:8px;
+  font-size:.7rem;font-weight:700;color:#166534;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+}
+
+/* 인증코드 입력 */
+.code-input-wrap{
+  display:flex;gap:8px;margin-bottom:12px;align-items:stretch;
+}
+.code-input{
+  flex:1;padding:13px;font-size:1.1rem;font-weight:900;
+  text-align:center;letter-spacing:3px;
+  border:2px solid var(--bd);border-radius:12px;
+  background:#FAFBFC;color:var(--tx);
+  font-family:'Outfit';outline:none;
+  text-transform:uppercase;
+  transition:var(--tr);
+}
+.code-input:focus{border-color:var(--nv);background:#fff;box-shadow:0 0 0 3px rgba(3,199,90,.15)}
+.code-input.error{border-color:var(--dn);background:var(--dnb);animation:shake .4s}
+.code-input.success{border-color:var(--nv);background:var(--nvb)}
+.btn-verify{
+  padding:0 18px;border:none;border-radius:12px;
+  background:var(--p);color:#fff;
+  font-size:.82rem;font-weight:800;cursor:pointer;
+  font-family:inherit;white-space:nowrap;
+  transition:var(--tr);
+}
+.btn-verify:active{transform:scale(.96)}
+.btn-verify:disabled{background:var(--bd);color:var(--th);cursor:not-allowed}
+
+.code-msg{font-size:.75rem;text-align:center;margin-top:6px;font-weight:700;min-height:20px}
+.code-msg.ok{color:var(--nv)}
+.code-msg.err{color:var(--dn)}
+.code-msg.loading{color:var(--ts)}
+
+/* 비밀번호 모달 */
+#moPwd .mo-b{max-width:360px;margin:auto;border-radius:22px;animation:mp .3s ease}
+
+/* ── 챗봇 모달 (풀스크린 바텀시트) ── */
+.chatbot-mo{
+  position:fixed;inset:0;background:rgba(0,0,0,.5);
+  z-index:9999;display:none;align-items:flex-end;justify-content:center;
+  backdrop-filter:blur(4px);
+}
+.chatbot-mo.show{display:flex}
+.chatbot-wrap{
+  width:100%;max-width:480px;
+  height:88vh;
+  background:#fff;
+  border-radius:22px 22px 0 0;
+  display:flex;flex-direction:column;overflow:hidden;
+  animation:slideUp .35s cubic-bezier(.34,1.2,.64,1);
+  padding-bottom:var(--safe-bottom);
+}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+
+/* 챗봇 헤더 */
+.cb-hd{
+  background:linear-gradient(135deg,#0A6B5C,#12B89A);
+  padding:14px 16px 12px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.cb-hd-l{display:flex;align-items:center;gap:10px}
+.cb-hd-icon{
+  width:36px;height:36px;border-radius:10px;
+  background:rgba(255,255,255,.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;
+}
+.cb-hd-title{color:#fff;font-size:.92rem;font-weight:900}
+.cb-hd-sub{color:rgba(255,255,255,.75);font-size:.62rem;margin-top:1px}
+.cb-hd-close{
+  width:32px;height:32px;border-radius:8px;
+  background:rgba(255,255,255,.15);border:none;
+  color:#fff;font-size:.9rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* 카테고리 탭 */
+.cb-tabs{
+  display:flex;gap:0;
+  background:var(--bg);
+  border-bottom:1px solid var(--bl);
+  overflow-x:auto;flex-shrink:0;
+  scrollbar-width:none;
+}
+.cb-tabs::-webkit-scrollbar{display:none}
+.cb-tab{
+  padding:9px 14px;font-size:.72rem;font-weight:700;
+  color:var(--th);border:none;background:none;
+  cursor:pointer;white-space:nowrap;font-family:inherit;
+  border-bottom:2px solid transparent;transition:all .15s;
+  flex-shrink:0;
+}
+.cb-tab.on{color:var(--p);border-bottom-color:var(--p);background:var(--card)}
+
+/* 빠른질문 버튼 그리드 */
+.cb-quick{
+  padding:10px 10px 6px;
+  display:grid;grid-template-columns:1fr 1fr;gap:6px;
+  flex-shrink:0;background:var(--card);
+  border-bottom:1px solid var(--bl);
+  max-height:160px;overflow-y:auto;
+}
+.cb-qbtn{
+  padding:9px 10px;border-radius:10px;
+  border:1.5px solid var(--bd);background:var(--bg);
+  font-size:.73rem;font-weight:700;color:var(--ts);
+  cursor:pointer;text-align:left;font-family:inherit;
+  display:flex;align-items:center;gap:6px;
+  transition:all .15s;min-height:40px;
+  line-height:1.3;
+}
+.cb-qbtn:active{background:var(--pg);border-color:var(--pl);color:var(--p)}
+.cb-qbtn .cb-qicon{font-size:.85rem;flex-shrink:0}
+
+/* 채팅 메시지 영역 */
+.cb-msgs{
+  flex:1;overflow-y:auto;padding:14px 12px;
+  display:flex;flex-direction:column;gap:10px;
+  background:var(--bg);
+}
+.cb-msg{display:flex;align-items:flex-end;gap:7px}
+.cb-msg.bot{flex-direction:row}
+.cb-msg.usr{flex-direction:row-reverse}
+.cb-avatar{
+  width:28px;height:28px;border-radius:8px;
+  background:var(--p);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.75rem;flex-shrink:0;
+}
+.cb-bubble{
+  max-width:78%;padding:10px 13px;
+  border-radius:14px;font-size:.82rem;line-height:1.6;
+}
+.cb-msg.bot .cb-bubble{
+  background:#fff;color:var(--tx);
+  border-top-left-radius:3px;
+  border:1px solid var(--bl);
+  box-shadow:0 1px 4px rgba(0,0,0,.05);
+}
+.cb-msg.usr .cb-bubble{
+  background:var(--p);color:#fff;
+  border-top-right-radius:3px;
+}
+.cb-typing{
+  display:flex;align-items:center;gap:4px;
+  padding:10px 14px;background:#fff;
+  border-radius:14px;border-top-left-radius:3px;
+  border:1px solid var(--bl);
+}
+.cb-typing span{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--th);display:inline-block;
+  animation:typingDot 1.2s infinite;
+}
+.cb-typing span:nth-child(2){animation-delay:.2s}
+.cb-typing span:nth-child(3){animation-delay:.4s}
+@keyframes typingDot{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+
+/* AI 직접 질문 입력창 */
+.cb-input-wrap{
+  display:flex;align-items:flex-end;gap:8px;
+  padding:10px 12px;
+  background:#fff;border-top:1px solid var(--bl);
+  flex-shrink:0;
+}
+.cb-input{
+  flex:1;padding:10px 12px;
+  font-size:.85rem;border:1.5px solid var(--bd);
+  border-radius:12px;background:var(--bg);
+  color:var(--tx);font-family:inherit;
+  outline:none;resize:none;
+  max-height:80px;min-height:40px;
+  transition:var(--tr);line-height:1.5;
+  overflow-y:auto;
+}
+.cb-input:focus{border-color:var(--pl);background:#fff;box-shadow:0 0 0 3px var(--pg)}
+.cb-input::placeholder{color:var(--th)}
+.cb-send{
+  width:40px;height:40px;border-radius:11px;border:none;
+  background:linear-gradient(135deg,var(--p),var(--pl));
+  color:#fff;font-size:.9rem;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:var(--tr);
+}
+.cb-send:active{transform:scale(.92)}
+.cb-send:disabled{background:var(--bd);cursor:not-allowed}
+.cb-ai-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  background:linear-gradient(135deg,var(--p),var(--pl));
+  color:#fff;padding:2px 8px;border-radius:5px;
+  font-size:.62rem;font-weight:700;margin-bottom:4px;
+}
+
+/* 기존 작은 FAB 채팅창 제거 */
+.cf{display:none}
+.cw{display:none}
+
+/* ── 무료 한도 도달 유도 카드 ── */
+.upgrade-card{
+  margin:0 6px 6px;
+  background:linear-gradient(135deg,#F0FDF4,var(--nvb));
+  border:2px solid var(--nv);border-radius:16px;
+  padding:16px;display:none;
+  animation:fi .3s ease-out;
+}
+.upgrade-card.show{display:block}
+.upgrade-card-title{font-size:.88rem;font-weight:900;color:#059669;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.upgrade-card-desc{font-size:.75rem;color:var(--ts);margin-bottom:12px;line-height:1.6}
+.upgrade-card-btn{
+  width:100%;padding:12px;border:none;border-radius:12px;
+  background:linear-gradient(135deg,var(--nv),#02A54E);
+  color:#fff;font-size:.85rem;font-weight:800;
+  cursor:pointer;font-family:inherit;
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  box-shadow:0 3px 12px rgba(3,199,90,.3);
+  min-height:46px;
+}
+
 @media print{
   .app{max-width:100%;box-shadow:none;padding-bottom:0}
-  .hd,.st,.steps,.sec,.ba,.ft,.cf,.cw,.dc-act,.mode-bar,.mode-bar-out,.sg,.quota-bar,.voice-ctrl{display:none!important}
+  .hd,.st,.steps,.sec,.ba,.ft,.cf,.cw,.dc-act,.pass-bar,.donate-bar,.quota-bar,.voice-ctrl,.upgrade-card{display:none!important}
   .ls{padding:0;margin:0}
   .lh{border:none;box-shadow:none;margin-bottom:20px;border-bottom:2px solid #333;border-radius:0}
   .dc{break-inside:avoid;box-shadow:none;border:1px solid #ccc;margin-bottom:16px}
@@ -284,77 +624,78 @@ input[type="file"]{display:none}
 <div class="app">
 <div id="ptitle" style="display:none"></div>
 
+<!-- ── HEADER ── -->
 <header class="hd">
   <div class="hd-top">
+    <!-- 좌측: 로고 + 텍스트 -->
     <div class="hd-in">
       <div class="hd-logo"><img src="data:image/webp;base64,UklGRuoEAABXRUJQVlA4IN4EAAAQGACdASpcAFwAPp1GnUqlo6KhqBOcILATiWIAziUPZLoxe2U55n0O7wxvOX+UsDSkXxLWXn6nhNlInK/61xAaRTF56H+dT6t9hDpAMiUzKdmNt0OT+k+e4kIkk9UU4g3Ue6gXXsy4TUQPzqrWFheKPh/d466jvGXPk+Ztl5ezpdETvsJb0A0snIIEbrfGxboXEL0gZeragUw1nHBvY2mpikGFSA9Xe/ToXwSRJlydenBTiN9DMTHbuFrg8Gj+LHtPeHvl5ApU0AAA/vyoBbU35bQ5MnEeith5r842pJDgxLANyxkg3F0xnZf+xTvhRgOtBrHLEgG7Invfea7NizqMAWt0xvFzVtW7aRF9rj8Yksvu8+ox//wbed9EwT1b3HBcb++gbLVKgi8XP9uSn2cTCAVCVHsws2jo85P8r9hc4lKCTP5GLpUYiAGv3RG0s8M/iivVyM2I7IwKYfg8sQqPL747nz3Gl90uhFRJZMaPbsLkJd+qj7sc1/lWvyndtvToQz3+xwjw6WK5wPb32Uzq+c2v8Ete6s03zw9Xe9h9xamToaSx6dbL49Q5m0p1BWNSGQI1C+Fy+xfCzyROaGF9LvYdn9QGnmwWp5UJ/ACqhfosnIfweGYfq7csTuKFke3W5W6yvx4mlTsdwKvImknOZfJsf7zf0xFjwWfDCfXEP9F3P45AnBllQX+i1u2wyHL5vl1smRQQdkaWAekiPpx83EY8nQe/XmUJZJ9gRn6iM8OJXKiPoqnuNLOtldy1e0Sbznq3a0NTl6cw3XjzhhJMqyolFWZNEEJY2PGAOlpK1Wc+E051ISM97DAWktQP0XWX8vTGil5Iw+MHPESQPlPIa+TFhF/pFXilB3echpOAKpKdi9Jk+rzNuJ0YuwMUSk962g3r+xTOcZWrxSvjpFDAM/7IS8RkBonL/ZJULD/R1QC7khz4bX3h/ye+jy7vANsCeCFgK+iTza+w4nnHFkq7zx/6KynjF6/Y1HphryikePZlySa0B8cWZ+iF2Q1cncseX35Kf9sjX3D3Q88jaJ2kdqy1sY5KinmpOWMop44jLAWnP4L4eq63z50l6YYBhVGba4hDJ4MDp5dWtTGFqhlhmJy3AeUsyGf1wYrlr8ywj9mSxyRXBj58E5pKTUmhRTkhAXuFV9KzNv0JE5zsNAJcHSUuwK2+rXSCnb2yV/g1KnO1ekq96sB8Q7kFxSFV+dgJ82/4BExvK4BzXQ2bjrBSL2LR+6MhKcp8Dw5W7p5OtZgkaPOOQsC9MNkRDT+nOSijuWYMavNZ4lpNXJJbgTVJrG0NkZCE1Jsu3+t82GENYCES8LFoJJYxLF4C1B/4Nx9BoqmCkTZIYzdcFdDRhOK835Nr34brBvWcF+B68aGiWpgHssLYFP2D/Fi5VWf6gtvGifz2w6vgHVZvbcqvsgnRTwe1A908A7SzO+69hyoOoNZyrqf0SxjKNXEF7OvUmlrsHuHvmh4fdiLJlVjMtr02n52hgCkfrNkwxIRWU7gLvHrppQlz4ckL7wwvI5ZypkMBI6goeerC1Yzkeuanea2ks36mHOsLEBJ7OiKKSGR4EqryBw5yX0u/mYjW8/aH7dabhMmIfc6//CA5OGZjiy5F5GZTX1cGF6PpT73VJeobzvPtfV7TS5sgAAAAAAAA" alt="logo"></div>
-      <div><div class="hd-title">청개구리 사전점검 AI</div></div>
+      <div class="hd-text">
+        <div class="hd-title">청개구리 입주전</div>
+        <div class="hd-sub">AI 사전점검 · 하자 분석</div>
+      </div>
     </div>
+    <!-- 우측: 태그 -->
     <div class="hd-tags">
-      <span class="tag tag-free">무료</span>
-      <span class="tag tag-v" id="verTag" onclick="A.devTap()">v19.5</span>
+      <span class="tag tag-free" id="passTag">기부형 앱</span>
+      <span class="tag tag-v" id="verTag" onclick="A.devTap()">v20.0</span>
     </div>
   </div>
 </header>
 
-<!-- MODE BAR -->
-<div class="mode-bar-out">
-  <label class="mode-ck left active" id="mcFree">
-    <input type="checkbox" id="ckFree" checked onchange="A.setMode('free')">
-    <span class="mc-ic"><i class="fa-solid fa-user"></i></span>
-    <span class="mc-lb" id="mcFreeLb">무료점검 <span style="font-size:.62rem;opacity:.75">(무료25인)</span></span>
-  </label>
-  <label class="mode-ck right" id="mcPro">
-    <input type="checkbox" id="ckPro" onchange="A.setMode('pro')">
-    <span class="mc-ic"><i class="fa-solid fa-user-tie"></i></span>
-    <span class="mc-lb" id="mcProLb">전문가점검 <span style="font-size:.62rem;opacity:.75">(5인)</span></span>
-  </label>
+<!-- ── 기부 배너 ── -->
+<div class="donate-bar">
+  <span class="db-icon">💚</span>
+  <div class="db-text">
+    수익의 50%는 공익에 기부됩니다
+    <span class="db-badge">기부형 앱</span>
+  </div>
 </div>
 
-<!-- PASSWORD MODAL -->
-<div class="mo" id="moPwd">
-<div class="mo-b" style="max-width:320px;text-align:center">
-  <div style="font-size:2.5rem;margin-bottom:10px">🔒</div>
-  <div class="mo-h" style="font-size:1rem;color:var(--p)">전문가 점검 모드</div>
-  <p style="font-size:.78rem;color:var(--ts);margin-bottom:14px">직원 전용 기능입니다.<br>비밀번호를 입력해주세요.</p>
-  <input type="password" class="if" id="pwdInput" placeholder="비밀번호 입력" style="text-align:center;font-size:1rem;letter-spacing:4px;font-weight:800;margin-bottom:10px" onkeydown="if(event.key==='Enter')A.checkPwd()">
-  <div id="pwdErr" style="font-size:.72rem;color:var(--dn);margin-bottom:8px;display:none">비밀번호가 틀렸습니다.</div>
-  <button class="btn-sv ok" style="margin-top:4px" onclick="A.checkPwd()"><i class="fa-solid fa-lock-open"></i> 확인</button>
-  <button class="mo-cls" onclick="A.cancelPwd()">취소</button>
-</div>
+<!-- ── 이용권 상태 바 ── -->
+<div class="pass-bar" data-voice-id="passbar">
+  <div class="pass-status free" id="passStatus">
+    <div class="pass-dot"></div>
+    <span class="pass-label" id="passLabel">무료 체험 중</span>
+    <span class="pass-count" id="passCount"></span>
+  </div>
+  <button class="btn-buy" id="btnBuy" onclick="A.openPayModal()">
+    <i class="fa-brands fa-naver"></i> 1일권 구매
+  </button>
 </div>
 
+<!-- ── STATUS ── -->
 <div class="st">
   <div class="st-chip"><div class="st-dot" id="sDot"></div><span id="sMsg">AI 대기 중</span></div>
-  <!-- ★ 변경: 도움말 → 음성안내 (시인성 강화 오렌지 버튼) -->
   <button class="st-voice" id="voiceBtn" onclick="A.voiceGuide()">
     <i class="fa-solid fa-volume-high"></i> 음성안내
   </button>
 </div>
 
-<!-- ★ 음성안내 컨트롤 바 (NEW) -->
+<!-- ── 음성 컨트롤 바 ── -->
 <div class="voice-ctrl" id="voiceCtrl">
-  <button class="vc-btn prev" onclick="A.voicePrev()" title="이전 단계"><i class="fa-solid fa-backward-step"></i></button>
-  <button class="vc-btn pause" id="vcPause" onclick="A.voicePause()" title="일시정지"><i class="fa-solid fa-pause"></i></button>
-  <button class="vc-btn next" onclick="A.voiceNext()" title="다음 단계"><i class="fa-solid fa-forward-step"></i></button>
+  <button class="vc-btn prev" onclick="A.voicePrev()"><i class="fa-solid fa-backward-step"></i></button>
+  <button class="vc-btn pause" id="vcPause" onclick="A.voicePause()"><i class="fa-solid fa-pause"></i></button>
+  <button class="vc-btn next" onclick="A.voiceNext()"><i class="fa-solid fa-forward-step"></i></button>
   <div class="vc-progress">
     <div class="vc-step-text" id="vcText">준비 중...</div>
     <div class="vc-bar"><div class="vc-bar-fill" id="vcBar" style="width:0%"></div></div>
   </div>
-  <button class="vc-btn stop" onclick="A.voiceStop()" title="중지"><i class="fa-solid fa-xmark"></i></button>
+  <button class="vc-btn stop" onclick="A.voiceStop()"><i class="fa-solid fa-xmark"></i></button>
 </div>
 
+<!-- ── QUOTA ── -->
 <div class="quota-bar">
   <div class="quota-pill" id="qPill">
     <i class="fa-solid fa-bolt" style="color:var(--pl)"></i>
     <span id="qLabel">AI 분석 남은 횟수</span>
     <div class="quota-prog"><div class="quota-prog-fill" id="qBar" style="width:100%;background:var(--pl)"></div></div>
-    <span class="q-num ok" id="qNum">50/50건</span>
+    <span class="q-num ok" id="qNum">3/3건</span>
   </div>
 </div>
-
 <div class="sg"><i class="fa-solid fa-database"></i> <span id="sgTx">저장된 항목: 0건</span></div>
 
+<!-- ── STEPS ── -->
 <div class="steps">
   <div class="sn on" id="s1">1</div><div class="sl" id="l1"></div>
   <div class="sn" id="s2">2</div><div class="sl" id="l2"></div>
@@ -362,7 +703,7 @@ input[type="file"]{display:none}
   <div class="sn" id="s4">4</div>
 </div>
 
-<!-- ★ 각 섹션에 data-voice-id 추가 (음성안내 대상) -->
+<!-- ── STEP 1: 현장 정보 ── -->
 <div class="sec" data-voice-id="step1">
   <div class="sec-t"><span class="n">1</span> 현장 정보</div>
   <div class="ig">
@@ -376,11 +717,7 @@ input[type="file"]{display:none}
   </div>
   <div class="ig" style="margin-top:8px">
     <div class="il"><i class="fa-solid fa-location-dot"></i> 점검 위치 <span style="color:var(--dn);font-size:.6rem">* 필수</span></div>
-    <select class="if" id="fRoom" style="display:none">
-      <option value="">위치 선택</option>
-      <option>거실</option><option>주방</option><option>침실1</option><option>침실2</option><option>침실3</option>
-      <option>안방</option><option>욕실1</option><option>욕실2</option><option>현관</option><option>발코니1</option><option>발코니2</option><option>대피공간</option><option>팬트리</option><option>다용도실</option><option>기타</option>
-    </select>
+    <select class="if" id="fRoom" style="display:none"><option value="">위치 선택</option></select>
     <div class="cd-wrap" id="cdRoom">
       <button type="button" class="cd-btn" id="cdBtn" onclick="A.toggleRoom()">
         <span class="cd-placeholder" id="cdLabel">위치 선택</span>
@@ -407,16 +744,29 @@ input[type="file"]{display:none}
   </div>
 </div>
 
+<!-- ── 무료 한도 업그레이드 유도 카드 ── -->
+<div class="upgrade-card" id="upgradeCard" data-voice-id="upgrade">
+  <div class="upgrade-card-title"><i class="fa-solid fa-bolt"></i> 무료 체험 3회를 모두 사용했어요!</div>
+  <div class="upgrade-card-desc">
+    오늘 하루 이용권(₩10,000)으로 <b>100회 AI 분석</b>을 이용하세요.<br>
+    <b>수익의 50%</b>가 공익단체에 기부됩니다 💚
+  </div>
+  <button class="upgrade-card-btn" onclick="A.openPayModal()">
+    <i class="fa-brands fa-naver"></i> 네이버페이로 구매하기
+  </button>
+</div>
+
+<!-- ── STEP 2: 사진 ── -->
 <div class="sec" data-voice-id="step2">
   <div class="sec-t"><span class="n">2</span> 사진 촬영</div>
   <div class="pg">
-    <input type="file" id="inW" accept="image/*">
+    <input type="file" id="inW" accept="image/*" capture="environment">
     <label class="pc w" for="inW">
       <i class="fa-solid fa-image ic"></i>
       <div class="lb">멀리서 찍기<br><span class="hn">위치 파악용</span></div>
       <img class="pp" id="pvW"><div class="rb" id="rtW">다시찍기</div>
     </label>
-    <input type="file" id="inC" accept="image/*">
+    <input type="file" id="inC" accept="image/*" capture="environment">
     <label class="pc c" for="inC">
       <i class="fa-solid fa-crosshairs ic"></i>
       <div class="lb">가까이 찍기<br><span class="hn">AI 분석 시작</span></div>
@@ -425,6 +775,7 @@ input[type="file"]{display:none}
   </div>
 </div>
 
+<!-- ── STEP 3: 하자 정보 ── -->
 <div class="sec" data-voice-id="step3">
   <div class="sec-t"><span class="n">3</span> 하자 정보</div>
   <div class="ig">
@@ -464,9 +815,12 @@ input[type="file"]{display:none}
     <div class="ck"><input type="checkbox" id="fAgree" onchange="A.togSave()"><label for="fAgree">위 내용을 확인하였으며 동의합니다</label></div>
     <div id="agreeNote" style="font-size:.62rem;color:#059669;margin-top:4px;display:none"><i class="fa-solid fa-circle-check"></i> 동의가 저장되었습니다 (최초 1회)</div>
   </div>
-  <button class="btn-sv off" id="btnSv" onclick="A.save()" disabled data-voice-id="step5"><i class="fa-solid fa-check-circle"></i> 리스트에 저장</button>
+  <button class="btn-sv off" id="btnSv" onclick="A.save()" disabled data-voice-id="step5">
+    <i class="fa-solid fa-check-circle"></i> 리스트에 저장
+  </button>
 </div>
 
+<!-- ── 리스트 ── -->
 <div class="ls" data-voice-id="step6">
   <div class="lh">
     <div class="lh-l">
@@ -474,78 +828,220 @@ input[type="file"]{display:none}
       <div><div class="lh-t">점검 리스트</div><div class="lh-s" id="lInfo">정보 입력 대기</div></div>
     </div>
     <div style="display:flex;align-items:center;gap:6px">
-      <span id="lMode" style="font-size:.68rem;font-weight:800;padding:3px 8px;border-radius:6px;background:var(--pg);color:var(--p);display:none">무료점검</span>
-      <button style="background:none;border:1px solid var(--bd);border-radius:8px;padding:6px 10px;font-size:.7rem;font-weight:700;cursor:pointer;color:var(--ts);font-family:inherit" onclick="A.clearAll()"><i class="fa-solid fa-trash"></i> 전체삭제</button>
+      <span id="lMode" style="font-size:.68rem;font-weight:800;padding:3px 8px;border-radius:6px;background:var(--pg);color:var(--p);display:none">무료체험</span>
+      <button style="background:none;border:1px solid var(--bd);border-radius:8px;padding:7px 10px;font-size:.7rem;font-weight:700;cursor:pointer;color:var(--ts);font-family:inherit;min-height:36px" onclick="A.clearAll()"><i class="fa-solid fa-trash"></i> 전체삭제</button>
     </div>
   </div>
   <div id="lBox"></div>
 </div>
 
+<!-- ── 하단 버튼 ── -->
 <div class="ba" data-voice-id="step7">
-  <button class="ab pdf" onclick="A.pdf()"><div class="ab-ic"><i class="fa-solid fa-file-pdf"></i></div><span class="ab-tx">전체 저장</span></button>
-  <button class="ab rv" onclick="A.modal('paid',1)"><div class="ab-ic"><i class="fa-solid fa-calendar-check"></i></div><span class="ab-tx">유료 예약</span></button>
-  <button class="ab cs" onclick="A.chat()"><div class="ab-ic"><i class="fa-solid fa-comments"></i></div><span class="ab-tx">AI 상담</span></button>
+  <button class="ab pdf" onclick="A.pdf()">
+    <div class="ab-ic"><i class="fa-solid fa-file-pdf"></i></div>
+    <span class="ab-tx">전체 저장</span>
+  </button>
+  <button class="ab cs" onclick="A.openChatBot()">
+    <div class="ab-ic" style="background:linear-gradient(135deg,#0A6B5C,#12B89A)">
+      <i class="fa-solid fa-robot"></i>
+    </div>
+    <span class="ab-tx" style="color:#0A6B5C">AI 상담 챗봇</span>
+  </button>
 </div>
 
-<div id="pdiscl" style="display:none">※ 본 리포트는 입주자 사전점검 보조 자료이며 법적 효력이 없습니다. (제공: 청개구리샤시)</div>
-
+<!-- ── FOOTER ── -->
 <div class="ft">
   <div class="ft-b">청개구리샤시</div>
   <div class="ft-i">대표: 전영웅 | 사업자: 123-36-31426 | 📞 010-2322-0949<br>본 서비스는 참고용 보조 도구이며 법적 책임을 지지 않습니다.<br>ⓒ 2026 Cheong-gaeguri Corp.</div>
+  <div class="ft-donate">
+    <i class="fa-solid fa-hand-holding-heart"></i>
+    <div class="ft-donate-text">
+      이 앱의 유료 수익 <b>50%는 공익단체에 기부</b>됩니다.<br>
+      당신의 점검이 누군가에게 따뜻한 도움이 됩니다 💚
+    </div>
+  </div>
+</div>
+</div><!-- /app -->
+
+<div id="pdiscl" style="display:none">※ 본 리포트는 입주자 사전점검 보조 자료이며 법적 효력이 없습니다. (제공: 청개구리샤시)</div>
+
+<!-- ══════════════════════════════════════════
+     MODAL: 결제 안내 (네이버페이)
+═══════════════════════════════════════════ -->
+<div class="mo" id="moPayGuide">
+<div class="mo-b">
+  <div class="mo-drag"></div>
+  <div class="mo-h" style="color:#059669"><i class="fa-brands fa-naver" style="color:var(--nv)"></i> 1일 이용권 구매</div>
+
+  <div class="price-box">
+    <div class="price-main">₩10,000</div>
+    <div class="price-sub">오늘 하루 AI 분석 100회 무제한</div>
+    <div class="price-donate"><i class="fa-solid fa-heart" style="color:#EF4444"></i> 수익의 50% = ₩5,000 공익기부</div>
+  </div>
+
+  <div class="pay-steps">
+    <div class="pay-step-num">1</div>
+    <div class="pay-step-content">
+      <div class="pay-step-title">네이버 스마트스토어에서 구매</div>
+      <div class="pay-step-desc">아래 버튼을 눌러 네이버페이로 10,000원 결제</div>
+    </div>
+  </div>
+  <div class="pay-steps">
+    <div class="pay-step-num">2</div>
+    <div class="pay-step-content">
+      <div class="pay-step-title">인증코드 수령</div>
+      <div class="pay-step-desc">구매 완료 후 문자 또는 카카오톡으로 6자리 인증코드 발송 (5분 이내)</div>
+    </div>
+  </div>
+  <div class="pay-steps">
+    <div class="pay-step-num">3</div>
+    <div class="pay-step-content">
+      <div class="pay-step-title">코드 입력 → 잠금 해제</div>
+      <div class="pay-step-desc">아래 코드 입력란에 입력하면 당일 자정까지 무제한 이용</div>
+    </div>
+  </div>
+
+  <!-- 네이버 스마트스토어 구매 버튼 -->
+  <button class="btn-nv" style="margin-bottom:14px"
+    onclick="window.open('https://smartstore.naver.com/your-store-url','_blank');A.showCodeInput()">
+    <i class="fa-brands fa-naver"></i> 네이버페이로 구매하기
+  </button>
+
+  <!-- 인증코드 입력 영역 -->
+  <div id="codeInputArea">
+    <div style="font-size:.78rem;font-weight:700;color:var(--ts);margin-bottom:8px;text-align:center">
+      <i class="fa-solid fa-key" style="color:var(--gold)"></i> 이미 구매하셨나요? 코드를 입력하세요
+    </div>
+    <div class="code-input-wrap">
+      <input type="text" class="code-input" id="codeInput"
+        placeholder="ABC123" maxlength="10"
+        oninput="this.value=this.value.toUpperCase()"
+        onkeydown="if(event.key==='Enter')A.verifyCode()">
+      <button class="btn-verify" id="btnVerify" onclick="A.verifyCode()">확인</button>
+    </div>
+    <div class="code-msg" id="codeMsg"></div>
+  </div>
+
+  <div style="font-size:.68rem;color:var(--th);text-align:center;margin-top:10px;line-height:1.6">
+    코드 미수신 시 📞 010-2322-0949 문자 문의<br>
+    인증코드는 1회 사용 후 당일 자정 만료
+  </div>
+  <button class="mo-cls" onclick="A.modal('payGuide',0)">닫기</button>
 </div>
 </div>
 
-<!-- MODAL: PAID -->
+<!-- ══════════════════════════════════════════
+     MODAL: 유료 예약
+═══════════════════════════════════════════ -->
 <div class="mo" id="moPaid">
 <div class="mo-b">
+  <div class="mo-drag"></div>
   <div class="mo-h" style="color:var(--pu)">🐸 유료 사전점검 안내</div>
   <p style="font-size:.82rem;color:var(--ts);margin-bottom:14px;line-height:1.6">청개구리는 불필요한 점검을 생략하고 <b>중대하자를 중점</b>으로 검사합니다.</p>
   <div class="pr"><span class="pr-l">29평 이하</span><span class="pr-v">130,000원</span></div>
   <div class="pr"><span class="pr-l">30평 이상</span><span class="pr-v">150,000원</span></div>
   <div class="pr" style="margin-bottom:14px"><span class="pr-l">50평 이상</span><span class="pr-v">200,000원</span></div>
-  <div class="nt"><b>📋 예약 및 환불 규정</b><br>1. <b>직통(010-2322-0949)</b>로 주소, 방문일, 방문시간(필수) 문자전송 또는 유료예약 신청서 작성 → 방문확정 통화 후 입금<br>2. 방문 <b>7일 전 취소 시 100% 환불</b><br>3. 그 외 기간 환불 불가<br>4. 예약서 작성 시 위 내용 동의 간주<br>5. <b>입금계좌 ( 국민은행 090537-04-003309 청개구리샤시 )</b></div>
-  <button class="btn-f" onclick="window.open('https://forms.gle/iF9t9gXCHkuMQj8W6','_blank')"><i class="fa-solid fa-pen-to-square"></i> 예약 신청서 작성</button>
+  <div class="nt">
+    <b>📋 예약 및 환불 규정</b><br>
+    1. <b>직통(010-2322-0949)</b>로 주소, 방문일, 방문시간(필수) 문자전송 또는 유료예약 신청서 작성 → 방문확정 통화 후 입금<br>
+    2. 방문 <b>7일 전 취소 시 100% 환불</b><br>
+    3. 그 외 기간 환불 불가<br>
+    4. <b>입금계좌 (국민은행 090537-04-003309 청개구리샤시)</b>
+  </div>
+  <button class="btn-f" onclick="window.open('https://forms.gle/iF9t9gXCHkuMQj8W6','_blank')">
+    <i class="fa-solid fa-pen-to-square"></i> 예약 신청서 작성
+  </button>
   <button class="mo-cls" onclick="A.modal('paid',0)">닫기</button>
 </div>
 </div>
 
-<!-- MODAL: HELP (기존 도움말 모달 유지 - 음성안내 실패 시 대체) -->
-<div class="mo" id="moHelp">
-<div class="mo-b">
-  <div class="mo-h">🐸 앱 사용법</div>
-  <div style="font-size:.85rem;color:var(--ts);line-height:1.8;text-align:left">
-    <b>① 현장 정보</b> — 주소, 아파트명, 동/호, 위치 입력<br>
-    <b>② 사진 촬영</b> — 멀리서 1장 + 가까이 1장<br>
-    <b>③ 하자 입력</b> — 직접 입력하면 AI가 더 정확 분석<br>
-    <b>④ AI 자동 분석</b> — 공종, 세부, 유형, 리포트 생성<br>
-    <b>⑤ 동의 체크 → 리스트 저장</b> 반복<br>
-    <b>⑥ 전체 저장</b> → 폰 내파일 PDF 저장<br>
-    <b>⑦ 전문가 점검</b> → 유료 신청<br><br>
-    💡 <b>무료 점검</b>: 무료 AI 분석 (1일 25인, 1인당 50건)<br>
-    💡 <b>전문가 점검</b>: 전문가 상세 분석 (1일 5인, 1인당 50건)
-  </div>
-  <div class="ck" style="margin-top:14px;padding:10px;background:var(--bg);border-radius:10px">
-    <input type="checkbox" id="hpCk" onchange="if(this.checked)A.modal('help',0)">
-    <label for="hpCk">모두 확인 후 체크</label>
-  </div>
+<!-- ══════════════════════════════════════════
+     MODAL: 전문가 비밀번호 (직원용)
+═══════════════════════════════════════════ -->
+<div class="mo" id="moPwd" style="align-items:center">
+<div class="mo-b center" style="max-width:320px;text-align:center">
+  <div style="font-size:2.5rem;margin-bottom:10px">🔒</div>
+  <div class="mo-h" style="font-size:1rem;color:var(--p)">직원 전용 모드</div>
+  <p style="font-size:.78rem;color:var(--ts);margin-bottom:14px">직원 비밀번호를 입력해주세요.</p>
+  <input type="password" class="if" id="pwdInput" placeholder="비밀번호 입력"
+    style="text-align:center;font-size:1rem;letter-spacing:4px;font-weight:800;margin-bottom:10px"
+    onkeydown="if(event.key==='Enter')A.checkPwd()">
+  <div id="pwdErr" style="font-size:.72rem;color:var(--dn);margin-bottom:8px;display:none">비밀번호가 틀렸습니다.</div>
+  <button class="btn-sv ok" style="margin-top:4px" onclick="A.checkPwd()">
+    <i class="fa-solid fa-lock-open"></i> 확인
+  </button>
+  <button class="mo-cls" onclick="A.cancelPwd()">취소</button>
 </div>
 </div>
 
-<button class="cf" onclick="A.chat()"><i class="fa-solid fa-comment-dots"></i></button>
-<div class="cw" id="chatW">
-  <div class="cw-h"><span>🐸 청개구리 상담</span><button class="cw-hc" onclick="A.chat()"><i class="fa-solid fa-xmark"></i></button></div>
-  <div class="cw-bd" id="chatB"><div class="bb bt">안녕하세요! 청개구리 샤시입니다. 무엇을 도와드릴까요?</div></div>
-  <div class="cw-q" style="grid-template-columns:1fr 1fr;gap:4px">
-    <button class="qb" onclick="A.ask('cost')">💰 비용 안내</button>
-    <button class="qb" onclick="A.ask('value')">💡 합리적 가격 비결</button>
-    <button class="qb" onclick="A.ask('defect')">🛠️ 중대하자란?</button>
-    <button class="qb" onclick="A.ask('booking')">📅 예약 방법</button>
-    <button class="qb" onclick="A.ask('time')">⏱️ 소요시간</button>
-    <button class="qb" onclick="A.ask('after')">📋 점검 후 절차</button>
-    <button class="qb" onclick="A.ask('diff')">🔍 AI vs 유료 차이</button>
-    <button class="qb" onclick="A.ask('cancel')">💳 취소/환불</button>
+<!-- ══════════════════════════════════════════
+     AI 상담 챗봇 모달 (풀스크린 바텀시트)
+═══════════════════════════════════════════ -->
+<div class="chatbot-mo" id="chatbotMo" onclick="if(event.target===this)A.closeChatBot()">
+<div class="chatbot-wrap">
+
+  <!-- 헤더 -->
+  <div class="cb-hd">
+    <div class="cb-hd-l">
+      <div class="cb-hd-icon">🐸</div>
+      <div>
+        <div class="cb-hd-title">청개구리 AI 상담</div>
+        <div class="cb-hd-sub">질문하거나 직접 AI에게 물어보세요</div>
+      </div>
+    </div>
+    <button class="cb-hd-close" onclick="A.closeChatBot()">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
   </div>
+
+  <!-- 카테고리 탭 -->
+  <div class="cb-tabs" id="cbTabs">
+    <button class="cb-tab on" onclick="A.cbTab(this,'use')">📱 앱 사용법</button>
+    <button class="cb-tab" onclick="A.cbTab(this,'pass')">🎟️ 1일이용권</button>
+    <button class="cb-tab" onclick="A.cbTab(this,'donate')">💚 기부앱</button>
+    <button class="cb-tab" onclick="A.cbTab(this,'defect')">🔍 하자점검</button>
+    <button class="cb-tab" onclick="A.cbTab(this,'save')">💾 저장방법</button>
+  </div>
+
+  <!-- 빠른 질문 버튼 -->
+  <div class="cb-quick" id="cbQuick">
+    <!-- JS로 동적 렌더링 -->
+  </div>
+
+  <!-- 메시지 영역 -->
+  <div class="cb-msgs" id="cbMsgs">
+    <div class="cb-msg bot">
+      <div class="cb-avatar">🐸</div>
+      <div>
+        <div class="cb-bubble">
+          안녕하세요! 청개구리 입주전 AI 상담봇입니다 😊<br><br>
+          위 탭에서 궁금한 항목을 선택하거나,<br>
+          아래 입력창에 <b>직접 질문</b>을 입력하면<br>
+          <span class="cb-ai-badge"><i class="fa-solid fa-robot"></i> AI</span>
+          가 바로 답변드립니다!
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI 직접 질문 입력창 -->
+  <div class="cb-input-wrap">
+    <textarea class="cb-input" id="cbInput"
+      placeholder="궁금한 것을 자유롭게 입력하세요..."
+      rows="1"
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();A.cbSend()}"
+      oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,80)+'px'"></textarea>
+    <button class="cb-send" id="cbSendBtn" onclick="A.cbSend()">
+      <i class="fa-solid fa-paper-plane"></i>
+    </button>
+  </div>
+
 </div>
+</div>
+
+<!-- 기존 FAB (숨김 유지) -->
+<button class="cf" onclick="A.openChatBot()"><i class="fa-solid fa-comment-dots"></i></button>
+<div class="cw" id="chatW"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -553,455 +1049,451 @@ input[type="file"]{display:none}
 <script type="module">
 import{GoogleGenerativeAI}from"@google/generative-ai";
 
+/* ============================================================
+   ★ 설정값 - 운영자가 수정하는 곳
+   ============================================================ */
+// Gemini API Key
 const K=["AIzaSyBoHZXi7YdDmH","V6GMEw49MYi74LILPKeCI"].join('');
 
-const LIMIT_FREE = 50;
-const LIMIT_PRO  = 50;
-const MAX_FREE_USERS = 25;
-const MAX_PRO_USERS  = 5;
+// 네이버 스마트스토어 URL (출시 전 교체)
+// 현재 moPayGuide 모달의 버튼 href도 함께 교체하세요
+const NAVER_STORE_URL = 'https://smartstore.naver.com/cheong-gaeguri/products/이용권';
 
-let list=[], wF=null, cF=null, devN=0, devT, mode='free';
+// Google Apps Script Web App URL (코드 검증용)
+// ※ 설정 방법: README_GAS_SETUP.md 참고
+// Google Sheets + Apps Script 배포 후 URL 교체
+const GAS_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec';
+
+// 이용권 요금
+const PASS_PRICE = 10000;
+
+// 무료 체험 한도 (하루)
+const LIMIT_FREE = 3;
+// 1일 이용권 한도 (하루)  
+const LIMIT_PAID = 100;
+// 직원 전용 한도
+const LIMIT_PRO  = 50;
+
+/* ============================================================ */
+
+let list=[], wF=null, cF=null, devN=0, devT;
+let mode='free'; // 'free' | 'paid' | 'pro'
 window.A={};
 
 const WM={"도배공사":{"도배":["들뜸","마감불량","흠집/찍힘","면불량","오염","이음불량","흠집","미시공","파손","이색/변색"]},"타일공사":{"타일":["줄눈불량","틈새","구배불량","단차","들뜸","미시공","파손","마감불량","오염","흠집/찍힘"],"폴리싱타일":["파손","들뜸","줄눈불량","단차","틈새","오염","마감불량"],"아트월타일":["틈새","파손","마감불량","단차","흠집/찍힘","미시공","들뜸"],"타일코킹":["코킹불량","미시공","틈새","흠집/찍힘","마감불량"],"마블씰":["들뜸","틈새","단차","미시공","흠집/찍힘"]},"PL창호공사":{"PL창호":["고정불량","미시공","수직수평불량","흠집/찍힘","개폐불량","파손","틈새"],"분합창":["미시공","흠집/찍힘","고정불량","수직수평불량","개폐불량","파손"],"터닝도어":["미시공","개폐불량","흠집/찍힘","고정불량","틈새","파손"],"대피창":["개폐불량","고정불량","코킹불량","미시공"],"PL방충망":["개폐불량","미시공","수직수평불량","파손"]},"주방가구공사":{"주방상/하부장":["수직수평불량","미시공","개폐불량","흠집/찍힘","마감불량","고정불량","틈새"],"아일랜드장":["수직수평불량","개폐불량","미시공","흠집/찍힘","마감불량","틈새"],"냉장고장":["흠집/찍힘","수직수평불량","틈새","미시공","마감불량"],"고급장식장":["개폐불량","고정불량","수직수평불량","틈새","미시공"],"씽크볼":["미시공","마감불량","틈새","고정불량"]},"일반가구공사":{"신발장":["흠집/찍힘","미시공","틈새","수직수평불량","마감불량","개폐불량"],"붙박이장":["흠집/찍힘","미시공","수직수평불량","개폐불량","틈새","마감불량"],"화장대":["미시공","흠집/찍힘","마감불량","틈새","개폐불량","수직수평불량"],"현관팬트리도어/틀":["흠집/찍힘","수직수평불량","틈새","미시공","마감불량"],"복도팬트리도어/틀":["흠집/찍힘","틈새","수직수평불량","마감불량","미시공"],"아트월판넬":["틈새","마감불량","미시공","흠집/찍힘","파손"],"드레스룸도어/틀":["흠집/찍힘","틈새","마감불량","미시공","수직수평불량"]},"마루공사":{"강마루":["들뜸","틈새","오염","단차","파손","마감불량","미시공"],"마루코킹":["코킹불량","미시공","들뜸","틈새","오염"],"걸레받이":["틈새","파손","마감불량","미시공","들뜸","단차"]},"목창호공사":{"목문틀":["흠집/찍힘","틈새","미시공","수직수평불량","고정불량","마감불량"],"목문짝":["개폐불량","흠집/찍힘","고정불량","수직수평불량","틈새","마감불량"],"공틀":["틈새","수직수평불량","오염","미시공"]},"도장공사":{"도장":["마감불량","면불량","도장불량","균열","오염","미시공","들뜸"],"현관문틀도장":["도장불량","마감불량","오염","면불량","균열"],"외벽도장":["면불량","마감불량","균열","도장불량","오염"]},"준공청소공사":{"준공청소":["오염"]},"코킹공사":{"코킹":["코킹불량","미시공","틈새","오염","마감불량"]},"중문공사":{"슬라이딩도어/틀":["개폐불량","고정불량","마감불량","미시공","틈새","흠집/찍힘"],"스윙도어/틀":["마감불량","고정불량","개폐불량","미시공","흠집/찍힘","틈새"]},"기계설비공사":{"위생도기류":["고정불량","마감불량","작동불량","미시공","누수"],"수전류":["고정불량","미시공","작동불량","마감불량","누수"],"설비":["마감불량","미시공","악취","작동불량","누수"],"욕실액세서리":["고정불량","미시공","마감불량","수직수평불량"],"배수드레인":["마감불량","미시공","고정불량","작동불량","배수불량"]},"전기공사":{"콘센트":["작동불량","고정불량","수직수평불량","미시공","들뜸"],"스위치":["작동불량","수직수평불량","고정불량","미시공"],"네트워크스위치":["작동불량","수직수평불량","고정불량"]},"내장목공사":{"석고보드":["고정불량","마감불량","들뜸","단차","틈새"],"천정몰딩":["틈새","흠집/찍힘","마감불량","고정불량","오염"]},"방화문공사":{"현관문":["미시공","개폐불량","흠집/찍힘","고정불량","틈새"],"대피공간방화문":["미시공","개폐불량","고정불량","흠집/찍힘","틈새"],"실외기실문짝/틀":["개폐불량","고정불량","미시공","틈새"]},"시스템가구공사":{"시스템가구":["고정불량","미시공","수직수평불량","틈새","마감불량"],"월판넬":["틈새","미시공","수직수평불량","단차"]},"주방상판공사":{"주방상판/코킹":["미시공","코킹불량","틈새","흠집/찍힘","파손"],"엔지니어드상판":["미시공","틈새","마감불량","코킹불량","파손"]},"조명공사":{"세대등기구":["수직수평불량","작동불량","고정불량","미시공","점등불량"]},"내부석공사":{"석재걸레받이":["틈새","미시공","마감불량","코킹불량","파손"],"디딤판":["틈새","미시공","단차","마감불량","파손"]},"욕실장공사":{"욕실장/코킹":["미시공","개폐불량","수직수평불량","고정불량","코킹불량"]},"유리공사":{"유리":["흠집","파손","미시공","오염","코킹불량"],"유리코킹":["코킹불량","미시공"]},"에어컨공사":{"실외기":["마감불량","미시공","작동불량","고정불량"],"시스템에어컨":["작동불량","고정불량","마감불량","누수"]},"루버창호공사":{"루버창/방충망":["미시공","고정불량","개폐불량","흠집/찍힘"]},"직영공사":{"직영":["마감불량","들뜸","미시공","누수","고정불량","틈새"]}};
 
 const $=id=>document.getElementById(id);
 
-// ============================================
-// 🔊 음성안내 시스템 (v19.5 NEW)
-// ============================================
-const VOICE_STEPS = [
-  {
-    id: 'step1',
-    title: '1단계: 현장 정보 입력',
-    text: '첫 번째 단계입니다. 현장 정보를 입력해주세요. 전체 주소, 아파트명, 동 번호, 호수를 입력하고, 점검할 위치를 선택해주세요. 위치 선택은 필수입니다. 거실, 주방, 침실, 욕실 등 점검할 방을 선택하세요.'
-  },
-  {
-    id: 'step2',
-    title: '2단계: 사진 촬영',
-    text: '두 번째 단계입니다. 사진을 촬영합니다. 왼쪽의 멀리서 찍기 버튼을 눌러 하자 위치가 보이도록 넓게 촬영하세요. 그 다음 오른쪽의 가까이 찍기 버튼을 눌러 하자 부분을 가까이 촬영하면, AI 분석이 자동으로 시작됩니다.'
-  },
-  {
-    id: 'step3',
-    title: '3단계: 하자 정보 확인',
-    text: '세 번째 단계입니다. 하자 정보를 확인합니다. AI가 자동으로 공종, 세부, 유형을 분류하고 상세 분석을 제공합니다. 하자 내용을 직접 입력하면 AI가 더 정확하게 분석합니다. 공종, 세부, 유형은 직접 수정할 수도 있습니다.'
-  },
-  {
-    id: 'step4',
-    title: '4단계: 동의 체크',
-    text: '네 번째 단계입니다. 필수 확인 사항에 동의해주세요. AI 분석은 참고용이며 법적 효력이 없습니다. 동의에 체크하면 저장 버튼이 활성화됩니다. 동의는 최초 1회만 하면 됩니다.'
-  },
-  {
-    id: 'step5',
-    title: '5단계: 리스트에 저장',
-    text: '다섯 번째 단계입니다. 리스트에 저장 버튼을 눌러 점검 항목을 저장하세요. 저장 후 자동으로 입력창이 초기화되어 다음 하자를 바로 입력할 수 있습니다. 이 과정을 반복하여 여러 하자를 등록하세요.'
-  },
-  {
-    id: 'step6',
-    title: '6단계: 점검 리스트 확인',
-    text: '여섯 번째 단계입니다. 점검 리스트에서 저장된 항목을 확인할 수 있습니다. 수정 버튼으로 내용을 고치거나, 삭제 버튼으로 항목을 제거할 수 있습니다. 전체 삭제도 가능합니다.'
-  },
-  {
-    id: 'step7',
-    title: '7단계: 최종 저장 및 서비스',
-    text: '마지막 단계입니다. 전체 저장 버튼을 눌러 PDF 파일로 저장하세요. 유료 예약 버튼으로 전문가 현장 점검을 신청할 수 있고, AI 상담 버튼으로 궁금한 점을 물어볼 수 있습니다. 이상으로 앱 사용 안내를 마칩니다. 감사합니다!'
-  }
-];
+/* ============================================================
+   🎟️ 이용권 시스템 (서버리스 - Google Apps Script 연동)
+   ============================================================ */
 
-let voiceState = {
-  isPlaying: false,
-  isPaused: false,
-  currentStep: 0,
-  utterance: null,
-  supported: ('speechSynthesis' in window)
-};
-
-A.voiceGuide = () => {
-  if (!voiceState.supported) {
-    alert('이 브라우저에서는 음성안내를 지원하지 않습니다.\n텍스트 도움말을 표시합니다.');
-    A.modal('help', 1);
-    return;
-  }
-
-  if (voiceState.isPlaying) {
-    A.voiceStop();
-    return;
-  }
-
-  voiceState.currentStep = 0;
-  voiceState.isPlaying = true;
-  voiceState.isPaused = false;
-
-  $('voiceBtn').classList.add('playing');
-  $('voiceBtn').innerHTML = '<i class="fa-solid fa-volume-high"></i> 안내 중...';
-  $('voiceCtrl').classList.add('show');
-
-  speakStep(0);
-};
-
-A.voicePause = () => {
-  if (!voiceState.isPlaying) return;
-  const synth = window.speechSynthesis;
-  const btn = $('vcPause');
-
-  if (voiceState.isPaused) {
-    synth.resume();
-    voiceState.isPaused = false;
-    btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
-    btn.title = '일시정지';
-  } else {
-    synth.pause();
-    voiceState.isPaused = true;
-    btn.innerHTML = '<i class="fa-solid fa-play"></i>';
-    btn.title = '재생';
-  }
-};
-
-A.voicePrev = () => {
-  if (voiceState.currentStep > 0) {
-    window.speechSynthesis.cancel();
-    voiceState.isPaused = false;
-    $('vcPause').innerHTML = '<i class="fa-solid fa-pause"></i>';
-    speakStep(voiceState.currentStep - 1);
-  }
-};
-
-A.voiceNext = () => {
-  if (voiceState.currentStep < VOICE_STEPS.length - 1) {
-    window.speechSynthesis.cancel();
-    voiceState.isPaused = false;
-    $('vcPause').innerHTML = '<i class="fa-solid fa-pause"></i>';
-    speakStep(voiceState.currentStep + 1);
-  }
-};
-
-A.voiceStop = () => {
-  window.speechSynthesis.cancel();
-  voiceState.isPlaying = false;
-  voiceState.isPaused = false;
-  voiceState.currentStep = 0;
-
-  $('voiceBtn').classList.remove('playing');
-  $('voiceBtn').innerHTML = '<i class="fa-solid fa-volume-high"></i> 음성안내';
-  $('voiceCtrl').classList.remove('show');
-  $('vcPause').innerHTML = '<i class="fa-solid fa-pause"></i>';
-
-  // 하이라이트 제거
-  document.querySelectorAll('.voice-highlight').forEach(el => el.classList.remove('voice-highlight'));
-};
-
-function speakStep(idx) {
-  if (idx < 0 || idx >= VOICE_STEPS.length) {
-    A.voiceStop();
-    return;
-  }
-
-  voiceState.currentStep = idx;
-  const step = VOICE_STEPS[idx];
-  const pct = ((idx + 1) / VOICE_STEPS.length * 100).toFixed(0);
-
-  // UI 업데이트
-  $('vcText').textContent = step.title;
-  $('vcBar').style.width = pct + '%';
-
-  // 하이라이트 처리
-  document.querySelectorAll('.voice-highlight').forEach(el => el.classList.remove('voice-highlight'));
-  const target = document.querySelector(`[data-voice-id="${step.id}"]`);
-  if (target) {
-    target.classList.add('voice-highlight');
-    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-
-  // 음성 출력
-  const synth = window.speechSynthesis;
-  synth.cancel();
-
-  const utter = new SpeechSynthesisUtterance(step.text);
-  utter.lang = 'ko-KR';
-  utter.rate = 0.95;
-  utter.pitch = 1.05;
-  utter.volume = 1;
-
-  // 한국어 음성 찾기
-  const voices = synth.getVoices();
-  const koVoice = voices.find(v => v.lang.startsWith('ko')) || voices[0];
-  if (koVoice) utter.voice = koVoice;
-
-  utter.onend = () => {
-    if (voiceState.isPlaying && !voiceState.isPaused) {
-      // 다음 단계로 자동 진행 (0.8초 대기)
-      if (idx < VOICE_STEPS.length - 1) {
-        setTimeout(() => {
-          if (voiceState.isPlaying) speakStep(idx + 1);
-        }, 800);
-      } else {
-        // 마지막 단계 완료
-        setTimeout(() => A.voiceStop(), 1000);
-      }
-    }
-  };
-
-  utter.onerror = (e) => {
-    console.warn('TTS Error:', e);
-    if (e.error !== 'canceled') {
-      A.voiceStop();
-      alert('음성안내 중 오류가 발생했습니다.\n텍스트 도움말을 표시합니다.');
-      A.modal('help', 1);
-    }
-  };
-
-  voiceState.utterance = utter;
-  synth.speak(utter);
-}
-
-// 음성 목록 미리 로드 (일부 브라우저에서 필요)
-if ('speechSynthesis' in window) {
-  window.speechSynthesis.getVoices();
-  window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
-}
-
-
-// ============================================
-// 🔒 사용량 제한 시스템
-// ============================================
-function getQuota(){
+// 현재 이용권 상태 확인
+function getPassState(){
   const today = new Date().toDateString();
-  const key = mode === 'pro' ? 'frog_use_pro' : 'frog_use_free';
-  let d = JSON.parse(ls(key) || '{}');
-  if(d.date !== today) d = { date: today, count: 0 };
-  return d;
+  const raw = ls('frog_pass') || '{}';
+  const p = JSON.parse(raw);
+  if(p.date !== today) return { active: false, type: 'free' };
+  return p;
+}
+
+// 이용권 활성화
+function activatePass(code, type='paid'){
+  const today = new Date().toDateString();
+  ls('frog_pass', JSON.stringify({
+    date: today, active: true, type, code,
+    activatedAt: new Date().toISOString()
+  }));
+}
+
+// GAS를 통한 코드 검증
+async function verifyCodeGAS(code){
+  // GAS가 설정되지 않은 경우 (개발/테스트용)
+  if(GAS_URL.includes('YOUR_SCRIPT_ID')){
+    // ★ 테스트용 코드: 실제 운영 시 GAS URL로 교체 필수
+    const testCodes = ['TEST01','DEMO01','FROG01'];
+    if(testCodes.includes(code.toUpperCase())){
+      return { valid: true, message: '인증 성공 (테스트)' };
+    }
+    return { valid: false, message: '유효하지 않은 코드입니다' };
+  }
+
+  // 실제 GAS 검증
+  const today = new Date().toISOString().split('T')[0];
+  const url = `${GAS_URL}?action=verify&code=${encodeURIComponent(code)}&date=${today}`;
+  const res = await fetch(url);
+  if(!res.ok) throw new Error('서버 응답 오류');
+  return await res.json();
+}
+
+// 이용권 구매 모달 열기
+A.openPayModal = () => {
+  $('codeInput').value = '';
+  $('codeMsg').textContent = '';
+  $('codeMsg').className = 'code-msg';
+  $('btnVerify').disabled = false;
+  A.modal('payGuide', 1);
+};
+
+// 코드 입력창 표시
+A.showCodeInput = () => {};
+
+// 코드 인증
+A.verifyCode = async () => {
+  const code = $('codeInput').value.trim().toUpperCase();
+  if(!code || code.length < 4){
+    $('codeInput').classList.add('error');
+    $('codeMsg').textContent = '코드를 입력해주세요 (4자 이상)';
+    $('codeMsg').className = 'code-msg err';
+    setTimeout(()=>$('codeInput').classList.remove('error'), 500);
+    return;
+  }
+
+  // 이미 오늘 사용한 코드인지 확인
+  const p = getPassState();
+  if(p.active && p.code === code){
+    $('codeMsg').textContent = '이미 활성화된 코드입니다 ✓';
+    $('codeMsg').className = 'code-msg ok';
+    setTimeout(()=>A.modal('payGuide',0), 1200);
+    return;
+  }
+
+  $('btnVerify').disabled = true;
+  $('codeMsg').textContent = '확인 중...';
+  $('codeMsg').className = 'code-msg loading';
+
+  try{
+    const result = await verifyCodeGAS(code);
+    if(result.valid){
+      $('codeInput').classList.remove('error');
+      $('codeInput').classList.add('success');
+      $('codeMsg').textContent = '✓ 인증 성공! 오늘 하루 이용권이 활성화되었습니다';
+      $('codeMsg').className = 'code-msg ok';
+      activatePass(code, 'paid');
+      mode = 'paid';
+      updatePassUI();
+      updateQuotaUI();
+      stat('🎟️ 1일 이용권 활성화! AI 분석 50회 사용 가능');
+      setTimeout(()=>A.modal('payGuide',0), 1800);
+    } else {
+      $('codeInput').classList.add('error');
+      $('codeMsg').textContent = result.message || '유효하지 않은 코드입니다';
+      $('codeMsg').className = 'code-msg err';
+      setTimeout(()=>$('codeInput').classList.remove('error'), 500);
+      $('btnVerify').disabled = false;
+    }
+  } catch(e){
+    $('codeMsg').textContent = '검증 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+    $('codeMsg').className = 'code-msg err';
+    $('btnVerify').disabled = false;
+  }
+};
+
+// 이용권 상태 UI 업데이트
+function updatePassUI(){
+  const p = getPassState();
+  const statusEl = $('passStatus');
+  const labelEl = $('passLabel');
+  const tagEl = $('passTag');
+  const btnBuy = $('btnBuy');
+
+  if(ls('is_dev') === 'true'){
+    statusEl.className = 'pass-status pro';
+    labelEl.textContent = '🛠️ 개발자 모드';
+    tagEl.textContent = 'DEV';
+    tagEl.style.background = 'var(--pu)';
+    btnBuy.style.display = 'none';
+    return;
+  }
+
+  if(mode === 'pro'){
+    statusEl.className = 'pass-status pro';
+    labelEl.textContent = '직원 전용 모드 활성';
+    tagEl.textContent = '직원';
+    tagEl.style.background = 'var(--pu)';
+    btnBuy.style.display = 'none';
+    $('passCount').textContent = '';
+    $('passCount').className = 'pass-count';
+    return;
+  }
+
+  if(p.active && p.type === 'paid'){
+    statusEl.className = 'pass-status paid';
+    labelEl.textContent = '1일 이용권 이용 중';
+    tagEl.textContent = '이용권';
+    tagEl.style.background = 'var(--nv)';
+    btnBuy.innerHTML = '<i class="fa-solid fa-check"></i> 이용 중';
+    btnBuy.style.background = 'linear-gradient(135deg,var(--p),var(--pl))';
+    btnBuy.onclick = () => A.openPayModal();
+  } else {
+    statusEl.className = 'pass-status free';
+    labelEl.textContent = '무료 체험 중';
+    tagEl.textContent = '기부형 앱';
+    tagEl.style.background = 'var(--ac)';
+    btnBuy.innerHTML = '<i class="fa-brands fa-naver"></i> 1일권 구매';
+    btnBuy.style.background = '';
+    btnBuy.onclick = () => A.openPayModal();
+  }
+}
+
+/* ============================================================
+   🔒 사용량 제한 시스템
+   ============================================================ */
+function getActiveMode(){
+  if(ls('is_dev') === 'true') return 'dev';
+  const p = getPassState();
+  if(mode === 'pro') return 'pro';
+  if(p.active && p.type === 'paid') return 'paid';
+  return 'free';
 }
 
 function getLimit(){
-  if(ls('is_dev') === 'true') return 99999;
-  return mode === 'pro' ? LIMIT_PRO : LIMIT_FREE;
+  const m = getActiveMode();
+  if(m === 'dev') return 99999;
+  if(m === 'pro') return LIMIT_PRO;
+  if(m === 'paid') return LIMIT_PAID;
+  return LIMIT_FREE;
+}
+
+function getQuota(){
+  const today = new Date().toDateString();
+  const m = getActiveMode();
+  let key;
+  if(m === 'pro') key = 'frog_use_pro';
+  else if(m === 'paid') key = 'frog_use_paid';
+  else key = 'frog_use_free';
+  let d = JSON.parse(ls(key) || '{}');
+  if(d.date !== today) d = { date: today, count: 0 };
+  return { data: d, key };
 }
 
 function getRemaining(){
-  const q = getQuota();
-  const limit = getLimit();
-  return Math.max(0, limit - q.count);
+  const { data } = getQuota();
+  return Math.max(0, getLimit() - (data.count || 0));
 }
 
 function useQuota(){
   const today = new Date().toDateString();
-  const key = mode === 'pro' ? 'frog_use_pro' : 'frog_use_free';
-  let d = JSON.parse(ls(key) || '{}');
-  if(d.date !== today) d = { date: today, count: 0 };
-  d.count++;
-  ls(key, JSON.stringify(d));
+  const { data, key } = getQuota();
+  if(data.date !== today) data.count = 0;
+  data.date = today;
+  data.count = (data.count || 0) + 1;
+  ls(key, JSON.stringify(data));
 }
 
 function chkLim(){
   if(ls('is_dev') === 'true') return true;
   const remaining = getRemaining();
   const limit = getLimit();
-  const modeStr = mode === 'pro' ? '전문가' : '무료';
+  const m = getActiveMode();
+
   if(remaining <= 0){
-    alert(`⚠️ ${modeStr} 점검 일일 한도(${limit}건) 초과!\n\n내일 자정(00:00)에 초기화됩니다.\n추가 점검이 필요하시면 010-2322-0949로 연락주세요.`);
-    return false;
+    if(m === 'free'){
+      // 무료 한도 초과 → 구매 유도
+      $('upgradeCard').classList.add('show');
+      $('upgradeCard').scrollIntoView({behavior:'smooth', block:'center'});
+      stat('⚡ 무료 체험 3회 완료 — 1일이용권으로 계속하세요', true);
+      return false;
+    } else {
+      alert(`⚠️ 오늘 AI 분석 한도(${limit}건)를 모두 사용했습니다.\n내일 자정 초기화됩니다.\n📞 010-2322-0949`);
+      return false;
+    }
   }
-  if(remaining <= 5){
-    const go = confirm(`⚡ AI 분석 잔여 ${remaining}건 남았습니다.\n계속하시겠습니까?`);
+  if(remaining <= 5 && m !== 'free'){
+    const go = confirm(`⚡ AI 분석 잔여 ${remaining}건 남았습니다. 계속하시겠습니까?`);
     if(!go) return false;
   }
   return true;
 }
 
 function updateQuotaUI(){
+  const m = getActiveMode();
   const limit = getLimit();
-  const q = getQuota();
-  const used = q.count || 0;
+  const { data } = getQuota();
+  const used = data.count || 0;
   const remaining = Math.max(0, limit - used);
-  const pct = (remaining / limit) * 100;
+  const pct = (remaining / (limit || 1)) * 100;
   const numEl = $('qNum');
   const barEl = $('qBar');
   const labelEl = $('qLabel');
-  if(ls('is_dev') === 'true'){
-    labelEl.textContent = '🛠️ 개발자 모드 (무제한)';
+
+  if(m === 'dev'){
+    labelEl.textContent = '🛠️ 개발자 (무제한)';
     numEl.textContent = `${used}건 사용`;
     numEl.className = 'q-num ok';
     barEl.style.width = '100%';
     barEl.style.background = 'var(--pu)';
-    updateModeBarLabels();
+    updatePassUI();
     return;
   }
-  const modeStr = mode === 'pro' ? '전문가' : '무료';
+
+  const modeStr = m === 'paid' ? '이용권' : m === 'pro' ? '직원' : '무료체험';
   labelEl.textContent = `${modeStr} AI 분석`;
+
+  if(m === 'paid'){
+    numEl.className = remaining <= 0 ? 'q-num out' : remaining <= 10 ? 'q-num low' : 'q-num nv';
+    barEl.style.background = remaining <= 0 ? 'var(--dn)' : 'var(--nv)';
+  } else if(m === 'pro'){
+    numEl.className = remaining <= 0 ? 'q-num out' : 'q-num ok';
+    barEl.style.background = remaining <= 0 ? 'var(--dn)' : 'var(--pu)';
+  } else {
+    numEl.className = remaining <= 0 ? 'q-num out' : 'q-num ok';
+    barEl.style.background = remaining <= 0 ? 'var(--dn)' : 'var(--pl)';
+  }
+
   numEl.textContent = `${remaining}/${limit}건`;
-  if(remaining <= 0){
-    numEl.className = 'q-num out';
-    barEl.style.background = 'var(--dn)';
-  } else if(remaining <= 10){
-    numEl.className = 'q-num low';
-    barEl.style.background = 'var(--wr)';
-  } else {
-    numEl.className = 'q-num ok';
-    barEl.style.background = mode === 'pro' ? 'var(--pu)' : 'var(--pl)';
-  }
   barEl.style.width = pct + '%';
-  updateModeBarLabels();
+
+  $('passCount').textContent = `잔여 ${remaining}건`;
+  $('passCount').className = `pass-count ${remaining <= 0 ? 'out' : m === 'paid' ? 'paid-ok' : 'ok'}`;
+
+  // 무료 한도 초과 시 업그레이드 카드 표시
+  if(m === 'free' && remaining <= 0){
+    $('upgradeCard').classList.add('show');
+  } else {
+    $('upgradeCard').classList.remove('show');
+  }
+  updatePassUI();
 }
 
-function updateModeBarLabels(){
-  const isDev = ls('is_dev') === 'true';
-  const today = new Date().toDateString();
-  const freeQ = JSON.parse(ls('frog_use_free') || '{}');
-  const freeUsed = (freeQ.date === today) ? (freeQ.count || 0) : 0;
-  const freeRem = isDev ? 99999 : Math.max(0, LIMIT_FREE - freeUsed);
-  if(isDev){
-    $('mcFreeLb').innerHTML = `무료점검 <span style="font-size:.62rem;opacity:.85;font-weight:900;color:var(--pu)">(∞건)</span>`;
-  } else if(freeRem <= 0){
-    $('mcFreeLb').innerHTML = `<span style="font-size:.72rem;font-weight:900;color:var(--dn)">무료점검 초과</span>`;
-  } else {
-    const fColor = freeRem <= 10 ? 'color:var(--wr)' : '';
-    $('mcFreeLb').innerHTML = `무료점검 <span style="font-size:.62rem;opacity:.85;font-weight:900;${fColor}">(${freeRem}건)</span>`;
-  }
-  const proQ = JSON.parse(ls('frog_use_pro') || '{}');
-  const proUsed = (proQ.date === today) ? (proQ.count || 0) : 0;
-  const proRem = isDev ? 99999 : Math.max(0, LIMIT_PRO - proUsed);
-  if(isDev){
-    $('mcProLb').innerHTML = `전문가점검 <span style="font-size:.62rem;opacity:.85;font-weight:900;color:var(--pu)">(∞건)</span>`;
-  } else if(proRem <= 0){
-    $('mcProLb').innerHTML = `<span style="font-size:.72rem;font-weight:900;color:var(--dn)">전문가점검 초과</span>`;
-  } else {
-    const pColor = proRem <= 10 ? 'color:var(--wr)' : '';
-    $('mcProLb').innerHTML = `전문가점검 <span style="font-size:.62rem;opacity:.85;font-weight:900;${pColor}">(${proRem}건)</span>`;
-  }
-}
+/* ============================================================
+   🔊 음성안내 시스템
+   ============================================================ */
+const VOICE_STEPS = [
+  { id:'passbar', title:'이용권 안내 (필독!)', text:'안녕하세요! 청개구리 입주전 AI 앱입니다. 먼저 이용권 안내를 드립니다. 이 앱은 하루 3회 무료 체험이 가능합니다. 더 많은 분석이 필요하시면 네이버페이 1일 이용권을 구매하세요. 가격은 만원이며, 하루 100회 AI 분석이 가능합니다. 중요한 점은, 수익의 50퍼센트가 공익단체에 기부됩니다. 화면 상단의 1일권 구매 버튼을 눌러 네이버 스마트스토어에서 결제 후, 문자로 받은 인증코드를 입력하면 즉시 활성화됩니다.' },
+  { id:'step1', title:'1단계: 현장 정보 입력', text:'첫 번째 단계입니다. 현장 정보를 입력해주세요. 전체 주소, 아파트명, 동 번호, 호수를 입력하고, 점검할 위치를 선택해주세요. 위치 선택은 필수입니다.' },
+  { id:'step2', title:'2단계: 사진 촬영', text:'두 번째 단계입니다. 사진을 촬영합니다. 왼쪽 멀리서 찍기로 하자 위치가 보이도록 넓게 촬영하세요. 오른쪽 가까이 찍기를 누르면 AI 분석이 자동으로 시작됩니다.' },
+  { id:'step3', title:'3단계: 하자 정보 확인', text:'세 번째 단계입니다. AI가 자동으로 공종, 세부, 유형을 분류합니다. 하자 내용을 직접 입력하면 더 정확하게 분석됩니다.' },
+  { id:'step4', title:'4단계: 동의 체크', text:'네 번째 단계입니다. 필수 확인 사항에 동의해주세요. AI 분석은 참고용이며 법적 효력이 없습니다. 동의는 최초 1회만 하면 됩니다.' },
+  { id:'step5', title:'5단계: 리스트에 저장', text:'다섯 번째 단계입니다. 리스트에 저장 버튼을 눌러 점검 항목을 저장하세요. 이 과정을 반복하여 여러 하자를 등록하세요.' },
+  { id:'step6', title:'6단계: 점검 리스트 확인', text:'여섯 번째 단계입니다. 점검 리스트에서 저장된 항목을 확인, 수정, 삭제할 수 있습니다.' },
+  { id:'step7', title:'7단계: PDF 저장', text:'마지막 단계입니다. 전체 저장 버튼을 눌러 PDF 파일로 저장하세요. 저장된 파일은 하자 보수 요청의 근거 자료로 활용할 수 있습니다. 이상으로 청개구리 입주전 앱 사용 안내를 마칩니다. 감사합니다!' }
+];
+let voiceState = { isPlaying:false, isPaused:false, currentStep:0, utterance:null, supported:('speechSynthesis' in window) };
 
+A.voiceGuide=()=>{
+  if(!voiceState.supported){ alert('이 브라우저에서는 음성안내를 지원하지 않습니다.'); return; }
+  if(voiceState.isPlaying){ A.voiceStop(); return; }
+  voiceState.currentStep=0; voiceState.isPlaying=true; voiceState.isPaused=false;
+  $('voiceBtn').classList.add('playing'); $('voiceBtn').innerHTML='<i class="fa-solid fa-volume-high"></i> 안내 중...';
+  $('voiceCtrl').classList.add('show');
+  speakStep(0);
+};
+A.voicePause=()=>{
+  if(!voiceState.isPlaying) return;
+  const synth=window.speechSynthesis, btn=$('vcPause');
+  if(voiceState.isPaused){ synth.resume(); voiceState.isPaused=false; btn.innerHTML='<i class="fa-solid fa-pause"></i>'; }
+  else { synth.pause(); voiceState.isPaused=true; btn.innerHTML='<i class="fa-solid fa-play"></i>'; }
+};
+A.voicePrev=()=>{ if(voiceState.currentStep>0){ window.speechSynthesis.cancel(); voiceState.isPaused=false; $('vcPause').innerHTML='<i class="fa-solid fa-pause"></i>'; speakStep(voiceState.currentStep-1); } };
+A.voiceNext=()=>{ if(voiceState.currentStep<VOICE_STEPS.length-1){ window.speechSynthesis.cancel(); voiceState.isPaused=false; $('vcPause').innerHTML='<i class="fa-solid fa-pause"></i>'; speakStep(voiceState.currentStep+1); } };
+A.voiceStop=()=>{
+  window.speechSynthesis.cancel(); voiceState.isPlaying=false; voiceState.isPaused=false; voiceState.currentStep=0;
+  $('voiceBtn').classList.remove('playing'); $('voiceBtn').innerHTML='<i class="fa-solid fa-volume-high"></i> 음성안내';
+  $('voiceCtrl').classList.remove('show'); $('vcPause').innerHTML='<i class="fa-solid fa-pause"></i>';
+  document.querySelectorAll('.voice-highlight').forEach(el=>el.classList.remove('voice-highlight'));
+};
+function speakStep(idx){
+  if(idx<0||idx>=VOICE_STEPS.length){ A.voiceStop(); return; }
+  voiceState.currentStep=idx;
+  const step=VOICE_STEPS[idx], pct=((idx+1)/VOICE_STEPS.length*100).toFixed(0);
+  $('vcText').textContent=step.title; $('vcBar').style.width=pct+'%';
+  document.querySelectorAll('.voice-highlight').forEach(el=>el.classList.remove('voice-highlight'));
+  const target=document.querySelector(`[data-voice-id="${step.id}"]`);
+  if(target){ target.classList.add('voice-highlight'); target.scrollIntoView({behavior:'smooth',block:'center'}); }
+  const synth=window.speechSynthesis; synth.cancel();
+  const utter=new SpeechSynthesisUtterance(step.text);
+  utter.lang='ko-KR'; utter.rate=0.95; utter.pitch=1.05; utter.volume=1;
+  const voices=synth.getVoices(); const koVoice=voices.find(v=>v.lang.startsWith('ko'))||voices[0];
+  if(koVoice) utter.voice=koVoice;
+  utter.onend=()=>{ if(voiceState.isPlaying&&!voiceState.isPaused){ if(idx<VOICE_STEPS.length-1) setTimeout(()=>{ if(voiceState.isPlaying)speakStep(idx+1); },800); else setTimeout(()=>A.voiceStop(),1000); } };
+  utter.onerror=(e)=>{ if(e.error!=='canceled'){ A.voiceStop(); } };
+  voiceState.utterance=utter; synth.speak(utter);
+}
+if('speechSynthesis' in window){ window.speechSynthesis.getVoices(); window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices(); }
+
+/* ============================================================
+   ⚙️ 공종/세부/유형 초기화
+   ============================================================ */
 function initWorkSelect(){
-  const sel=$('fWork');
-  sel.innerHTML='<option value="">자동</option>';
-  for(const w of Object.keys(WM)){
-    const o=document.createElement('option');o.value=w;o.textContent=w;sel.appendChild(o);
-  }
+  const sel=$('fWork'); sel.innerHTML='<option value="">자동</option>';
+  for(const w of Object.keys(WM)){ const o=document.createElement('option'); o.value=w; o.textContent=w; sel.appendChild(o); }
 }
 A.onWork=()=>{
-  const w=$('fWork').value;
-  const sub=$('fSub');
-  sub.innerHTML='<option value="">자동</option>';
-  $('fType').innerHTML='<option value="">자동</option>';
-  if(w&&WM[w]){
-    for(const s of Object.keys(WM[w])){
-      const o=document.createElement('option');o.value=s;o.textContent=s;sub.appendChild(o);
-    }
-  }
+  const w=$('fWork').value, sub=$('fSub');
+  sub.innerHTML='<option value="">자동</option>'; $('fType').innerHTML='<option value="">자동</option>';
+  if(w&&WM[w]) for(const s of Object.keys(WM[w])){ const o=document.createElement('option'); o.value=s; o.textContent=s; sub.appendChild(o); }
 };
 A.onSub=()=>{
-  const w=$('fWork').value, s=$('fSub').value;
-  const tp=$('fType');
+  const w=$('fWork').value, s=$('fSub').value, tp=$('fType');
   tp.innerHTML='<option value="">자동</option>';
-  if(w&&s&&WM[w]&&WM[w][s]){
-    for(const t of WM[w][s]){
-      const o=document.createElement('option');o.value=t;o.textContent=t;tp.appendChild(o);
-    }
-  }
+  if(w&&s&&WM[w]&&WM[w][s]) for(const t of WM[w][s]){ const o=document.createElement('option'); o.value=t; o.textContent=t; tp.appendChild(o); }
 };
 
+/* ============================================================
+   🚀 초기화
+   ============================================================ */
 window.addEventListener('DOMContentLoaded',()=>{
-  if(ls('is_dev')==='true')$('verTag').classList.add('dev');
+  if(ls('is_dev')==='true') $('verTag').classList.add('dev');
+
+  // 저장된 이용권 상태 복원
+  const p = getPassState();
+  if(p.active && p.type === 'paid') mode = 'paid';
+  else if(p.active && p.type === 'pro') mode = 'pro';
+
   if(ls('frog_agreed')==='true'){
-    $('fAgree').checked=true;
-    $('agreeNote').style.display='block';
-    A.togSave();
+    $('fAgree').checked=true; $('agreeNote').style.display='block'; A.togSave();
   }
-  initWorkSelect();
-  loadList();
-  loadDraft();
-  initDraftListeners();
-  step(1);
-  updateQuotaUI();
+  initWorkSelect(); loadList(); loadDraft(); initDraftListeners();
+  step(1); updateQuotaUI(); updatePassUI();
 });
 
-function ls(k,v){if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}
+const ls=(k,v)=>{ if(v===undefined)return localStorage.getItem(k); localStorage.setItem(k,v); };
 
-const DRAFT_KEY = 'frog_draft';
-const DRAFT_TTL = 24 * 60 * 60 * 1000;
-
+/* ── 임시저장 ── */
+const DRAFT_KEY='frog_draft', DRAFT_TTL=24*60*60*1000;
 function saveDraft(){
   try{
-    const draft = {
-      ts: Date.now(),
-      addr: $('fAddr').value, apt: $('fApt').value,
-      dong: $('fDong').value, ho: $('fHo').value,
-      room: $('fRoom').value, user: $('fUser').value,
-      work: $('fWork').value, sub: $('fSub').value,
-      type: $('fType').value, detail: $('fDetail').value,
-      wImg: ($('pvW').style.display!=='none' && $('pvW').src.startsWith('data:')) ? $('pvW').src : null,
-      cImg: ($('pvC').style.display!=='none' && $('pvC').src.startsWith('data:')) ? $('pvC').src : null
-    };
-    ls(DRAFT_KEY, JSON.stringify(draft));
-  }catch(e){
-    try{
-      const lite = {ts:Date.now(),addr:$('fAddr').value,apt:$('fApt').value,
-        dong:$('fDong').value,ho:$('fHo').value,room:$('fRoom').value,
-        user:$('fUser').value,work:$('fWork').value,sub:$('fSub').value,
-        type:$('fType').value,detail:$('fDetail').value,wImg:null,cImg:null};
-      ls(DRAFT_KEY, JSON.stringify(lite));
-    }catch(e2){}
-  }
+    const d={ts:Date.now(),addr:$('fAddr').value,apt:$('fApt').value,dong:$('fDong').value,ho:$('fHo').value,
+      room:$('fRoom').value,user:$('fUser').value,work:$('fWork').value,sub:$('fSub').value,
+      type:$('fType').value,detail:$('fDetail').value,
+      wImg:($('pvW').style.display!=='none'&&$('pvW').src.startsWith('data:'))?$('pvW').src:null,
+      cImg:($('pvC').style.display!=='none'&&$('pvC').src.startsWith('data:'))?$('pvC').src:null};
+    ls(DRAFT_KEY,JSON.stringify(d));
+  }catch(e){ try{ const lite={ts:Date.now(),addr:$('fAddr').value,apt:$('fApt').value,dong:$('fDong').value,ho:$('fHo').value,room:$('fRoom').value,user:$('fUser').value,work:$('fWork').value,sub:$('fSub').value,type:$('fType').value,detail:$('fDetail').value,wImg:null,cImg:null}; ls(DRAFT_KEY,JSON.stringify(lite)); }catch(e2){} }
 }
-
 function loadDraft(){
   try{
-    const raw = ls(DRAFT_KEY);
-    if(!raw) return;
-    const d = JSON.parse(raw);
-    if(Date.now() - d.ts > DRAFT_TTL){ localStorage.removeItem(DRAFT_KEY); return; }
-    if(d.addr) $('fAddr').value = d.addr;
-    if(d.apt)  $('fApt').value  = d.apt;
-    if(d.dong) $('fDong').value = d.dong;
-    if(d.ho)   $('fHo').value   = d.ho;
-    if(d.room){
-      $('fRoom').value = d.room;
-      const lb=$('cdLabel'); lb.textContent='✔ '+d.room;
-      lb.classList.remove('cd-placeholder'); lb.style.color='var(--p)'; lb.style.fontWeight='800';
-      document.querySelectorAll('.cd-item').forEach(i=>i.classList.toggle('selected',i.dataset.val===d.room));
-    }
-    if(d.user) $('fUser').value = d.user;
-    if(d.work){
-      $('fWork').value = d.work; A.onWork();
-      if(d.sub){
-        if(!$('fSub').querySelector(`option[value="${d.sub}"]`)){const o=document.createElement('option');o.value=d.sub;o.textContent=d.sub;$('fSub').appendChild(o)}
-        $('fSub').value = d.sub; A.onSub();
-        if(d.type){
-          if(!$('fType').querySelector(`option[value="${d.type}"]`)){const o=document.createElement('option');o.value=d.type;o.textContent=d.type;$('fType').appendChild(o)}
-          $('fType').value = d.type;
-        }
-      }
-    }
-    if(d.detail) $('fDetail').value = d.detail;
-    if(d.wImg && d.wImg.startsWith('data:')){show('pvW',d.wImg);$('rtW').style.display='block'}
-    if(d.cImg && d.cImg.startsWith('data:')){show('pvC',d.cImg);$('rtC').style.display='block'}
-    if(d.cImg) step(3); else if(d.wImg) step(2);
-    const hasData = d.addr || d.room || d.wImg || d.cImg || d.detail;
-    if(hasData) stat('💾 이전 입력 내용이 복원되었습니다');
+    const raw=ls(DRAFT_KEY); if(!raw)return;
+    const d=JSON.parse(raw);
+    if(Date.now()-d.ts>DRAFT_TTL){ localStorage.removeItem(DRAFT_KEY); return; }
+    if(d.addr)$('fAddr').value=d.addr; if(d.apt)$('fApt').value=d.apt;
+    if(d.dong)$('fDong').value=d.dong; if(d.ho)$('fHo').value=d.ho;
+    if(d.room){ $('fRoom').value=d.room; const lb=$('cdLabel'); lb.textContent='✔ '+d.room; lb.classList.remove('cd-placeholder'); lb.style.color='var(--p)'; lb.style.fontWeight='800'; document.querySelectorAll('.cd-item').forEach(i=>i.classList.toggle('selected',i.dataset.val===d.room)); }
+    if(d.user)$('fUser').value=d.user;
+    if(d.work){ $('fWork').value=d.work; A.onWork(); if(d.sub){ if(!$('fSub').querySelector(`option[value="${d.sub}"]`)){const o=document.createElement('option');o.value=d.sub;o.textContent=d.sub;$('fSub').appendChild(o)} $('fSub').value=d.sub; A.onSub(); if(d.type){ if(!$('fType').querySelector(`option[value="${d.type}"]`)){const o=document.createElement('option');o.value=d.type;o.textContent=d.type;$('fType').appendChild(o)} $('fType').value=d.type; } } }
+    if(d.detail)$('fDetail').value=d.detail;
+    if(d.wImg&&d.wImg.startsWith('data:')){show('pvW',d.wImg);$('rtW').style.display='block';}
+    if(d.cImg&&d.cImg.startsWith('data:')){show('pvC',d.cImg);$('rtC').style.display='block';}
+    if(d.cImg)step(3); else if(d.wImg)step(2);
+    if(d.addr||d.room||d.wImg||d.cImg||d.detail)stat('💾 이전 입력 내용이 복원되었습니다');
   }catch(e){console.warn('Draft load failed')}
 }
-
 function clearItemDraft(){
-  try{
-    const raw = ls(DRAFT_KEY); if(!raw) return;
-    const d = JSON.parse(raw);
-    d.room=null;d.user=null;d.work=null;d.sub=null;
-    d.type=null;d.detail=null;d.wImg=null;d.cImg=null;
-    d.ts=Date.now();
-    ls(DRAFT_KEY, JSON.stringify(d));
-  }catch(e){}
+  try{ const raw=ls(DRAFT_KEY); if(!raw)return; const d=JSON.parse(raw); d.room=null;d.user=null;d.work=null;d.sub=null;d.type=null;d.detail=null;d.wImg=null;d.cImg=null;d.ts=Date.now(); ls(DRAFT_KEY,JSON.stringify(d)); }catch(e){}
 }
-
 let _draftTimer;
-function draftDebounce(){clearTimeout(_draftTimer);_draftTimer=setTimeout(saveDraft,500)}
+function draftDebounce(){ clearTimeout(_draftTimer); _draftTimer=setTimeout(saveDraft,500); }
 function initDraftListeners(){
   ['fAddr','fApt','fDong','fHo','fUser','fDetail'].forEach(id=>$(id).addEventListener('input',draftDebounce));
   ['fWork','fSub','fType'].forEach(id=>$(id).addEventListener('change',draftDebounce));
-  window.addEventListener('beforeunload',()=>{saveDraft();if(voiceState.isPlaying)A.voiceStop()});
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')saveDraft()});
+  window.addEventListener('beforeunload',()=>{ saveDraft(); if(voiceState.isPlaying)A.voiceStop(); });
+  document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden')saveDraft(); });
   window.addEventListener('blur',saveDraft);
   window.addEventListener('pagehide',saveDraft);
 }
 
+/* ── 단계 표시기 ── */
 function step(c){
   for(let i=1;i<=4;i++){
     const n=$(`s${i}`),l=$(`l${i}`);
@@ -1012,224 +1504,143 @@ function step(c){
     else n.textContent=i;
   }
 }
+function stat(m,e){ $('sMsg').textContent=m; $('sDot').classList.toggle('err',!!e); }
 
-function stat(m,e){$('sMsg').textContent=m;$('sDot').classList.toggle('err',!!e)}
-
+/* ── 위치 선택 ── */
 A.toggleRoom=()=>{
-  const grid=$('cdGrid'), btn=$('cdBtn');
+  const grid=$('cdGrid'),btn=$('cdBtn');
   btn.classList.remove('err-shake');
   const isOpen=grid.classList.contains('show');
   if(isOpen){grid.classList.remove('show');btn.classList.remove('open')}
   else{grid.classList.add('show');btn.classList.add('open')}
 };
 A.pickRoom=(el)=>{
-  const val=el.dataset.val;
-  $('fRoom').value=val;
-  const label=$('cdLabel');
-  label.textContent='✔ '+val;
-  label.classList.remove('cd-placeholder');
-  label.style.color='var(--p)';
-  label.style.fontWeight='800';
+  const val=el.dataset.val; $('fRoom').value=val;
+  const label=$('cdLabel'); label.textContent='✔ '+val;
+  label.classList.remove('cd-placeholder'); label.style.color='var(--p)'; label.style.fontWeight='800';
   $('cdBtn').classList.remove('err-shake');
-  document.querySelectorAll('.cd-item').forEach(i=>i.classList.remove('selected'));
-  el.classList.add('selected');
+  document.querySelectorAll('.cd-item').forEach(i=>i.classList.remove('selected')); el.classList.add('selected');
   setTimeout(()=>{$('cdGrid').classList.remove('show');$('cdBtn').classList.remove('open')},150);
   saveDraft();
 };
-
 function validateRoom(){
   if(!$('fRoom').value){
-    const btn = $('cdBtn');
-    btn.classList.remove('err-shake');
-    void btn.offsetWidth;
-    btn.classList.add('err-shake');
-    $('cdGrid').classList.add('show');
-    btn.classList.add('open');
-    stat('⚠️ 점검 위치를 선택해주세요', true);
-    btn.scrollIntoView({behavior:'smooth', block:'center'});
-    return false;
+    const btn=$('cdBtn'); btn.classList.remove('err-shake'); void btn.offsetWidth; btn.classList.add('err-shake');
+    $('cdGrid').classList.add('show'); btn.classList.add('open');
+    stat('⚠️ 점검 위치를 선택해주세요',true); btn.scrollIntoView({behavior:'smooth',block:'center'}); return false;
   }
   return true;
 }
 
+/* ── 전문가(직원) 모드 ── */
 A.setMode=m=>{
   if(m==='pro'){
-    $('ckPro').checked=false;
     $('moPwd').classList.add('show');
-    $('pwdInput').value='';
-    $('pwdErr').style.display='none';
-    setTimeout(()=>$('pwdInput').focus(),200);
-    return;
+    $('pwdInput').value=''; $('pwdErr').style.display='none';
+    setTimeout(()=>$('pwdInput').focus(),200); return;
   }
-  mode='free';
-  $('ckFree').checked=true;
-  $('ckPro').checked=false;
-  $('mcFree').classList.add('active');
-  $('mcPro').classList.remove('active-pro');
-  updateQuotaUI();
+  mode='free'; updateQuotaUI(); updatePassUI();
 };
 A.checkPwd=()=>{
   const pw=$('pwdInput').value;
   if(pw==='51600'){
     mode='pro';
-    $('ckFree').checked=false;
-    $('ckPro').checked=true;
-    $('mcFree').classList.remove('active');
-    $('mcPro').classList.add('active-pro');
     $('moPwd').classList.remove('show');
-    stat('전문가 점검 모드 활성화');
-    updateQuotaUI();
-  }else{
-    $('pwdErr').style.display='block';
-    $('pwdInput').value='';
-    $('pwdInput').focus();
-  }
+    stat('직원 전용 모드 활성화');
+    updateQuotaUI(); updatePassUI();
+  } else { $('pwdErr').style.display='block'; $('pwdInput').value=''; $('pwdInput').focus(); }
 };
-A.cancelPwd=()=>{
-  $('ckPro').checked=false;
-  $('moPwd').classList.remove('show');
-};
+A.cancelPwd=()=>{ $('moPwd').classList.remove('show'); };
 
+/* ── 개발자 모드 (버전 5회 탭) ── */
 A.devTap=()=>{
-  clearTimeout(devT);devN++;
+  clearTimeout(devT); devN++;
   if(devN===5){
-    const d=ls('is_dev')==='true';
-    ls('is_dev',!d);
-    $('verTag').classList.toggle('dev',!d);
-    alert(d?'개발자 모드 해제':'🐸 개발자 모드 활성화!');
-    devN=0;
-    updateQuotaUI();
+    const d=ls('is_dev')==='true'; ls('is_dev',!d); $('verTag').classList.toggle('dev',!d);
+    alert(d?'개발자 모드 해제':'🐸 개발자 모드 활성화!'); devN=0; updateQuotaUI(); updatePassUI();
   }
   devT=setTimeout(()=>devN=0,1000);
 };
 
+/* ── 사진 촬영 ── */
 $('inW').addEventListener('change',e=>photo(e,'w'));
 $('inC').addEventListener('change',e=>photo(e,'c'));
-
 function photo(e,t){
-  const f=e.target.files[0];if(!f)return;
+  const f=e.target.files[0]; if(!f)return;
   const r=new FileReader();
   r.onload=ev=>{
-    if(t==='w'){wF=f;show('pvW',ev.target.result);$('rtW').style.display='block';stat('가까이 찍기를 촬영하세요');step(2);saveDraft()}
+    if(t==='w'){ wF=f; show('pvW',ev.target.result); $('rtW').style.display='block'; stat('가까이 찍기를 촬영하세요'); step(2); saveDraft(); }
     else{
       if(!validateRoom()){$('inC').value='';return}
       if(!chkLim()){$('inC').value='';return}
-      cF=f;show('pvC',ev.target.result);$('rtC').style.display='block';step(3);saveDraft();runAI();
+      cF=f; show('pvC',ev.target.result); $('rtC').style.display='block'; step(3); saveDraft(); runAI();
     }
-  };r.readAsDataURL(f);
+  };
+  r.readAsDataURL(f);
 }
-function show(id,src){const p=$(id);p.src=src;p.style.display='block'}
+function show(id,src){ const p=$(id); p.src=src; p.style.display='block'; }
 
-async function toPart(f){return new Promise(r=>{const x=new FileReader();x.onloadend=()=>r({inlineData:{data:x.result.split(',')[1],mimeType:f.type}});x.readAsDataURL(f)})}
+async function toPart(f){ return new Promise(r=>{const x=new FileReader();x.onloadend=()=>r({inlineData:{data:x.result.split(',')[1],mimeType:f.type}});x.readAsDataURL(f)}); }
 
+/* ── AI 분석 ── */
 async function runAI(){
   const det=$('fDetail'), ui=$('fUser').value;
-  det.value='🔍 AI 정밀 분석 중...';
-  stat('AI 분석 중...');
+  det.value='🔍 AI 정밀 분석 중...'; stat('AI 분석 중...');
   try{
     const g=new GoogleGenerativeAI(K);
     const m=g.getGenerativeModel({model:"gemini-2.5-flash"});
-    const proExtra=mode==='pro'?`\n[전문 모드] 시공 기준서, KS규격, 국토부 하자판정 기준을 상세히 인용하여 전문 보고서 수준으로 작성하세요.`:'';
+    const activeMode=getActiveMode();
+    const proExtra=(activeMode==='pro')?'\n[전문 모드] 시공 기준서, KS규격, 국토부 하자판정 기준을 상세히 인용하여 전문 보고서 수준으로 작성하세요.':'';
     const workList=Object.keys(WM).map(w=>`${w}(${Object.keys(WM[w]).join(',')})`).join('; ');
-    const prompt=`입주자 사전점검 AI입니다.
-사진1(Wide):공종 파악. 사진2(Close):하자유형 및 상세내용 파악.
-
-**[사용자 입력]: "${ui}"**
-(이 정보가 있으면 최우선 반영하세요.)${proExtra}
-
-[분류체계 - 반드시 아래 공종/세부공종명을 사용]
-${workList}
-
-[유형 표준]: 들뜸, 마감불량, 흠집/찍힘, 면불량, 오염, 미시공, 파손, 틈새, 코킹불량, 수직수평불량, 개폐불량, 고정불량, 작동불량, 줄눈불량, 단차, 구배불량, 이색/변색, 누수, 균열, 도장불량, 이음불량, 배수불량, 점등불량, 악취
-
-[판단기준]
-- 하자 판단 시: 현상과 사례매칭을 상세 기술
-- 하자 아닌 경우: "type"에 "허용범위", "detail"에:
-  1. 현상: [상태기술]
-  2. ✅ 허용범위 안내: [국토부 기준 설명]
-  3. 💡 참고: 허용범위 내이므로 하자 접수 대상 아님
-
-[JSON출력 - work/sub/type은 반드시 위 분류체계 값 사용]
-{"work":"공종명","sub":"세부공종","type":"하자유형 또는 허용범위","detail":"1. 현상:...\\n2. 사례매칭 또는 허용범위안내:..."}`;
-
+    const prompt=`입주자 사전점검 AI입니다.\n사진1(Wide):공종 파악. 사진2(Close):하자유형 및 상세내용 파악.\n\n**[사용자 입력]: "${ui}"**\n(이 정보가 있으면 최우선 반영하세요.)${proExtra}\n\n[분류체계 - 반드시 아래 공종/세부공종명을 사용]\n${workList}\n\n[유형 표준]: 들뜸, 마감불량, 흠집/찍힘, 면불량, 오염, 미시공, 파손, 틈새, 코킹불량, 수직수평불량, 개폐불량, 고정불량, 작동불량, 줄눈불량, 단차, 구배불량, 이색/변색, 누수, 균열, 도장불량, 이음불량, 배수불량, 점등불량, 악취\n\n[판단기준]\n- 하자 판단 시: 현상과 사례매칭을 상세 기술\n- 하자 아닌 경우: "type"에 "허용범위", "detail"에 국토부 기준 설명\n\n[JSON출력]\n{"work":"공종명","sub":"세부공종","type":"하자유형 또는 허용범위","detail":"1. 현상:...\\n2. 사례매칭 또는 허용범위안내:..."}`;
     const parts=[prompt];
-    if(wF)parts.push(await toPart(wF));
-    if(cF)parts.push(await toPart(cF));
-
+    if(wF)parts.push(await toPart(wF)); if(cF)parts.push(await toPart(cF));
     const res=await m.generateContent(parts);
     const txt=res.response.text();
     let d={};
-    try{const c=txt.replace(/```json/g,'').replace(/```/g,'').trim();const mt=c.match(/\{[\s\S]*\}/);d=mt?JSON.parse(mt[0]):{}}
-    catch{d={detail:'파싱 실패. 직접 입력해주세요.',work:'기타',sub:'',type:'확인필요'}}
-
+    try{ const c=txt.replace(/```json/g,'').replace(/```/g,'').trim(); const mt=c.match(/\{[\s\S]*\}/); d=mt?JSON.parse(mt[0]):{} }
+    catch{ d={detail:'파싱 실패. 직접 입력해주세요.',work:'기타',sub:'',type:'확인필요'} }
     const aiWork=d.work||'', aiSub=d.sub||'', aiType=d.type||'';
-    if(aiWork&&!WM[aiWork]){
-      const o=document.createElement('option');o.value=aiWork;o.textContent=aiWork;$('fWork').appendChild(o);
-    }
-    $('fWork').value=aiWork;
-    A.onWork();
-    if(aiSub){
-      if(!$('fSub').querySelector(`option[value="${aiSub}"]`)){
-        const o=document.createElement('option');o.value=aiSub;o.textContent=aiSub;$('fSub').appendChild(o);
-      }
-      $('fSub').value=aiSub;
-      A.onSub();
-    }
-    if(aiType){
-      if(!$('fType').querySelector(`option[value="${aiType}"]`)){
-        const o=document.createElement('option');o.value=aiType;o.textContent=aiType;$('fType').appendChild(o);
-      }
-      $('fType').value=aiType;
-    }
+    if(aiWork&&!WM[aiWork]){ const o=document.createElement('option');o.value=aiWork;o.textContent=aiWork;$('fWork').appendChild(o); }
+    $('fWork').value=aiWork; A.onWork();
+    if(aiSub){ if(!$('fSub').querySelector(`option[value="${aiSub}"]`)){const o=document.createElement('option');o.value=aiSub;o.textContent=aiSub;$('fSub').appendChild(o)} $('fSub').value=aiSub; A.onSub(); }
+    if(aiType){ if(!$('fType').querySelector(`option[value="${aiType}"]`)){const o=document.createElement('option');o.value=aiType;o.textContent=aiType;$('fType').appendChild(o)} $('fType').value=aiType; }
     det.value=(d.detail||'')+'\n\n(※ AI 분석 결과는 참고용입니다.)';
-
-    useQuota();
-    updateQuotaUI();
-    saveDraft();
-
-    const rem = getRemaining();
-    stat(`분석 완료! (잔여 ${rem}건)`);
-  }catch(err){
+    useQuota(); updateQuotaUI(); saveDraft();
+    stat(`분석 완료! (잔여 ${getRemaining()}건)`);
+  } catch(err){
     console.error(err);
-    const errMsg = err?.message || err?.toString() || '';
-    if(errMsg.includes('429') || errMsg.includes('quota') || errMsg.includes('RESOURCE_EXHAUSTED')){
-      stat('⚠️ 오늘 전체 사용량 초과', true);
-      det.value='⚠️ 오늘 전체 AI 분석 한도(1,500건/일)에 도달했습니다.\n\n내일 자정(00:00) 이후 다시 이용해주세요.\n긴급 점검이 필요하시면 010-2322-0949로 연락주세요.';
+    const errMsg=err?.message||err?.toString()||'';
+    if(errMsg.includes('429')||errMsg.includes('quota')||errMsg.includes('RESOURCE_EXHAUSTED')){
+      stat('⚠️ 오늘 전체 사용량 초과',true);
+      det.value='⚠️ 오늘 전체 AI 분석 한도에 도달했습니다.\n내일 자정 이후 이용해주세요.\n📞 010-2322-0949';
     } else {
-      stat('분석 실패',true);
-      det.value='일시적 오류가 발생했습니다.\n잠시 후 다시 시도해주세요.';
+      stat('분석 실패',true); det.value='일시적 오류가 발생했습니다.\n잠시 후 다시 시도해주세요.';
     }
   }
 }
 
+/* ── 저장 ── */
 A.togSave=()=>{
   const ok=$('fAgree').checked;
-  if(ok){ls('frog_agreed','true');$('agreeNote').style.display='block'}
-  $('btnSv').disabled=!ok;$('btnSv').className=ok?'btn-sv ok':'btn-sv off';
+  if(ok){ ls('frog_agreed','true'); $('agreeNote').style.display='block'; }
+  $('btnSv').disabled=!ok; $('btnSv').className=ok?'btn-sv ok':'btn-sv off';
 };
-
 A.save=()=>{
-  if(!$('fAgree').checked)return;
-  if(!validateRoom()) return;
+  if(!$('fAgree').checked)return; if(!validateRoom())return;
   const cs=$('pvC').src;
-  if(!cF&&(!cs||!cs.startsWith('data:'))){alert('사진(가까이 찍기)이 필요합니다.');return}
-
+  if(!cF&&(!cs||!cs.startsWith('data:'))){ alert('사진(가까이 찍기)이 필요합니다.'); return; }
   const addr=$('fAddr').value, apt=$('fApt').value||'주소참조', dong=$('fDong').value, ho=$('fHo').value;
   const info=`${addr} (${apt} ${dong}동 ${ho}호)`;
-  $('lInfo').textContent=info;$('ptitle').textContent=info+' 사전점검 리포트';
-
+  $('lInfo').textContent=info; $('ptitle').textContent=info+' 사전점검 리포트';
   const ws=$('pvW').src;
   const item={
     id:Date.now(), room:$('fRoom').value||'위치미지정',
     work:$('fWork').value, sub:$('fSub').value, type:$('fType').value,
-    detail:$('fDetail').value, mode,
+    detail:$('fDetail').value, mode:getActiveMode(),
     wImg:(ws&&ws.startsWith('data:'))?ws:null, cImg:cs
   };
-  list.push(item);
-  renderItem(item);
-  updateModeLabel();
-  saveList();
-  reset();
+  list.push(item); renderItem(item); updateModeLabel(); saveList(); reset();
   stat('저장 완료! 다음 항목을 촬영하세요.');
   document.querySelector('.lh').scrollIntoView({behavior:'smooth'});
   setTimeout(()=>step(1),1500);
@@ -1237,244 +1648,375 @@ A.save=()=>{
 
 function renderItem(it){
   const isSafe=it.type==='허용범위';
-  const modeLabel=it.mode==='pro'?'<span style="font-size:.62rem;background:linear-gradient(135deg,var(--pu),#A78BFA);color:#fff;padding:2px 7px;border-radius:4px;font-weight:700">전문가점검</span>':'<span style="font-size:.62rem;background:var(--pg);color:var(--p);padding:2px 7px;border-radius:4px;font-weight:700">무료점검</span>';
+  let mTag='';
+  if(it.mode==='paid') mTag='<span style="font-size:.62rem;background:var(--nv);color:#fff;padding:2px 7px;border-radius:4px;font-weight:700">이용권</span>';
+  else if(it.mode==='pro') mTag='<span style="font-size:.62rem;background:linear-gradient(135deg,var(--pu),#A78BFA);color:#fff;padding:2px 7px;border-radius:4px;font-weight:700">직원</span>';
+  else mTag='<span style="font-size:.62rem;background:var(--pg);color:var(--p);padding:2px 7px;border-radius:4px;font-weight:700">무료체험</span>';
   const h=`<div class="dc" id="i-${it.id}">
-    <div class="dc-hd"><div class="dc-tag"><span class="dc-rm">${it.room}</span><span class="dc-tp${isSafe?' safe':''}">${it.type}</span>${modeLabel}</div>
+    <div class="dc-hd"><div class="dc-tag"><span class="dc-rm">${it.room}</span><span class="dc-tp${isSafe?' safe':''}">${it.type}</span>${mTag}</div>
     <div class="dc-act"><button class="bi ed" onclick="A.edit(${it.id})"><i class="fa-solid fa-pen"></i></button><button class="bi dl" onclick="A.del(${it.id})"><i class="fa-solid fa-trash-can"></i></button></div></div>
-    <div class="dc-ph${!it.wImg?' single':''}">${it.wImg?`<img src="${it.wImg}" title="멀리서 찍기">`:''}<img src="${it.cImg}" title="가까이 찍기"></div>
+    <div class="dc-ph${!it.wImg?' single':''}">${it.wImg?`<img src="${it.wImg}" title="멀리서">`:''}<img src="${it.cImg}" title="가까이"></div>
     <div class="dc-bd"><div class="dc-wk">${it.work} → ${it.sub}</div><div class="dc-dt">${it.detail}</div></div></div>`;
   $('lBox').insertAdjacentHTML('beforeend',h);
   $('lCnt').textContent=list.length;
 }
 
 function updateModeLabel(){
-  const el=$('lMode');
-  if(!list.length){el.style.display='none';return}
+  const el=$('lMode'); if(!list.length){el.style.display='none';return;}
+  const hasPaid=list.some(i=>i.mode==='paid');
   const hasPro=list.some(i=>i.mode==='pro');
-  const hasFree=list.some(i=>i.mode==='free');
-  if(hasPro&&hasFree){el.textContent='무료+전문가점검';el.style.background='linear-gradient(135deg,var(--pg),var(--pub))';el.style.color='var(--pu)'}
-  else if(hasPro){el.textContent='전문가점검';el.style.background='var(--pub)';el.style.color='var(--pu)'}
-  else{el.textContent='무료점검';el.style.background='var(--pg)';el.style.color='var(--p)'}
+  if(hasPaid){el.textContent='이용권점검';el.style.background='var(--nvb)';el.style.color='#059669';}
+  else if(hasPro){el.textContent='직원점검';el.style.background='var(--pub)';el.style.color='var(--pu)';}
+  else{el.textContent='무료체험';el.style.background='var(--pg)';el.style.color='var(--p)';}
   el.style.display='inline-block';
 }
 
 function reset(){
-  ['inW','inC'].forEach(i=>$(i).value='');wF=null;cF=null;
-  ['pvW','pvC'].forEach(i=>{$(i).style.display='none'});
-  ['rtW','rtC'].forEach(i=>{$(i).style.display='none'});
-  $('fUser').value='';$('fDetail').value='';
-  $('fWork').value='';A.onWork();
+  ['inW','inC'].forEach(i=>$(i).value=''); wF=null; cF=null;
+  ['pvW','pvC'].forEach(i=>{$(i).style.display='none'}); ['rtW','rtC'].forEach(i=>{$(i).style.display='none'});
+  $('fUser').value=''; $('fDetail').value=''; $('fWork').value=''; A.onWork();
   $('fRoom').value='';
-  const label=$('cdLabel');
-  label.textContent='위치 선택';
-  label.classList.add('cd-placeholder');
-  label.style.color='';
-  label.style.fontWeight='';
-  $('cdBtn').classList.remove('err-shake');
-  document.querySelectorAll('.cd-item').forEach(i=>i.classList.remove('selected'));
-  if(ls('frog_agreed')!=='true'){$('fAgree').checked=false;A.togSave()}
-  clearItemDraft();
-  step(4);
+  const label=$('cdLabel'); label.textContent='위치 선택'; label.classList.add('cd-placeholder'); label.style.color=''; label.style.fontWeight='';
+  $('cdBtn').classList.remove('err-shake'); document.querySelectorAll('.cd-item').forEach(i=>i.classList.remove('selected'));
+  if(ls('frog_agreed')!=='true'){ $('fAgree').checked=false; A.togSave(); }
+  clearItemDraft(); step(4);
 }
 
 function saveList(){
   try{
-    const data=list.map(it=>({...it,wImg:null,cImg:null}));
-    ls('frog_list',JSON.stringify(data));
-    const full=JSON.stringify(list);
-    ls('frog_list_full',full);
+    ls('frog_list',JSON.stringify(list.map(it=>({...it,wImg:null,cImg:null}))));
+    ls('frog_list_full',JSON.stringify(list));
     $('sgTx').textContent=`저장된 항목: ${list.length}건`;
-  }catch(e){console.warn('Storage full, saving metadata only')}
+  }catch(e){ console.warn('Storage full'); }
 }
 function loadList(){
   try{
     const full=ls('frog_list_full');
-    if(full){list=JSON.parse(full);list.forEach(it=>renderItem(it));updateModeLabel();$('sgTx').textContent=`저장된 항목: ${list.length}건`}
-    else{const d=ls('frog_list');if(d){list=JSON.parse(d);list.forEach(it=>renderItem(it));updateModeLabel();$('sgTx').textContent=`저장된 항목: ${list.length}건`}}
-  }catch(e){list=[]}
+    if(full){ list=JSON.parse(full); list.forEach(it=>renderItem(it)); updateModeLabel(); $('sgTx').textContent=`저장된 항목: ${list.length}건`; }
+    else{ const d=ls('frog_list'); if(d){ list=JSON.parse(d); list.forEach(it=>renderItem(it)); updateModeLabel(); $('sgTx').textContent=`저장된 항목: ${list.length}건`; } }
+  }catch(e){ list=[]; }
 }
 
 A.edit=id=>{
-  const idx=list.findIndex(i=>i.id===id);if(idx===-1)return;
+  const idx=list.findIndex(i=>i.id===id); if(idx===-1)return;
   if(!confirm('수정 모드로 불러오시겠습니까?'))return;
   const it=list[idx];
   $('fRoom').value=it.room;
-  const label=$('cdLabel');
-  label.textContent=it.room;
-  label.classList.remove('cd-placeholder');
-  label.style.color='var(--tx)';
-  label.style.fontWeight='700';
-  document.querySelectorAll('.cd-item').forEach(i=>{i.classList.toggle('selected',i.dataset.val===it.room)});
-  $('fWork').value=it.work;$('fDetail').value=it.detail;
-  if(it.wImg)show('pvW',it.wImg);
-  if(it.cImg)show('pvC',it.cImg);
-  $(`i-${id}`).remove();list.splice(idx,1);$('lCnt').textContent=list.length;saveList();
+  const label=$('cdLabel'); label.textContent=it.room; label.classList.remove('cd-placeholder'); label.style.color='var(--tx)'; label.style.fontWeight='700';
+  document.querySelectorAll('.cd-item').forEach(i=>i.classList.toggle('selected',i.dataset.val===it.room));
+  $('fWork').value=it.work; $('fDetail').value=it.detail;
+  if(it.wImg)show('pvW',it.wImg); if(it.cImg)show('pvC',it.cImg);
+  $(`i-${id}`).remove(); list.splice(idx,1); $('lCnt').textContent=list.length; saveList();
   window.scrollTo(0,0);
 };
 A.del=id=>{
   if(!confirm('삭제하시겠습니까?'))return;
-  $(`i-${id}`).remove();list=list.filter(i=>i.id!==id);$('lCnt').textContent=list.length;updateModeLabel();saveList();
+  $(`i-${id}`).remove(); list=list.filter(i=>i.id!==id); $('lCnt').textContent=list.length; updateModeLabel(); saveList();
 };
 A.clearAll=()=>{
-  if(!list.length)return;if(!confirm(`${list.length}건 전체 삭제하시겠습니까?`))return;
-  list=[];$('lBox').innerHTML='';$('lCnt').textContent=0;updateModeLabel();saveList();
+  if(!list.length)return; if(!confirm(`${list.length}건 전체 삭제하시겠습니까?`))return;
+  list=[]; $('lBox').innerHTML=''; $('lCnt').textContent=0; updateModeLabel(); saveList();
 };
 
+/* ── PDF 저장 ── */
 A.pdf=()=>{
-  if(!list.length){alert('저장할 내용이 없습니다.');return}
-
-  const dong = $('fDong').value || '000';
-  const ho   = $('fHo').value   || '0000';
-  const now  = new Date();
-  const ymd  = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`;
-  const fileName = `사전점검_${dong}동_${ho}호_${ymd}.pdf`;
-  const addr = $('fAddr').value || '';
-  const apt  = $('fApt').value  || '';
-  const info = `${addr} ${apt} ${dong}동 ${ho}호`.trim();
-  const dateStr = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
-
-  const overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;inset:0;background:#fff;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px';
-  overlay.innerHTML = '<div style="font-size:2rem">📄</div><div style="font-size:1rem;font-weight:800;color:#0A6B5C">PDF 생성 중...</div><div style="font-size:.8rem;color:#94A3B8">잠시만 기다려주세요</div>';
+  if(!list.length){ alert('저장할 내용이 없습니다.'); return; }
+  const dong=$('fDong').value||'000', ho=$('fHo').value||'0000';
+  const now=new Date();
+  const ymd=`${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`;
+  const fileName=`사전점검_${dong}동_${ho}호_${ymd}.pdf`;
+  const addr=$('fAddr').value||'', apt=$('fApt').value||'';
+  const info=`${addr} ${apt} ${dong}동 ${ho}호`.trim();
+  const dateStr=`${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
+  const overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:#fff;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px';
+  overlay.innerHTML='<div style="font-size:2rem">📄</div><div style="font-size:1rem;font-weight:800;color:#0A6B5C">PDF 생성 중...</div><div style="font-size:.8rem;color:#94A3B8">잠시만 기다려주세요</div>';
   document.body.appendChild(overlay);
-
-  const wrap = document.createElement('div');
-  wrap.style.cssText = 'position:absolute;top:0;left:0;width:800px;padding:28px 24px;font-family:Noto Sans KR,sans-serif;color:#1A2332;background:#fff;z-index:1;line-height:1.5';
-
-  let h = `<div style="text-align:center;margin-bottom:22px;padding-bottom:16px;border-bottom:3px solid #0A6B5C">
-    <div style="font-size:20px;font-weight:900;color:#0A6B5C;margin-bottom:6px">🐸 청개구리 사전점검 리포트</div>
-    <div style="font-size:13px;font-weight:700;color:#5A6B7F">${info}</div>
-    <div style="font-size:10px;color:#94A3B8;margin-top:4px">${dateStr} 작성 | 총 ${list.length}건</div>
-  </div>`;
-
-  list.forEach((it, idx) => {
-    const isSafe = it.type === '허용범위';
-    const mTag = it.mode==='pro'
-      ? '<span style="font-size:9px;background:#7C3AED;color:#fff;padding:2px 6px;border-radius:3px;margin-left:4px">전문가</span>'
-      : '<span style="font-size:9px;background:#E6F7F3;color:#0A6B5C;padding:2px 6px;border-radius:3px;margin-left:4px">무료</span>';
-    const tc = isSafe ? '#059669' : '#E74C3C';
-    const tb = isSafe ? '#ECFDF5' : '#FFF5F5';
-
-    h += `<div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:14px">
-      <div style="padding:8px 12px;background:#F4F6F9;border-bottom:1px solid #eee">
-        <span style="display:inline-block;font-size:10px;font-weight:900;background:#0A6B5C;color:#fff;width:20px;height:20px;border-radius:5px;text-align:center;line-height:20px;margin-right:6px;vertical-align:middle">${idx+1}</span>
-        <span style="font-size:13px;font-weight:800;vertical-align:middle">${it.room}</span>
-        <span style="font-size:10px;font-weight:700;color:${tc};background:${tb};padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle">${it.type||''}</span>
-        ${mTag}
-      </div>`;
-
-    const hasW = it.wImg && it.wImg.startsWith('data:');
-    const hasC = it.cImg && it.cImg.startsWith('data:');
-    if(hasW || hasC){
-      if(hasW && hasC){
-        h += `<table style="width:100%;border-collapse:collapse;background:#F1F4F8"><tr>
-          <td style="width:50%;padding:4px"><img src="${it.wImg}" style="width:100%;height:150px;object-fit:cover;border-radius:6px;display:block"></td>
-          <td style="width:50%;padding:4px"><img src="${it.cImg}" style="width:100%;height:150px;object-fit:cover;border-radius:6px;display:block"></td>
-        </tr></table>`;
-      } else {
-        const src = hasW ? it.wImg : it.cImg;
-        h += `<div style="padding:4px;background:#F1F4F8"><img src="${src}" style="width:100%;height:180px;object-fit:cover;border-radius:6px;display:block"></div>`;
-      }
-    }
-
-    const safeDetail = (it.detail||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    h += `<div style="padding:10px 12px">
-      <div style="font-size:11px;font-weight:700;color:#0A6B5C;margin-bottom:3px">${it.work||''} → ${it.sub||''}</div>
-      <div style="font-size:11px;color:#5A6B7F;line-height:1.6;white-space:pre-wrap">${safeDetail}</div>
-    </div></div>`;
+  const wrap=document.createElement('div');
+  wrap.style.cssText='position:absolute;top:0;left:0;width:800px;padding:28px 24px;font-family:Noto Sans KR,sans-serif;color:#1A2332;background:#fff;z-index:1;line-height:1.5';
+  let h=`<div style="text-align:center;margin-bottom:22px;padding-bottom:16px;border-bottom:3px solid #0A6B5C"><div style="font-size:20px;font-weight:900;color:#0A6B5C;margin-bottom:6px">🐸 청개구리 사전점검 리포트</div><div style="font-size:13px;font-weight:700;color:#5A6B7F">${info}</div><div style="font-size:10px;color:#94A3B8;margin-top:4px">${dateStr} 작성 | 총 ${list.length}건</div><div style="font-size:9px;color:#16A34A;margin-top:6px;background:#ECFDF5;padding:4px 10px;border-radius:6px;display:inline-block">💚 이 앱 수익의 50%는 공익단체에 기부됩니다</div></div>`;
+  list.forEach((it,idx)=>{
+    const isSafe=it.type==='허용범위';
+    const tc=isSafe?'#059669':'#E74C3C', tb=isSafe?'#ECFDF5':'#FFF5F5';
+    const mTag=it.mode==='paid'?'<span style="font-size:9px;background:#03C75A;color:#fff;padding:2px 6px;border-radius:3px;margin-left:4px">이용권</span>':it.mode==='pro'?'<span style="font-size:9px;background:#7C3AED;color:#fff;padding:2px 6px;border-radius:3px;margin-left:4px">직원</span>':'<span style="font-size:9px;background:#E6F7F3;color:#0A6B5C;padding:2px 6px;border-radius:3px;margin-left:4px">무료체험</span>';
+    h+=`<div style="border:1px solid #ddd;border-radius:10px;overflow:hidden;margin-bottom:14px"><div style="padding:8px 12px;background:#F4F6F9;border-bottom:1px solid #eee"><span style="display:inline-block;font-size:10px;font-weight:900;background:#0A6B5C;color:#fff;width:20px;height:20px;border-radius:5px;text-align:center;line-height:20px;margin-right:6px;vertical-align:middle">${idx+1}</span><span style="font-size:13px;font-weight:800;vertical-align:middle">${it.room}</span><span style="font-size:10px;font-weight:700;color:${tc};background:${tb};padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle">${it.type||''}</span>${mTag}</div>`;
+    const hasW=it.wImg&&it.wImg.startsWith('data:'), hasC=it.cImg&&it.cImg.startsWith('data:');
+    if(hasW||hasC){ if(hasW&&hasC){ h+=`<table style="width:100%;border-collapse:collapse;background:#F1F4F8"><tr><td style="width:50%;padding:4px"><img src="${it.wImg}" style="width:100%;height:150px;object-fit:cover;border-radius:6px;display:block"></td><td style="width:50%;padding:4px"><img src="${it.cImg}" style="width:100%;height:150px;object-fit:cover;border-radius:6px;display:block"></td></tr></table>`; } else { const src=hasW?it.wImg:it.cImg; h+=`<div style="padding:4px;background:#F1F4F8"><img src="${src}" style="width:100%;height:180px;object-fit:cover;border-radius:6px;display:block"></div>`; } }
+    const safeDetail=(it.detail||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    h+=`<div style="padding:10px 12px"><div style="font-size:11px;font-weight:700;color:#0A6B5C;margin-bottom:3px">${it.work||''} → ${it.sub||''}</div><div style="font-size:11px;color:#5A6B7F;line-height:1.6;white-space:pre-wrap">${safeDetail}</div></div></div>`;
   });
-
-  h += `<div style="text-align:center;font-size:8px;color:#94A3B8;margin-top:14px;padding-top:10px;border-top:1px solid #E8ECF1;line-height:1.6">
-    ※ 본 리포트는 입주자 사전점검 보조 자료이며 법적 효력이 없습니다.<br>
-    제공: 청개구리샤시 | 대표: 전영웅 | 📞 010-2322-0949 | ⓒ 2026 Cheong-gaeguri Corp.
-  </div>`;
-
-  wrap.innerHTML = h;
-  document.body.appendChild(wrap);
-
-  const imgs = wrap.querySelectorAll('img');
-  const imgP = Array.from(imgs).map(img =>
-    img.complete && img.naturalHeight > 0
-      ? Promise.resolve()
-      : new Promise(r => { img.onload = r; img.onerror = r; })
-  );
-
-  Promise.all(imgP).then(() => {
-    requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-    setTimeout(() => {
-      html2canvas(wrap, {
-        scale: 2, useCORS: true, allowTaint: true, logging: false,
-        backgroundColor: '#ffffff', width: 800, height: wrap.scrollHeight, windowWidth: 800
-      }).then(canvas => {
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const pageW = 210, pageH = 297, margin = 5;
-        const usableW = pageW - margin * 2;
-        const usableH = pageH - margin * 2;
-        const imgW = canvas.width, imgH = canvas.height;
-        const ratio = usableW / imgW;
-        const pageImgH = usableH / ratio;
-        let remainH = imgH, srcY = 0, page = 0;
-
-        while(remainH > 0){
-          if(page > 0) pdf.addPage();
-          const sliceH = Math.min(pageImgH, remainH);
-          const sliceHmm = sliceH * ratio;
-          const sliceCanvas = document.createElement('canvas');
-          sliceCanvas.width = imgW;
-          sliceCanvas.height = Math.ceil(sliceH);
-          const ctx = sliceCanvas.getContext('2d');
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(0, 0, sliceCanvas.width, sliceCanvas.height);
-          ctx.drawImage(canvas, 0, srcY, imgW, sliceH, 0, 0, imgW, sliceH);
-          const sliceData = sliceCanvas.toDataURL('image/jpeg', 0.92);
-          pdf.addImage(sliceData, 'JPEG', margin, margin, usableW, sliceHmm);
-          srcY += sliceH;
-          remainH -= sliceH;
-          page++;
-        }
-        pdf.save(fileName);
-        wrap.remove();
-        overlay.remove();
-        stat(`✅ ${fileName} 저장 완료!`);
-      }).catch(err => {
-        console.error('html2canvas err:', err);
-        wrap.remove(); overlay.remove();
-        stat('PDF 생성 실패', true);
-        if(confirm('PDF 저장 실패.\n브라우저 인쇄로 저장할까요?')) window.print();
-      });
-    }, 800);
-    });
-    });
-  }).catch(() => {
-    wrap.remove(); overlay.remove();
-    stat('이미지 로딩 실패', true);
-  });
+  h+=`<div style="text-align:center;font-size:8px;color:#94A3B8;margin-top:14px;padding-top:10px;border-top:1px solid #E8ECF1;line-height:1.6">※ 본 리포트는 입주자 사전점검 보조 자료이며 법적 효력이 없습니다.<br>제공: 청개구리샤시 | 대표: 전영웅 | 📞 010-2322-0949 | ⓒ 2026 Cheong-gaeguri Corp.</div>`;
+  wrap.innerHTML=h; document.body.appendChild(wrap);
+  const imgs=wrap.querySelectorAll('img');
+  const imgP=Array.from(imgs).map(img=>img.complete&&img.naturalHeight>0?Promise.resolve():new Promise(r=>{img.onload=r;img.onerror=r;}));
+  Promise.all(imgP).then(()=>{ requestAnimationFrame(()=>{ requestAnimationFrame(()=>{ setTimeout(()=>{
+    html2canvas(wrap,{scale:2,useCORS:true,allowTaint:true,logging:false,backgroundColor:'#ffffff',width:800,height:wrap.scrollHeight,windowWidth:800}).then(canvas=>{
+      const{jsPDF}=window.jspdf; const pdf=new jsPDF('p','mm','a4');
+      const pageW=210,pageH=297,margin=5,usableW=pageW-margin*2,usableH=pageH-margin*2;
+      const imgW=canvas.width,imgH=canvas.height,ratio=usableW/imgW,pageImgH=usableH/ratio;
+      let remainH=imgH,srcY=0,page=0;
+      while(remainH>0){ if(page>0)pdf.addPage(); const sliceH=Math.min(pageImgH,remainH); const sliceHmm=sliceH*ratio; const sliceCanvas=document.createElement('canvas'); sliceCanvas.width=imgW; sliceCanvas.height=Math.ceil(sliceH); const ctx=sliceCanvas.getContext('2d'); ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,sliceCanvas.width,sliceCanvas.height); ctx.drawImage(canvas,0,srcY,imgW,sliceH,0,0,imgW,sliceH); const sliceData=sliceCanvas.toDataURL('image/jpeg',0.92); pdf.addImage(sliceData,'JPEG',margin,margin,usableW,sliceHmm); srcY+=sliceH; remainH-=sliceH; page++; }
+      pdf.save(fileName); wrap.remove(); overlay.remove(); stat(`✅ ${fileName} 저장 완료!`);
+    }).catch(err=>{ console.error(err); wrap.remove(); overlay.remove(); stat('PDF 생성 실패',true); if(confirm('PDF 저장 실패.\n브라우저 인쇄로 저장할까요?'))window.print(); });
+  },800); }); }); }).catch(()=>{ wrap.remove(); overlay.remove(); stat('이미지 로딩 실패',true); });
 };
 
+/* ── 모달 ── */
 A.modal=(n,s)=>{
-  const el=$(n==='paid'?'moPaid':'moHelp');
+  let el;
+  if(n==='paid') el=$('moPaid');
+  else if(n==='payGuide') el=$('moPayGuide');
+  else if(n==='help') el=$('moHelp');
+  else return;
   el.classList.toggle('show',!!s);
-  if(n==='help'&&s)$('hpCk').checked=false;
 };
 
-A.chat=()=>{$('chatW').classList.toggle('show')};
-const ans={
-  cost:{q:'점검 비용이 궁금해요.',a:'💰 <b>점검 비용 안내</b><br>29평 이하: 13만원<br>30평 이상: 15만원<br>50평 이상: 20만원<br><br>※ 수도권 외 추가 출장비 발생 가능'},
-  value:{q:'합리적 가격의 비결은?',a:'💡 <b>합리적 가격의 비결</b><br>1. AI 기술 도입으로 분석 시간 단축<br>2. 불필요한 검사 배제, 핵심 하자 집중<br>3. 검사 직후 1분 내 디지털 리포트 전송<br><br>기술력으로 비용은 낮추고 품질은 높인 서비스입니다.'},
-  defect:{q:'중대하자가 뭔가요?',a:'🛠️ <b>중대하자 집중 점검</b><br>제작불량, 시공불량, 결로, 외풍을 중점 검사합니다.<br><br>단순 오염·흠집보다 <b>생활에 직접적 영향</b>을 주는 중대 하자를 우선 발견합니다.'},
-  booking:{q:'예약은 어떻게 하나요?',a:'📅 <b>예약 방법</b><br>1. 하단 유료예약 버튼 클릭<br>2. 신청서 작성 및 입금<br>3. 010-2322-0949로 문자<br><br>확인 후 확정 안내드립니다!'},
-  time:{q:'점검 시간은 얼마나 걸려요?',a:'⏱️ <b>점검 소요시간</b><br>20평 기준: 약 1시간30분~2시간<br>30평 이상: 약 2시간~3시간<br><br>꼼꼼하게 진행하되 입주 일정에 맞춰 효율적으로 완료합니다.'},
-  after:{q:'점검 후 하자 발견하면?',a:'📋 <b>점검 후 절차</b><br>1. 현장에서 고객에게 PDF파일 전송<br>2. 고객의 폰에서 저장된 파일 하자관리<br>3. 보수 완료 후 재점검 가능 (별도 비용)<br><br>리포트가 공식 보수 요청 근거 자료로 활용됩니다.'},
-  diff:{q:'AI 점검 vs 유료 점검 차이?',a:'🔍 <b>서비스 비교</b><br><b>무료 AI 점검:</b> 사진 기반 AI 분석 (1일 25인, 1인당 50건)<br><b>유료 전문가 점검:</b> 현장 방문 + 전문 장비 측정 + 법적 기준 리포트 (1일 5인, 1인당 50건)<br><br>AI로 먼저 확인 → 필요 시 전문가 점검 추천!'},
-  cancel:{q:'예약 취소/환불 규정은?',a:'💳 <b>취소 및 환불 안내</b><br>방문 <b>7일 전</b> 취소: 100% 환불<br>7일 이내 취소: 환불 불가<br><br>일정 변경은 사전 협의 시 가능합니다.<br>📞 010-2322-0949'}
+/* ============================================================
+   🤖 AI 상담 챗봇 시스템 v2.0
+   ── 카테고리 탭 + 빠른질문 + AI 직접 질문
+   ============================================================ */
+
+// 카테고리별 빠른 질문 목록
+const CB_CATS = {
+  use: [
+    { icon:'📱', label:'앱 사용 순서',     key:'howto' },
+    { icon:'📸', label:'사진 몇 장?',       key:'photo' },
+    { icon:'🆓', label:'무료 몇 회?',       key:'free_count' },
+    { icon:'✅', label:'저장 후 다음은?',   key:'after_save' },
+  ],
+  pass: [
+    { icon:'🎟️', label:'1일권이란?',        key:'daily' },
+    { icon:'🛒', label:'어디서 구매?',       key:'buy_where' },
+    { icon:'🔑', label:'코드 입력법',        key:'code_how' },
+    { icon:'⏰', label:'언제 만료?',         key:'expire' },
+    { icon:'🔁', label:'당일 재구매?',       key:'rebuy' },
+  ],
+  donate: [
+    { icon:'💚', label:'기부앱이란?',        key:'donate_what' },
+    { icon:'📊', label:'기부 비율은?',       key:'donate_ratio' },
+    { icon:'🏢', label:'어디에 기부?',       key:'donate_where' },
+    { icon:'🧾', label:'기부 영수증?',       key:'donate_receipt' },
+  ],
+  defect: [
+    { icon:'🏠', label:'하자란?',            key:'defect_what' },
+    { icon:'⚠️', label:'중대하자란?',        key:'major_defect' },
+    { icon:'🤖', label:'AI vs 전문가',       key:'diff' },
+    { icon:'📋', label:'결과 신뢰도?',       key:'accuracy' },
+  ],
+  save: [
+    { icon:'💾', label:'PDF 저장법',         key:'pdf_how' },
+    { icon:'📁', label:'파일 위치?',          key:'file_location' },
+    { icon:'📤', label:'공유 방법',           key:'share' },
+    { icon:'🗑️', label:'항목 삭제법',        key:'delete_how' },
+  ],
 };
-A.ask=t=>{
-  const b=$('chatB'),{q,a}=ans[t];
-  b.innerHTML+=`<div class="bb us">${q}</div>`;
-  setTimeout(()=>{b.innerHTML+=`<div class="bb bt">${a}</div>`;b.scrollTop=b.scrollHeight},300);
+
+// 빠른 답변 DB
+const CB_ANS = {
+  howto:        { q:'앱 사용 순서가 어떻게 되나요?',
+    a:'📱 <b>앱 사용 순서 (4단계)</b><br><br>① 현장 정보 입력 — 주소·동·호수·점검 위치 선택<br>② 사진 촬영 — 멀리서 1장(위치확인) + 가까이 1장(AI분석 시작)<br>③ 하자 내용 확인 — AI 자동 분류 후 직접 수정 가능<br>④ 저장 → 반복 → <b>전체 저장(PDF)</b>으로 마무리<br><br>💡 화면 상단 <b>[음성안내]</b> 버튼을 누르면 단계별 음성 설명을 들을 수 있어요!' },
+  photo:        { q:'사진은 몇 장 찍어야 하나요?',
+    a:'📸 <b>사진 촬영 안내</b><br><br>하자 1건당 최대 <b>2장</b> 촬영합니다.<br><br>• <b>멀리서 찍기</b> (선택) — 하자 위치가 보이도록 넓게 촬영<br>• <b>가까이 찍기</b> (필수) ⚡ — 찍는 순간 AI 분석이 자동 시작!<br><br>🔢 가까이 찍기 1회 = AI 분석 <b>1회</b> 차감됩니다' },
+  free_count:   { q:'무료로 몇 번 사용할 수 있나요?',
+    a:'🆓 <b>무료 체험 안내</b><br><br>매일 자정 초기화되는 <b>무료 3회</b>가 제공됩니다.<br><br>• 무료 3회 소진 시 → 1일이용권(₩10,000)으로 업그레이드<br>• 이용권은 하루 <b>100회</b> AI 분석 가능<br><br>💡 30평대 아파트 평균 하자 20~40건이므로 이용권이 충분합니다!' },
+  after_save:   { q:'저장 후에는 어떻게 하나요?',
+    a:'✅ <b>저장 후 진행 방법</b><br><br>저장 즉시 입력창이 자동 초기화됩니다.<br><br>① 다음 위치로 이동 → 동일 방법 반복<br>② 모든 하자 등록 완료 후 → <b>[전체 저장]</b> 버튼 클릭<br>③ PDF 파일이 폰에 자동 저장됨<br>④ 건설사 하자보수팀에 PDF 제출<br><br>📋 PDF가 공식 하자보수 요청 자료로 활용됩니다!' },
+  daily:        { q:'1일이용권이 무엇인가요?',
+    a:'🎟️ <b>1일이용권 안내</b><br><br>오늘 하루 AI 분석을 <b>100회</b> 사용할 수 있는 이용권입니다.<br><br>• 💰 가격: <b>₩10,000</b><br>• ⏰ 유효기간: <b>당일 자정까지</b><br>• 🔑 결제 → 인증코드 수령 → 코드 입력 → 즉시 활성화<br>• 💚 수익 <b>50% → 공익단체 기부</b><br><br>앱 상단 <b>[1일권 구매]</b> 버튼으로 구매하세요!' },
+  buy_where:    { q:'어디서 어떻게 구매하나요?',
+    a:'🛒 <b>구매 방법 (3단계)</b><br><br>① 앱 상단 <b>[1일권 구매]</b> 버튼 클릭<br>② 네이버 스마트스토어에서 <b>네이버페이</b>로 결제<br>③ 5분 이내 문자로 인증코드 수신 → 앱에서 입력<br><br>📞 코드 미수신 시: <b>010-2322-0949</b> 문자 문의' },
+  code_how:     { q:'인증코드 입력하는 방법은?',
+    a:'🔑 <b>인증코드 입력 방법</b><br><br>① 앱 상단 <b>[1일권 구매]</b> 버튼 클릭<br>② 팝업 하단 <b>코드 입력란</b>에 수령한 코드 입력<br>③ <b>[확인]</b> 버튼 클릭 → "인증 성공!" 메시지 확인<br>④ 즉시 100회 활성화<br><br>✅ 코드는 대소문자 구분 없이 입력하세요' },
+  expire:       { q:'이용권 만료 시간은 언제인가요?',
+    a:'⏰ <b>만료 시간 안내</b><br><br>1일이용권은 구매 당일 <b>자정(00:00)</b>에 자동 만료됩니다.<br><br>예) 오전 9시 구매 → 당일 밤 12시까지 이용<br><br>⚠️ 잔여 횟수는 다음 날로 이월되지 않습니다<br>💡 점검 당일에 구매하시길 권장합니다!' },
+  rebuy:        { q:'같은 날 다시 구매할 수 있나요?',
+    a:'🔁 <b>당일 재구매 가능합니다</b><br><br>코드를 추가 입력하면 <b>100회씩 누적</b>됩니다.<br><br>50평 이상 대형 아파트나 여러 세대 점검 시 필요할 수 있습니다.<br><br>📞 대량·단체 구매 문의: <b>010-2322-0949</b>' },
+  donate_what:  { q:'기부형 앱이란 무엇인가요?',
+    a:'💚 <b>기부형 앱이란?</b><br><br>청개구리 입주전은 <b>수익의 50%를 공익단체에 기부</b>하는 사회공헌 앱입니다.<br><br>1일이용권(₩10,000) 구매 시:<br>• ₩5,000 → <b>공익단체 기부</b><br>• ₩5,000 → 앱 운영·개발<br><br>🌱 당신의 점검 한 번이 곧 기부입니다!' },
+  donate_ratio: { q:'기부 비율이 얼마나 되나요?',
+    a:'📊 <b>기부 비율 안내</b><br><br>유료 수익의 정확히 <b>50%</b>가 기부됩니다.<br><br>• 판매가 ₩10,000<br>• 네이버 수수료 약 -₩374 (3.74%)<br>• 기부금(50%): 약 <b>₩4,813</b><br><br>📋 매월 기부 내역을 앱 내 투명하게 공개할 예정입니다' },
+  donate_where: { q:'어디에 기부하나요?',
+    a:'🏢 <b>기부 대상 단체</b><br><br>정식 운영 후 기부 협약 단체를 공개할 예정입니다.<br><br>기부 예정 분야:<br>• 저소득층 주거환경 개선<br>• 독거노인 주택 수리 지원<br>• 장애인 편의시설 개선<br><br>📋 기부 내역과 단체를 앱 내에서 투명하게 공개합니다 💚' },
+  donate_receipt:{ q:'기부 영수증을 받을 수 있나요?',
+    a:'🧾 <b>기부 영수증 안내</b><br><br>현재 개인 영수증 발행 시스템 준비 중입니다.<br><br>운영사(청개구리샤시)가 단체 기부 후 영수증을 보관하며, 향후 투명성 보고서 형태로 공개 예정입니다.<br><br>📞 문의: <b>010-2322-0949</b>' },
+  defect_what:  { q:'하자란 무엇인가요?',
+    a:'🏠 <b>하자(瑕疵)란?</b><br><br>아파트 시공 과정에서 발생한 <b>품질 결함</b>을 말합니다.<br><br>주요 유형:<br>• 도배 들뜸·마감불량<br>• 타일 줄눈불량·단차<br>• 창호 개폐불량·수직수평불량<br>• 바닥재 틈새·들뜸·긁힘<br><br>입주 전 발견하면 건설사에 <b>무상 보수</b>를 요청할 수 있습니다!' },
+  major_defect: { q:'중대하자란 무엇인가요?',
+    a:'⚠️ <b>중대하자란?</b><br><br>생활에 직접 영향을 미치는 심각한 결함입니다.<br><br>• 🌡️ <b>결로</b> — 창틀·벽 결로 현상<br>• 💨 <b>외풍</b> — 창호 틈새 찬바람 유입<br>• 🔧 <b>제작불량</b> — 창호·가구 뒤틀림<br>• 🏗️ <b>시공불량</b> — 타일 들뜸·바닥 단차<br><br>청개구리 전문가 점검은 중대하자를 <b>집중 검사</b>합니다!' },
+  diff:         { q:'AI 점검과 전문가 점검의 차이는?',
+    a:'🔍 <b>AI vs 전문가 점검 비교</b><br><br><b>📱 무료 AI 점검 (이 앱)</b><br>• 무료 3회 / 이용권 100회<br>• 사진 기반 AI 분석 + PDF 즉시 생성<br>• 법적 효력 없음 (참고용)<br><br><b>👷 유료 전문가 점검</b><br>• 직접 방문 + 전문 장비<br>• 29평↓ 13만원 / 30평↑ 15만원<br>• 연락: <b>010-2322-0949</b><br><br>💡 AI로 먼저 확인 → 필요 시 전문가 추천!' },
+  accuracy:     { q:'AI 분석 결과는 얼마나 정확한가요?',
+    a:'📋 <b>AI 분석 신뢰도</b><br><br>Google Gemini AI + 국토부 하자 판정 기준 참조<br><br>• 명확한 하자(파손·들뜸·균열): <b>정확도 높음</b> ✅<br>• 미세 하자(경미한 오염·미세 단차): 다소 낮을 수 있음 ⚠️<br><br>⚠️ AI 결과는 <b>참고용</b>이며 법적 효력이 없습니다<br>💡 하자 내용을 직접 입력하면 정확도가 향상됩니다!' },
+  pdf_how:      { q:'PDF 저장하는 방법은?',
+    a:'💾 <b>PDF 저장 방법</b><br><br>① 모든 하자 항목을 리스트에 저장<br>② 하단 <b>[전체 저장]</b> 버튼 클릭<br>③ "PDF 생성 중..." 잠시 대기<br>④ 폰에 자동 다운로드<br><br>📁 파일명 예시: <b>사전점검_101동_1001호_20260306.pdf</b><br>💡 동·호수 미리 입력 시 파일명 자동 생성됩니다!' },
+  file_location:{ q:'저장된 파일은 어디에 있나요?',
+    a:'📁 <b>파일 저장 위치</b><br><br><b>안드로이드</b><br>내 파일 앱 → 다운로드 폴더<br><br><b>아이폰(iOS)</b><br>파일 앱 → 다운로드 폴더<br>(Safari 팝업 차단 해제 필요)<br><br>💡 저장 즉시 카카오톡·이메일로 공유 가능합니다!' },
+  share:        { q:'저장된 PDF를 공유하는 방법은?',
+    a:'📤 <b>PDF 공유 방법</b><br><br>① 다운로드 폴더에서 파일 찾기<br>② 파일 길게 누르기 → <b>공유</b> 선택<br>③ 카카오톡·이메일·문자로 전송<br><br>활용 예시:<br>• 건설사 하자보수팀에 제출<br>• 가족과 함께 확인<br>• 인테리어 업체에 전달' },
+  delete_how:   { q:'저장한 항목을 삭제하려면?',
+    a:'🗑️ <b>항목 삭제 방법</b><br><br><b>개별 삭제</b> — 리스트 항목 우측 🗑️ 버튼 클릭<br><b>전체 삭제</b> — 리스트 상단 [전체삭제] 버튼 클릭<br><b>수정</b> — 항목 우측 ✏️ 버튼 클릭 후 재저장<br><br>⚠️ 삭제 후 복구 불가 — PDF 저장 후 삭제하세요!' },
 };
+
+// ── 탭 전환
+A.cbTab = (el, cat) => {
+  document.querySelectorAll('.cb-tab').forEach(t => t.classList.remove('on'));
+  el.classList.add('on');
+  const quick = $('cbQuick');
+  quick.innerHTML = '';
+  (CB_CATS[cat]||[]).forEach(item => {
+    const btn = document.createElement('button');
+    btn.className = 'cb-qbtn';
+    btn.innerHTML = `<span class="cb-qicon">${item.icon}</span>${item.label}`;
+    btn.onclick = () => A.cbAsk(item.key);
+    quick.appendChild(btn);
+  });
+};
+
+// ── 빠른질문 답변
+A.cbAsk = key => {
+  const ans = CB_ANS[key]; if(!ans) return;
+  cbAddMsg(ans.q, 'usr');
+  setTimeout(() => cbAddMsg(ans.a, 'bot'), 280);
+};
+
+// ── 메시지 추가
+function cbAddMsg(html, type) {
+  const msgs = $('cbMsgs');
+  const div = document.createElement('div');
+  div.className = `cb-msg ${type}`;
+  if(type === 'bot') {
+    div.innerHTML = `<div class="cb-avatar">🐸</div><div><div class="cb-bubble">${html}</div></div>`;
+  } else {
+    div.innerHTML = `<div class="cb-bubble">${html}</div>`;
+  }
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// ── 타이핑 인디케이터
+function cbShowTyping(){
+  const msgs=$('cbMsgs');
+  const d=document.createElement('div');
+  d.className='cb-msg bot'; d.id='cbTyping';
+  d.innerHTML=`<div class="cb-avatar">🐸</div><div><div class="cb-typing"><span></span><span></span><span></span></div></div>`;
+  msgs.appendChild(d); msgs.scrollTop=msgs.scrollHeight;
+}
+function cbHideTyping(){ const e=$('cbTyping'); if(e) e.remove(); }
+
+// ── AI 직접 질문 전송
+A.cbSend = async () => {
+  const input=$('cbInput'), q=input.value.trim();
+  if(!q) return;
+  input.value=''; input.style.height='auto';
+  $('cbSendBtn').disabled=true;
+  cbAddMsg(q,'usr');
+  cbShowTyping();
+  try {
+    const g=new GoogleGenerativeAI(K);
+    const m=g.getGenerativeModel({model:'gemini-2.5-flash'});
+    const prompt=`당신은 "청개구리 입주전" AI 앱의 친절한 상담 도우미입니다.
+
+[앱 정보]
+- 기능: 신규 아파트 입주 전 하자를 사진으로 찍으면 AI 자동 분석·분류
+- 운영: 청개구리샤시 (대표:전영웅 / 010-2322-0949)
+- 무료체험: 하루 3회 AI 분석
+- 1일이용권: ₩10,000 / 하루 100회 / 네이버페이 결제 → 인증코드 입력
+- 기부형 앱: 수익 50%를 공익단체에 기부
+- 전문가 점검: 직접 방문 (29평↓13만원 / 30평↑15만원 / 50평↑20만원)
+
+[답변 규칙]
+1. 일반인이 이해하기 쉽게 친절하고 간결하게 (4줄 이내)
+2. 핵심만, 필요시 HTML <b>태그 사용
+3. 앱과 무관한 질문: "앱 관련 질문을 해주세요 😊" 로 응답
+4. 연락처 필요시 010-2322-0949 안내
+
+사용자 질문: "${q}"`;
+    const res=await m.generateContent(prompt);
+    cbHideTyping();
+    cbAddMsg(res.response.text().replace(/\*\*(.*?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>'),'bot');
+  } catch(e){
+    cbHideTyping();
+    cbAddMsg('일시적 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.<br>📞 <b>010-2322-0949</b>','bot');
+  }
+  $('cbSendBtn').disabled=false;
+};
+
+// ── 챗봇 열기 / 닫기
+A.openChatBot = () => {
+  $('chatbotMo').classList.add('show');
+  document.body.style.overflow='hidden';
+  // 첫 탭 초기화
+  const firstTab=document.querySelector('.cb-tab');
+  if(firstTab) A.cbTab(firstTab,'use');
+};
+A.closeChatBot = () => {
+  $('chatbotMo').classList.remove('show');
+  document.body.style.overflow='';
+};
+
+// 하위호환
+A.chat = () => A.openChatBot();
+A.ask  = key => A.cbAsk(key);
+
+/* ============================================================
+   📋 Console 관리 명령어 (개발자용) v20.0
+   ============================================================
+   ▶ 이용권 상태 확인:
+   JSON.parse(localStorage.getItem('frog_pass'))
+
+   ▶ 이용권 수동 활성화 (테스트):
+   localStorage.setItem('frog_pass', JSON.stringify({date:new Date().toDateString(),active:true,type:'paid',code:'TEST01'}))
+   // 활성화 후 페이지 새로고침
+
+   ▶ 이용권 초기화:
+   localStorage.removeItem('frog_pass')
+   localStorage.removeItem('frog_use_paid')
+
+   ▶ 무료 사용량 초기화:
+   localStorage.setItem('frog_use_free', JSON.stringify({date:new Date().toDateString(),count:0}))
+
+   ▶ 개발자 모드 ON/OFF:
+   localStorage.setItem('is_dev','true')
+   localStorage.setItem('is_dev','false')
+
+   ▶ 전체 현황:
+   console.table({
+     이용권상태: JSON.parse(localStorage.getItem('frog_pass')||'{}'),
+     무료사용량: JSON.parse(localStorage.getItem('frog_use_free')||'{}'),
+     유료사용량: JSON.parse(localStorage.getItem('frog_use_paid')||'{}'),
+     직원사용량: JSON.parse(localStorage.getItem('frog_use_pro')||'{}'),
+     저장항목수: JSON.parse(localStorage.getItem('frog_list')||'[]').length
+   })
+
+   ▶ v20.0 한도:
+   무료체험:  3건/일 (체험용)
+   1일이용권: 100건/일 (₩10,000 · 50% 공익기부)
+   직원전용:  50건/일 (비밀번호: 51600)
+
+   ★ GAS 설정 방법 (인증코드 검증):
+   1. Google Sheets 생성: A=Code, B=Used, C=Date, D=Type
+   2. Apps Script 작성 (아래 코드 참고)
+   3. 배포 → 웹앱 → 누구나 접근 허용
+   4. GAS_URL 변수에 배포 URL 입력
+
+   ★ GAS 코드 예시:
+   function doGet(e){
+     var p=e.parameter;
+     if(p.action==='verify'){
+       var ss=SpreadsheetApp.openById('YOUR_SHEET_ID');
+       var sh=ss.getSheetByName('Codes');
+       var data=sh.getDataRange().getValues();
+       for(var i=1;i<data.length;i++){
+         if(data[i][0]===p.code&&data[i][1]!=='USED'){
+           sh.getRange(i+1,2).setValue('USED');
+           sh.getRange(i+1,3).setValue(new Date());
+           return ContentService.createTextOutput(JSON.stringify({valid:true,message:'인증 성공'})).setMimeType(ContentService.MimeType.JSON);
+         }
+       }
+       return ContentService.createTextOutput(JSON.stringify({valid:false,message:'유효하지 않은 코드'})).setMimeType(ContentService.MimeType.JSON);
+     }
+   }
+   ============================================================ */
 </script>
 </body>
 </html>
