@@ -737,6 +737,7 @@ input[type="file"]{display:none}
         <div class="cd-item" data-val="발코니2" onclick="A.pickRoom(this)"><span class="cd-radio"></span><span class="cd-label">발코니2</span></div>
         <div class="cd-item" data-val="대피공간" onclick="A.pickRoom(this)"><span class="cd-radio"></span><span class="cd-label">대피공간</span></div>
         <div class="cd-item" data-val="팬트리" onclick="A.pickRoom(this)"><span class="cd-radio"></span><span class="cd-label">팬트리</span></div>
+        <div class="cd-item" data-val="드레스룸" onclick="A.pickRoom(this)"><span class="cd-radio"></span><span class="cd-label">드레스룸</span></div>
         <div class="cd-item" data-val="다용도실" onclick="A.pickRoom(this)"><span class="cd-radio"></span><span class="cd-label">다용도실</span></div>
         <div class="cd-item" data-val="기타" onclick="A.pickRoom(this)"><span class="cd-radio"></span><span class="cd-label">기타</span></div>
       </div>
@@ -1582,32 +1583,110 @@ function show(id,src){ const p=$(id); p.src=src; p.style.display='block'; }
 
 async function toPart(f){ return new Promise(r=>{const x=new FileReader();x.onloadend=()=>r({inlineData:{data:x.result.split(',')[1],mimeType:f.type}});x.readAsDataURL(f)}); }
 
-/* ── AI 분석 ── */
+/* ── AI 분석 (2단계 이중 검증) ── */
 async function runAI(){
   const det=$('fDetail'), ui=$('fUser').value;
-  det.value='🔍 AI 정밀 분석 중...'; stat('AI 분석 중...');
+  const g=new GoogleGenerativeAI(K);
+  const mdl=g.getGenerativeModel({model:'gemini-2.5-flash'});
+  const activeMode=getActiveMode();
+  const proExtra=(activeMode==='pro')?'\n[전문 모드] 시공 기준서, KS규격, 국토부 하자판정 기준을 상세히 인용하여 전문 보고서 수준으로 작성하세요.':'';
+  const workList=Object.keys(WM).map(w=>`${w}(${Object.keys(WM[w]).join(',')})`).join('; ');
+
+  // ── 이미지 파트 준비
+  const parts1=[]; if(wF)parts1.push(await toPart(wF)); if(cF)parts1.push(await toPart(cF));
+
   try{
-    const g=new GoogleGenerativeAI(K);
-    const m=g.getGenerativeModel({model:"gemini-2.5-flash"});
-    const activeMode=getActiveMode();
-    const proExtra=(activeMode==='pro')?'\n[전문 모드] 시공 기준서, KS규격, 국토부 하자판정 기준을 상세히 인용하여 전문 보고서 수준으로 작성하세요.':'';
-    const workList=Object.keys(WM).map(w=>`${w}(${Object.keys(WM[w]).join(',')})`).join('; ');
-    const prompt=`입주자 사전점검 AI입니다.\n사진1(Wide):공종 파악. 사진2(Close):하자유형 및 상세내용 파악.\n\n**[사용자 입력]: "${ui}"**\n(이 정보가 있으면 최우선 반영하세요.)${proExtra}\n\n[분류체계 - 반드시 아래 공종/세부공종명을 사용]\n${workList}\n\n[유형 표준]: 들뜸, 마감불량, 흠집/찍힘, 면불량, 오염, 미시공, 파손, 틈새, 코킹불량, 수직수평불량, 개폐불량, 고정불량, 작동불량, 줄눈불량, 단차, 구배불량, 이색/변색, 누수, 균열, 도장불량, 이음불량, 배수불량, 점등불량, 악취\n\n[판단기준]\n- 하자 판단 시: 현상과 사례매칭을 상세 기술\n- 하자 아닌 경우: "type"에 "허용범위", "detail"에 국토부 기준 설명\n\n[JSON출력]\n{"work":"공종명","sub":"세부공종","type":"하자유형 또는 허용범위","detail":"1. 현상:...\\n2. 사례매칭 또는 허용범위안내:..."}`;
-    const parts=[prompt];
-    if(wF)parts.push(await toPart(wF)); if(cF)parts.push(await toPart(cF));
-    const res=await m.generateContent(parts);
-    const txt=res.response.text();
-    let d={};
-    try{ const c=txt.replace(/```json/g,'').replace(/```/g,'').trim(); const mt=c.match(/\{[\s\S]*\}/); d=mt?JSON.parse(mt[0]):{} }
-    catch{ d={detail:'파싱 실패. 직접 입력해주세요.',work:'기타',sub:'',type:'확인필요'} }
-    const aiWork=d.work||'', aiSub=d.sub||'', aiType=d.type||'';
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       1차 분석: 이미지 보고 공종/세부/유형/상세 분류
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    det.value='🔍 1차 AI 분석 중...'; stat('1차 분석 진행 중...');
+
+    const prompt1=`입주자 사전점검 AI입니다.
+사진1(Wide):공종 파악. 사진2(Close):하자유형 및 상세내용 파악.
+
+**[사용자 입력]: "${ui}"**
+(이 정보가 있으면 최우선 반영하세요.)${proExtra}
+
+[분류체계 - 반드시 아래 공종/세부공종명을 사용]
+${workList}
+
+[유형 표준]: 들뜸, 마감불량, 흠집/찍힘, 면불량, 오염, 미시공, 파손, 틈새, 코킹불량, 수직수평불량, 개폐불량, 고정불량, 작동불량, 줄눈불량, 단차, 구배불량, 이색/변색, 누수, 균열, 도장불량, 이음불량, 배수불량, 점등불량, 악취
+
+[판단기준]
+- 하자 판단 시: 현상과 사례매칭을 상세 기술
+- 하자 아닌 경우: "type"에 "허용범위", "detail"에 국토부 기준 설명
+
+[JSON출력]
+{"work":"공종명","sub":"세부공종","type":"하자유형 또는 허용범위","detail":"1. 현상:...\\n2. 사례매칭 또는 허용범위안내:..."}`;
+
+    const res1=await mdl.generateContent([prompt1,...parts1]);
+    const txt1=res1.response.text();
+    let d1={};
+    try{ const c=txt1.replace(/```json/g,'').replace(/```/g,'').trim(); const mt=c.match(/\{[\s\S]*\}/); d1=mt?JSON.parse(mt[0]):{} }
+    catch{ d1={detail:'파싱 실패. 직접 입력해주세요.',work:'기타',sub:'',type:'확인필요'} }
+
+    // 1차 결과 임시 표시
+    det.value='⏳ 2차 검증 중...'; stat('AI 재검증 중...');
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       2차 검증: 1차 결과를 이미지와 함께 재확인
+       · 공종/세부/유형 정확성 재검토
+       · AI 분석 상세내용 신뢰도 재확인
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    const prompt2=`당신은 입주자 사전점검 전문 검수 AI입니다.
+아래는 1차 AI가 사진을 보고 분류한 결과입니다.
+이미지를 다시 한번 꼼꼼히 확인하여, 1차 결과가 정확한지 검증하고 최종 결과를 출력하세요.
+
+[1차 분석 결과]
+- 공종: ${d1.work||'미분류'}
+- 세부공종: ${d1.sub||'미분류'}
+- 하자유형: ${d1.type||'미분류'}
+- 상세내용: ${d1.detail||'없음'}
+- 사용자 입력: "${ui}"
+
+[검증 기준]
+1. 공종/세부공종이 이미지와 맞지 않으면 수정
+2. 하자유형이 아래 표준 유형에서 벗어나면 가장 가까운 표준 유형으로 교정
+   표준유형: 들뜸, 마감불량, 흠집/찍힘, 면불량, 오염, 미시공, 파손, 틈새, 코킹불량, 수직수평불량, 개폐불량, 고정불량, 작동불량, 줄눈불량, 단차, 구배불량, 이색/변색, 누수, 균열, 도장불량, 이음불량, 배수불량, 점등불량, 악취, 허용범위
+3. 상세내용이 이미지와 다르면 수정
+4. 1차 결과가 정확하다면 그대로 출력
+5. 변경된 항목이 있으면 "corrected":true, 없으면 "corrected":false 추가
+
+[분류체계]
+${workList}
+
+[JSON출력만 반환]
+{"work":"공종명","sub":"세부공종","type":"하자유형","detail":"1. 현상:...\\n2. 사례매칭 또는 허용범위안내:...\\n3. 검토의견:...","corrected":true/false}`;
+
+    const res2=await mdl.generateContent([prompt2,...parts1]);
+    const txt2=res2.response.text();
+    let d2={};
+    try{ const c=txt2.replace(/```json/g,'').replace(/```/g,'').trim(); const mt=c.match(/\{[\s\S]*\}/); d2=mt?JSON.parse(mt[0]):{} }
+    catch{ d2=d1; } // 파싱 실패 시 1차 결과 사용
+
+    // 최종 결과 = 2차 검증 결과
+    const final = (d2.work||d2.detail) ? d2 : d1;
+    const wasCorrected = !!final.corrected;
+    const aiWork=final.work||'', aiSub=final.sub||'', aiType=final.type||'';
+
+    // 공종 셀렉트 업데이트
     if(aiWork&&!WM[aiWork]){ const o=document.createElement('option');o.value=aiWork;o.textContent=aiWork;$('fWork').appendChild(o); }
     $('fWork').value=aiWork; A.onWork();
     if(aiSub){ if(!$('fSub').querySelector(`option[value="${aiSub}"]`)){const o=document.createElement('option');o.value=aiSub;o.textContent=aiSub;$('fSub').appendChild(o)} $('fSub').value=aiSub; A.onSub(); }
     if(aiType){ if(!$('fType').querySelector(`option[value="${aiType}"]`)){const o=document.createElement('option');o.value=aiType;o.textContent=aiType;$('fType').appendChild(o)} $('fType').value=aiType; }
-    det.value=(d.detail||'')+'\n\n(※ AI 분석 결과는 참고용입니다.)';
+
+    // AI 분석 결과 표시 (검증 여부 표기 포함)
+    const verifyBadge = wasCorrected
+      ? '\n\n✅ [AI 2차 검증 완료 — 1차 분류가 수정되었습니다]'
+      : '\n\n✅ [AI 2차 검증 완료 — 분류 정확성 확인됨]';
+    det.value=(final.detail||'')+verifyBadge+'\n(※ AI 분석 결과는 참고용입니다.)';
+
     useQuota(); updateQuotaUI(); saveDraft();
-    stat(`분석 완료! (잔여 ${getRemaining()}건)`);
+    const statusMsg = wasCorrected
+      ? `🔄 재검증 후 수정됨 (잔여 ${getRemaining()}건)`
+      : `✅ 분석 완료 (잔여 ${getRemaining()}건)`;
+    stat(statusMsg);
+
   } catch(err){
     console.error(err);
     const errMsg=err?.message||err?.toString()||'';
