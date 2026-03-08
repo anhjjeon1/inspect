@@ -1554,7 +1554,7 @@ A.pdf=()=>{
       while(remainH>0){if(page>0)pdf.addPage();const sliceH=Math.min(pageImgH,remainH);const sliceHmm=sliceH*ratio;const sliceCanvas=document.createElement('canvas');sliceCanvas.width=imgW;sliceCanvas.height=Math.ceil(sliceH);const ctx=sliceCanvas.getContext('2d');ctx.fillStyle='#ffffff';ctx.fillRect(0,0,sliceCanvas.width,sliceCanvas.height);ctx.drawImage(canvas,0,srcY,imgW,sliceH,0,0,imgW,sliceH);const sliceData=sliceCanvas.toDataURL('image/jpeg',0.92);pdf.addImage(sliceData,'JPEG',margin,margin,usableW,sliceHmm);srcY+=sliceH;remainH-=sliceH;page++;}
       pdf.save(fileName);wrap.remove();overlay.remove();stat(`✅ ${fileName} 저장 완료!`);
     }).catch(err=>{console.error(err);wrap.remove();overlay.remove();stat('PDF 생성 실패',true);if(confirm('PDF 저장 실패.\n브라우저 인쇄로 저장할까요?'))window.print();});
-  },800);}});});}).catch(()=>{wrap.remove();overlay.remove();stat('이미지 로딩 실패',true);});
+  },800);});});}).catch(()=>{wrap.remove();overlay.remove();stat('이미지 로딩 실패',true);});
 };
 
 /* ── 모달 ── */
