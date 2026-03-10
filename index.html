@@ -6,12 +6,17 @@
 <meta name="theme-color" content="#0A6B5C">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>청개구리 입주자 사전점검 AI앱 v20.3</title>
+<title>청개구리 입주자 사전점검 AI앱 v20.4</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;800;900&family=Outfit:wght@600;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 /* ============================================================
-   청개구리 입주자 사전점검 AI v20.3
+   청개구리 입주자 사전점검 AI v20.4
+   v20.4 변경사항:
+   - [FIX] 가까이 찍기 클릭 시 파일다이얼로그 미오픈 문제 수정
+     · lblC에서 for="inC" 제거
+     · 클릭 시 사전 검증(위치·한도) → 통과 시 inC.click() 직접 호출
+     · processPhoto 'c' 분기 내 중복 검증 제거
    v20.3 변경사항:
    - [UPDATE] 헤더 로고 → 실제 청개구리 브랜드 이미지(PNG) 적용
    v20.2 변경사항:
@@ -253,18 +258,16 @@ textarea.if{resize:none;height:85px;line-height:1.6}
 .cd-item .cd-label{font-size:.88rem;font-weight:600;color:var(--ts)}
 
 /* ──────────────────────────────────────────
-   📸 사진 촬영 영역 (v20.1 핵심 수정)
+   📸 사진 촬영 영역
    ────────────────────────────────────────── */
 .pg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
-/* 사진 카드: position:relative + overflow:hidden 유지 */
 .pc{
   aspect-ratio:3/4;border-radius:var(--r);
   position:relative;cursor:pointer;
   display:flex;flex-direction:column;
   align-items:center;justify-content:center;
   gap:7px;overflow:hidden;transition:var(--tr);
-  /* [FIX v20.1] 기본 클릭 가능하도록 z-index 명시 */
   z-index:1;
 }
 .pc:active{transform:scale(.98)}
@@ -276,21 +279,15 @@ textarea.if{resize:none;height:85px;line-height:1.6}
 .pc.w .lb{color:#3B82F6}.pc.c .lb{color:var(--p)}
 .pc .hn{font-size:.65rem;color:var(--th)}
 
-/* [FIX v20.1]
-   .pp: pointer-events:none → 클릭이 label까지 통과
-   사진이 보여도 label(for=input) 클릭 작동 */
 .pp{
   position:absolute;inset:0;
   width:100%;height:100%;
   object-fit:cover;display:none;
   z-index:2;background:#fff;
   border-radius:var(--r);
-  pointer-events:none; /* ★ 핵심 수정 */
+  pointer-events:none;
 }
 
-/* [FIX v20.1]
-   .rb(다시찍기): pointer-events:auto + 높은 z-index
-   클릭 시 해당 input value 초기화 후 파일다이얼로그 오픈 */
 .rb{
   position:absolute;bottom:7px;right:7px;
   background:rgba(0,0,0,.65);color:#fff;
@@ -298,7 +295,7 @@ textarea.if{resize:none;height:85px;line-height:1.6}
   padding:4px 10px;border-radius:16px;
   z-index:20;display:none;
   backdrop-filter:blur(4px);
-  pointer-events:auto; /* ★ 클릭 가능 */
+  pointer-events:auto;
   cursor:pointer;
   border:none;
   transition:background .15s;
@@ -501,12 +498,14 @@ textarea.if{resize:none;height:85px;line-height:1.6}
   #pdiscl{display:block!important;text-align:center;font-size:10px;color:#888;margin-top:20px;padding-top:10px;border-top:1px solid #ddd}
 }
 .hidden{display:none!important}
-/* [FIX v20.1] file input는 숨기되 접근 가능하게 */
+
+/* [FIX v20.4] file input 숨김 처리 - z-index:-1 제거하여 브라우저 호환성 향상 */
 input[type="file"]{
-  position:absolute;
+  position:fixed;
+  top:-200px;
+  left:-200px;
   width:1px;height:1px;
   opacity:0;overflow:hidden;
-  z-index:-1;
 }
 </style>
 </head>
@@ -518,7 +517,6 @@ input[type="file"]{
 <header class="hd">
   <div class="hd-top">
     <div class="hd-in">
-      <!-- [v20.3] 로고: 실제 청개구리 브랜드 이미지 -->
       <div class="hd-logo" style="background:transparent;box-shadow:none;overflow:visible">
         <img src="data:image/webp;base64,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" alt="청개구리" style="width:44px;height:44px;object-fit:contain">
       </div>
@@ -529,8 +527,7 @@ input[type="file"]{
     </div>
     <div class="hd-tags">
       <span class="tag tag-free" id="passTag">기부형 앱</span>
-      <!-- v20.2: 버전 태그 업데이트 -->
-      <span class="tag tag-v" id="verTag" onclick="A.devTap()">v20.3</span>
+      <span class="tag tag-v" id="verTag" onclick="A.devTap()">v20.4</span>
     </div>
   </div>
 </header>
@@ -651,44 +648,42 @@ input[type="file"]{
 
 <!-- ── STEP 2: 사진 촬영 ── -->
 <!--
-  [FIX v20.1] 사진 입력 핵심 수정사항:
-  1. capture="environment" 제거 → 카메라+갤러리 모두 허용
-  2. input을 label 외부(form 바로 아래)에 배치
-  3. label onclick으로 해당 input.value 초기화 → 동일 파일 재선택 가능
-  4. 다시찍기 버튼: label과 분리된 독립 버튼으로 처리
+  [FIX v20.4] 가까이 찍기 수정사항:
+  · lblC 에서 for="inC" 제거
+  · JS에서 사전 검증 후 inC.click() 직접 호출
+  · processPhoto 'c' 분기 내 중복 검증 제거
+  · input[type="file"] z-index:-1 → position:fixed top:-200px 로 변경
 -->
 <div class="sec" data-voice-id="step2">
   <div class="sec-t"><span class="n">2</span> 사진 촬영</div>
 
-  <!-- [FIX] input을 label 바깥(섹션 상단)에 위치 -->
+  <!-- file input: 섹션 내 위치 -->
   <input type="file" id="inW" accept="image/*">
   <input type="file" id="inC" accept="image/*">
 
   <div class="pg">
-    <!-- 멀리서 찍기 -->
+    <!-- 멀리서 찍기: for="inW" 유지 (기존 정상 동작) -->
     <label class="pc w" id="lblW" for="inW">
       <i class="fa-solid fa-image ic"></i>
       <div class="lb">멀리서 찍기<br><span class="hn">위치 파악용</span></div>
       <img class="pp" id="pvW" alt="">
-      <!-- [FIX] 다시찍기: label과 독립, JS로 클릭 처리 -->
       <button type="button" class="rb" id="rtW" onclick="A.retake('w',event)">
         <i class="fa-solid fa-camera" style="margin-right:3px;font-size:.7rem"></i>다시찍기
       </button>
     </label>
 
-    <!-- 가까이 찍기 -->
-    <label class="pc c" id="lblC" for="inC">
+    <!-- [FIX v20.4] 가까이 찍기: for 속성 제거 → JS에서 직접 inC.click() 호출 -->
+    <div class="pc c" id="lblC">
       <i class="fa-solid fa-crosshairs ic"></i>
       <div class="lb">가까이 찍기<br><span class="hn">AI 분석 시작</span></div>
       <img class="pp" id="pvC" alt="">
-      <!-- [FIX] 다시찍기: label과 독립, JS로 클릭 처리 -->
       <button type="button" class="rb" id="rtC" onclick="A.retake('c',event)">
         <i class="fa-solid fa-camera" style="margin-right:3px;font-size:.7rem"></i>다시찍기
       </button>
-    </label>
+    </div>
   </div>
 
-  <!-- [FIX v20.1] 사진 입력 안내 메시지 -->
+  <!-- 사진 입력 안내 -->
   <div style="margin-top:8px;padding:8px 12px;background:var(--bl);border-radius:8px;font-size:.68rem;color:var(--ts);display:flex;align-items:center;gap:6px">
     <i class="fa-solid fa-circle-info" style="color:var(--pl);flex-shrink:0"></i>
     <span>카드를 탭하면 <b>카메라 또는 갤러리</b>에서 선택할 수 있습니다</span>
@@ -772,7 +767,7 @@ input[type="file"]{
 <!-- ── FOOTER ── -->
 <div class="ft">
   <div class="ft-b">청개구리샤시</div>
-  <div class="ft-i">대표: 전영웅 | 사업자: 123-36-31426 | 📞 010-2322-0949<br>본 서비스는 참고용 보조 도구이며 법적 책임을 지지 않습니다.<br>ⓒ 2026 Cheong-gaeguri Corp. | v20.3</div>
+  <div class="ft-i">대표: 전영웅 | 사업자: 123-36-31426 | 📞 010-2322-0949<br>본 서비스는 참고용 보조 도구이며 법적 책임을 지지 않습니다.<br>ⓒ 2026 Cheong-gaeguri Corp. | v20.4</div>
   <div class="ft-donate">
     <i class="fa-solid fa-hand-holding-heart"></i>
     <div class="ft-donate-text">
@@ -1146,36 +1141,63 @@ window.addEventListener('DOMContentLoaded',()=>{
   initWorkSelect();loadList();loadDraft();initDraftListeners();
   step(1);updateQuotaUI();updatePassUI();
 
-  /* ================================================================
-     [FIX v20.1] 사진 input 이벤트 바인딩
-     - change 이벤트로 파일 처리
-     - label 클릭 시 input.value를 '' 초기화하여
-       동일 파일 재선택 시에도 change 이벤트 발생 보장
-     ================================================================ */
   const inW=$('inW'), inC=$('inC');
   const lblW=$('lblW'), lblC=$('lblC');
 
-  // 멀리서 찍기 라벨 클릭 → input value 초기화
+  /* ================================================================
+     멀리서 찍기 (기존 방식 유지 - for="inW" label)
+     label 클릭 → input.value 초기화 → 파일 다이얼로그 자동 오픈
+     ================================================================ */
   lblW.addEventListener('click', (e)=>{
-    // 다시찍기 버튼 클릭 시 이미 처리됨 → 여기서 중복 방지
     if(e.target.classList.contains('rb')||e.target.closest('.rb'))return;
     inW.value='';
   });
 
-  // 가까이 찍기 라벨 클릭 → input value 초기화
+  /* ================================================================
+     [FIX v20.4] 가까이 찍기 - 핵심 수정
+     기존 문제: for="inC" label → 일부 모바일에서 inC 트리거 실패
+                파일 선택 후 processPhoto 내 검증 실패 시 조용히 종료
+     수정 방식:
+       1. <div class="pc c" id="lblC"> (for 속성 없음)
+       2. 클릭 시 JS에서 사전 검증(위치 + 한도)
+       3. 검증 통과 시 inC.value='' → inC.click() 직접 호출
+       → 사용자 제스처 컨텍스트 내에서 동기적으로 호출되므로
+         iOS Safari, Android Chrome 모두 파일 다이얼로그 정상 오픈
+     ================================================================ */
   lblC.addEventListener('click', (e)=>{
+    // 다시찍기 버튼 클릭은 별도 처리
     if(e.target.classList.contains('rb')||e.target.closest('.rb'))return;
+
+    // ① 위치 사전 검증 - 선택 안 했으면 다이얼로그 열지 않고 안내
+    if(!validateRoom()){
+      stat('⚠️ 먼저 점검 위치를 선택해주세요', true);
+      return;
+    }
+
+    // ② 사용량 한도 사전 검증
+    if(!chkLim()){
+      return;
+    }
+
+    // ③ 검증 통과 → 파일 다이얼로그 직접 오픈
     inC.value='';
+    inC.click();
   });
 
-  // 멀리서 찍기 파일 선택 처리
+  /* ================================================================
+     멀리서 찍기 파일 선택 처리
+     ================================================================ */
   inW.addEventListener('change', (e)=>{
     const f=e.target.files[0];
     if(!f)return;
     processPhoto(f,'w');
   });
 
-  // 가까이 찍기 파일 선택 처리
+  /* ================================================================
+     [FIX v20.4] 가까이 찍기 파일 선택 처리
+     · 위치·한도 검증은 lblC 클릭 시 이미 완료
+     · 여기서는 파일 처리만 수행
+     ================================================================ */
   inC.addEventListener('change', (e)=>{
     const f=e.target.files[0];
     if(!f)return;
@@ -1184,15 +1206,15 @@ window.addEventListener('DOMContentLoaded',()=>{
 });
 
 /* ================================================================
-   [FIX v20.1] processPhoto: FileReader 오류 핸들링 추가
+   processPhoto: 파일 읽기 및 처리
+   [FIX v20.4] 'c' 분기에서 중복 검증 제거
+              (lblC 클릭 시 이미 사전 검증 완료)
    ================================================================ */
 function processPhoto(f, t){
-  // 파일 타입 체크
   if(!f.type.startsWith('image/')){
     alert('이미지 파일만 선택해주세요.');
     return;
   }
-  // 파일 크기 체크 (20MB 이상 경고)
   if(f.size > 20*1024*1024){
     if(!confirm(`파일 크기가 큽니다(${(f.size/1024/1024).toFixed(1)}MB). 계속하시겠습니까?\n(분석 속도가 느려질 수 있습니다)`))return;
   }
@@ -1210,15 +1232,7 @@ function processPhoto(f, t){
       step(2);
       saveDraft();
     } else {
-      // 가까이 찍기: 위치 검증 → 한도 검증 → 처리
-      if(!validateRoom()){
-        $('inC').value='';
-        return;
-      }
-      if(!chkLim()){
-        $('inC').value='';
-        return;
-      }
+      // [FIX v20.4] 가까이 찍기: 사전 검증 이미 완료 → 바로 처리
       cF=f;
       showPreview('pvC', dataUrl);
       $('rtC').style.display='block';
@@ -1240,7 +1254,6 @@ function processPhoto(f, t){
    [FIX v20.1] 다시찍기 버튼 처리
    ================================================================ */
 A.retake = (type, e) => {
-  // 이벤트 버블링 차단 (label의 for 속성으로 인한 input 중복 트리거 방지)
   e.preventDefault();
   e.stopPropagation();
 
@@ -1248,6 +1261,7 @@ A.retake = (type, e) => {
     $('inW').value='';
     $('inW').click();
   } else {
+    // 가까이 찍기 다시찍기: 검증 없이 바로 재촬영
     $('inC').value='';
     $('inC').click();
   }
@@ -1259,7 +1273,6 @@ function showPreview(id, src){
   p.src=src;
   p.style.display='block';
 }
-// 하위호환
 function show(id,src){ showPreview(id,src); }
 
 const ls=(k,v)=>{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);};
@@ -1473,7 +1486,6 @@ function updateModeLabel(){
   el.style.display='inline-block';
 }
 function reset(){
-  // [FIX v20.1] input value 초기화 (file type은 value=''로만 가능)
   $('inW').value='';$('inC').value='';
   wF=null;cF=null;
   ['pvW','pvC'].forEach(i=>{$(i).style.display='none';$(i).src='';});
@@ -1530,7 +1542,7 @@ A.pdf=()=>{
   document.body.appendChild(overlay);
   const wrap=document.createElement('div');
   wrap.style.cssText='position:absolute;top:0;left:0;width:800px;padding:28px 24px;font-family:Noto Sans KR,sans-serif;color:#1A2332;background:#fff;z-index:1;line-height:1.5';
-  let h=`<div style="text-align:center;margin-bottom:22px;padding-bottom:16px;border-bottom:3px solid #0A6B5C"><div style="font-size:20px;font-weight:900;color:#0A6B5C;margin-bottom:6px">🐸 청개구리 입주자 사전점검 리포트</div><div style="font-size:13px;font-weight:700;color:#5A6B7F">${info}</div><div style="font-size:10px;color:#94A3B8;margin-top:4px">${dateStr} 작성 | 총 ${list.length}건 | v20.3</div><div style="font-size:9px;color:#16A34A;margin-top:6px;background:#ECFDF5;padding:4px 10px;border-radius:6px;display:inline-block">💚 이 앱 수익의 50%는 공익단체에 기부됩니다</div></div>`;
+  let h=`<div style="text-align:center;margin-bottom:22px;padding-bottom:16px;border-bottom:3px solid #0A6B5C"><div style="font-size:20px;font-weight:900;color:#0A6B5C;margin-bottom:6px">🐸 청개구리 입주자 사전점검 리포트</div><div style="font-size:13px;font-weight:700;color:#5A6B7F">${info}</div><div style="font-size:10px;color:#94A3B8;margin-top:4px">${dateStr} 작성 | 총 ${list.length}건 | v20.4</div><div style="font-size:9px;color:#16A34A;margin-top:6px;background:#ECFDF5;padding:4px 10px;border-radius:6px;display:inline-block">💚 이 앱 수익의 50%는 공익단체에 기부됩니다</div></div>`;
   list.forEach((it,idx)=>{
     const isSafe=it.type==='허용범위';
     const tc=isSafe?'#059669':'#E74C3C',tb=isSafe?'#ECFDF5':'#FFF5F5';
@@ -1541,7 +1553,7 @@ A.pdf=()=>{
     const safeDetail=(it.detail||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     h+=`<div style="padding:10px 12px"><div style="font-size:11px;font-weight:700;color:#0A6B5C;margin-bottom:3px">${it.work||''} → ${it.sub||''}</div><div style="font-size:11px;color:#5A6B7F;line-height:1.6;white-space:pre-wrap">${safeDetail}</div></div></div>`;
   });
-  h+=`<div style="text-align:center;font-size:8px;color:#94A3B8;margin-top:14px;padding-top:10px;border-top:1px solid #E8ECF1;line-height:1.6">※ 본 리포트는 입주자 사전점검 보조 자료이며 법적 효력이 없습니다.<br>제공: 청개구리샤시 | 대표: 전영웅 | 📞 010-2322-0949 | ⓒ 2026 Cheong-gaeguri Corp. | v20.3</div>`;
+  h+=`<div style="text-align:center;font-size:8px;color:#94A3B8;margin-top:14px;padding-top:10px;border-top:1px solid #E8ECF1;line-height:1.6">※ 본 리포트는 입주자 사전점검 보조 자료이며 법적 효력이 없습니다.<br>제공: 청개구리샤시 | 대표: 전영웅 | 📞 010-2322-0949 | ⓒ 2026 Cheong-gaeguri Corp. | v20.4</div>`;
   wrap.innerHTML=h;document.body.appendChild(wrap);
   const imgs=wrap.querySelectorAll('img');
   const imgP=Array.from(imgs).map(img=>img.complete&&img.naturalHeight>0?Promise.resolve():new Promise(r=>{img.onload=r;img.onerror=r;}));
@@ -1627,100 +1639,32 @@ A.chat=()=>A.openChatBot();
 A.ask=key=>A.cbAsk(key);
 
 /* ============================================================
-   버전 관리: 수정 시마다 verTag 업데이트 필수
-   현재: v20.3 (2026-03-08)
-   - UPDATE: 헤더 로고 → 실제 청개구리 브랜드 이미지(PNG) 적용
-   v20.2:
-   - FIX: 헤더 로고 이미지 → SVG 청개구리 아이콘으로 교체
-   - UPDATE: 앱 이름 "청개구리 입주전" → "청개구리 입주자 사전점검"
-   v20.1:
-   - FIX: 사진 input capture 속성 제거 (카메라+갤러리 모두 허용)
-   - FIX: 동일 파일 재선택 가능 (input.value 초기화)
-   - FIX: .pp pointer-events:none (클릭 통과)
-   - FIX: 다시찍기 버튼 독립 처리
-   - FIX: FileReader 오류 핸들링 추가
+   버전 관리
+   현재: v20.4 (2026-03-10)
+   - FIX: 가까이 찍기 클릭 시 파일다이얼로그 미오픈 문제 수정
+     · lblC <label for="inC"> → <div id="lblC"> (for 속성 제거)
+     · 클릭 시 JS에서 사전 검증 후 inC.click() 직접 호출
+     · processPhoto 'c' 분기 중복 검증 제거
+     · input[type="file"] z-index:-1 → position:fixed top:-200px
+
+   v20.3: UPDATE: 헤더 로고 → 실제 청개구리 브랜드 이미지
+   v20.2: FIX: 헤더 로고 SVG, 앱 이름 변경
+   v20.1: FIX: capture 제거, 재선택, pointer-events, FileReader 오류핸들링
    ============================================================ */
 
 /* ============================================================
-   📋 Console 관리 명령어 (개발자용) v20.3
-   ============================================================
-
-   ▶ 이용권 상태 확인:
-   JSON.parse(localStorage.getItem('frog_pass'))
+   📋 Console 관리 명령어 (개발자용) v20.4
 
    ▶ 이용권 수동 활성화 (테스트):
    localStorage.setItem('frog_pass', JSON.stringify({date:new Date().toDateString(),active:true,type:'paid',code:'TEST01'}))
-   // 활성화 후 페이지 새로고침
-
-   ▶ 이용권 초기화:
-   localStorage.removeItem('frog_pass')
-   localStorage.removeItem('frog_use_paid')
 
    ▶ 무료 사용량 초기화:
    localStorage.setItem('frog_use_free', JSON.stringify({date:new Date().toDateString(),count:0}))
 
-   ▶ 개발자 모드 ON/OFF:
+   ▶ 개발자 모드 ON:
    localStorage.setItem('is_dev','true')
-   localStorage.setItem('is_dev','false')
 
-   ▶ 전체 현황:
-   console.table({
-     이용권상태: JSON.parse(localStorage.getItem('frog_pass')||'{}'),
-     무료사용량: JSON.parse(localStorage.getItem('frog_use_free')||'{}'),
-     유료사용량: JSON.parse(localStorage.getItem('frog_use_paid')||'{}'),
-     직원사용량: JSON.parse(localStorage.getItem('frog_use_pro')||'{}'),
-     저장항목수: JSON.parse(localStorage.getItem('frog_list')||'[]').length
-   })
-
-   ▶ v20.3 한도:
-   무료체험:  3건/일 (자정 초기화)
-   1일이용권: 100건/일 (₩10,000 · 50% 공익기부)
-   직원전용:  50건/일 (비밀번호: 51600)
-   개발자모드: 무제한 (버전태그 5회 탭)
-
-   ▶ 테스트 코드 (GAS 미설정 시):
-   TEST01 / DEMO01 / FROG01
-
-   ★ GAS 설정 방법 (인증코드 검증):
-   1. Google Sheets 생성: A=Code, B=Used, C=Date, D=Type
-   2. Apps Script 작성 (아래 코드 참고)
-   3. 배포 → 웹앱 → 누구나 접근 허용
-   4. GAS_URL 변수에 배포 URL 입력
-
-   ★ GAS 코드 예시:
-   function doGet(e){
-     var p=e.parameter;
-     if(p.action==='verify'){
-       var ss=SpreadsheetApp.openById('YOUR_SHEET_ID');
-       var sh=ss.getSheetByName('Codes');
-       var data=sh.getDataRange().getValues();
-       for(var i=1;i<data.length;i++){
-         if(data[i][0]===p.code&&data[i][1]!=='USED'){
-           sh.getRange(i+1,2).setValue('USED');
-           sh.getRange(i+1,3).setValue(new Date());
-           return ContentService
-             .createTextOutput(JSON.stringify({valid:true,message:'인증 성공'}))
-             .setMimeType(ContentService.MimeType.JSON);
-         }
-       }
-       return ContentService
-         .createTextOutput(JSON.stringify({valid:false,message:'유효하지 않은 코드'}))
-         .setMimeType(ContentService.MimeType.JSON);
-     }
-   }
-
-   ★ PENDING 작업:
-   - GAS_URL: 실제 Google Apps Script 배포 URL 입력 필요
-   - NAVER_STORE_URL: 실제 스마트스토어 URL 교체 필요
-   - moPayGuide 모달 버튼 href도 함께 교체
-   - 기부 협약 단체 확정 후 앱 내 공개
-   - 기부 내역 투명성 보고서 시스템 구축
-
-   ★ 운영 정보:
-   - 운영사: 청개구리샤시
-   - 대표: 전영웅
-   - 연락: 010-2322-0949
-   - 사업자: 123-36-31426
+   ▶ 테스트 코드: TEST01 / DEMO01 / FROG01
    ============================================================ */
 </script>
 </body>
