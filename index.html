@@ -6,28 +6,22 @@
 <meta name="theme-color" content="#0A6B5C">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>청개구리 입주자 사전점검 AI앱 v20.4</title>
+<title>청개구리 입주자 사전점검 AI앱 v20.5</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;800;900&family=Outfit:wght@600;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 /* ============================================================
-   청개구리 입주자 사전점검 AI v20.4
+   청개구리 입주자 사전점검 AI v20.5
+   v20.5 변경사항:
+   - [FIX] 가까이 찍기 클릭 시 점검위치로 넘어가는 오류 수정
+     · lblC 클릭 핸들러에서 validateRoom() 사전 검증 제거
+     · 위치 검증은 저장(A.save()) 시에만 수행
+     · 클릭 즉시 한도 체크 후 파일 다이얼로그 바로 오픈
    v20.4 변경사항:
    - [FIX] 가까이 찍기 클릭 시 파일다이얼로그 미오픈 문제 수정
      · lblC에서 for="inC" 제거
      · 클릭 시 사전 검증(위치·한도) → 통과 시 inC.click() 직접 호출
      · processPhoto 'c' 분기 내 중복 검증 제거
-   v20.3 변경사항:
-   - [UPDATE] 헤더 로고 → 실제 청개구리 브랜드 이미지(PNG) 적용
-   v20.2 변경사항:
-   - [FIX] 헤더 로고 이미지 → SVG 청개구리 아이콘으로 교체
-   - [UPDATE] 앱 이름 "청개구리 입주전" → "청개구리 입주자 사전점검"
-   v20.1 변경사항:
-   - [FIX] 사진 input capture 속성 제거 → 카메라+갤러리 모두 허용
-   - [FIX] 동일 파일 재선택 가능 (input.value 초기화)
-   - [FIX] 미리보기 이미지 pointer-events:none → 클릭 통과
-   - [FIX] 다시찍기 버튼 클릭 이벤트 독립 처리
-   - [FIX] FileReader 오류 핸들링 추가
    ============================================================ */
 :root{
   --p:#0A6B5C;--pl:#12B89A;--pg:rgba(18,184,154,.12);
@@ -257,9 +251,7 @@ textarea.if{resize:none;height:85px;line-height:1.6}
 .cd-item.selected .cd-label{color:var(--p);font-weight:800}
 .cd-item .cd-label{font-size:.88rem;font-weight:600;color:var(--ts)}
 
-/* ──────────────────────────────────────────
-   📸 사진 촬영 영역
-   ────────────────────────────────────────── */
+/* ── 사진 촬영 영역 ── */
 .pg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
 .pc{
@@ -499,7 +491,6 @@ textarea.if{resize:none;height:85px;line-height:1.6}
 }
 .hidden{display:none!important}
 
-/* [FIX v20.4] file input 숨김 처리 - z-index:-1 제거하여 브라우저 호환성 향상 */
 input[type="file"]{
   position:fixed;
   top:-200px;
@@ -527,7 +518,7 @@ input[type="file"]{
     </div>
     <div class="hd-tags">
       <span class="tag tag-free" id="passTag">기부형 앱</span>
-      <span class="tag tag-v" id="verTag" onclick="A.devTap()">v20.4</span>
+      <span class="tag tag-v" id="verTag" onclick="A.devTap()">v20.5</span>
     </div>
   </div>
 </header>
@@ -648,21 +639,18 @@ input[type="file"]{
 
 <!-- ── STEP 2: 사진 촬영 ── -->
 <!--
-  [FIX v20.4] 가까이 찍기 수정사항:
-  · lblC 에서 for="inC" 제거
-  · JS에서 사전 검증 후 inC.click() 직접 호출
-  · processPhoto 'c' 분기 내 중복 검증 제거
-  · input[type="file"] z-index:-1 → position:fixed top:-200px 로 변경
+  [FIX v20.5] 가까이 찍기 수정사항:
+  · lblC 클릭 시 validateRoom() 사전 검증 완전 제거
+  · 위치 검증은 A.save() 저장 시에만 수행
+  · 클릭 → 한도 체크 → 즉시 파일 다이얼로그 오픈
 -->
 <div class="sec" data-voice-id="step2">
   <div class="sec-t"><span class="n">2</span> 사진 촬영</div>
 
-  <!-- file input: 섹션 내 위치 -->
   <input type="file" id="inW" accept="image/*">
   <input type="file" id="inC" accept="image/*">
 
   <div class="pg">
-    <!-- 멀리서 찍기: for="inW" 유지 (기존 정상 동작) -->
     <label class="pc w" id="lblW" for="inW">
       <i class="fa-solid fa-image ic"></i>
       <div class="lb">멀리서 찍기<br><span class="hn">위치 파악용</span></div>
@@ -672,7 +660,7 @@ input[type="file"]{
       </button>
     </label>
 
-    <!-- [FIX v20.4] 가까이 찍기: for 속성 제거 → JS에서 직접 inC.click() 호출 -->
+    <!-- [FIX v20.5] for 속성 없음 - JS에서 직접 inC.click() 호출 -->
     <div class="pc c" id="lblC">
       <i class="fa-solid fa-crosshairs ic"></i>
       <div class="lb">가까이 찍기<br><span class="hn">AI 분석 시작</span></div>
@@ -683,7 +671,6 @@ input[type="file"]{
     </div>
   </div>
 
-  <!-- 사진 입력 안내 -->
   <div style="margin-top:8px;padding:8px 12px;background:var(--bl);border-radius:8px;font-size:.68rem;color:var(--ts);display:flex;align-items:center;gap:6px">
     <i class="fa-solid fa-circle-info" style="color:var(--pl);flex-shrink:0"></i>
     <span>카드를 탭하면 <b>카메라 또는 갤러리</b>에서 선택할 수 있습니다</span>
@@ -767,7 +754,7 @@ input[type="file"]{
 <!-- ── FOOTER ── -->
 <div class="ft">
   <div class="ft-b">청개구리샤시</div>
-  <div class="ft-i">대표: 전영웅 | 사업자: 123-36-31426 | 📞 010-2322-0949<br>본 서비스는 참고용 보조 도구이며 법적 책임을 지지 않습니다.<br>ⓒ 2026 Cheong-gaeguri Corp. | v20.4</div>
+  <div class="ft-i">대표: 전영웅 | 사업자: 123-36-31426 | 📞 010-2322-0949<br>본 서비스는 참고용 보조 도구이며 법적 책임을 지지 않습니다.<br>ⓒ 2026 Cheong-gaeguri Corp. | v20.5</div>
   <div class="ft-donate">
     <i class="fa-solid fa-hand-holding-heart"></i>
     <div class="ft-donate-text">
@@ -1145,8 +1132,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   const lblW=$('lblW'), lblC=$('lblC');
 
   /* ================================================================
-     멀리서 찍기 (기존 방식 유지 - for="inW" label)
-     label 클릭 → input.value 초기화 → 파일 다이얼로그 자동 오픈
+     멀리서 찍기 (label for="inW" 방식 유지)
      ================================================================ */
   lblW.addEventListener('click', (e)=>{
     if(e.target.classList.contains('rb')||e.target.closest('.rb'))return;
@@ -1154,32 +1140,22 @@ window.addEventListener('DOMContentLoaded',()=>{
   });
 
   /* ================================================================
-     [FIX v20.4] 가까이 찍기 - 핵심 수정
-     기존 문제: for="inC" label → 일부 모바일에서 inC 트리거 실패
-                파일 선택 후 processPhoto 내 검증 실패 시 조용히 종료
-     수정 방식:
-       1. <div class="pc c" id="lblC"> (for 속성 없음)
-       2. 클릭 시 JS에서 사전 검증(위치 + 한도)
-       3. 검증 통과 시 inC.value='' → inC.click() 직접 호출
-       → 사용자 제스처 컨텍스트 내에서 동기적으로 호출되므로
-         iOS Safari, Android Chrome 모두 파일 다이얼로그 정상 오픈
+     [FIX v20.5] 가까이 찍기 - 핵심 수정
+     문제: validateRoom() 사전 검증으로 인해 위치 미선택 시
+           파일 다이얼로그 미오픈 → 점검위치 선택창으로 이동
+     해결: validateRoom() 제거, 한도 체크만 수행
+           위치 검증은 A.save() 저장 시에만 수행
      ================================================================ */
   lblC.addEventListener('click', (e)=>{
     // 다시찍기 버튼 클릭은 별도 처리
     if(e.target.classList.contains('rb')||e.target.closest('.rb'))return;
 
-    // ① 위치 사전 검증 - 선택 안 했으면 다이얼로그 열지 않고 안내
-    if(!validateRoom()){
-      stat('⚠️ 먼저 점검 위치를 선택해주세요', true);
-      return;
-    }
-
-    // ② 사용량 한도 사전 검증
+    // ① 사용량 한도 체크만 수행 (위치 검증은 저장 시)
     if(!chkLim()){
       return;
     }
 
-    // ③ 검증 통과 → 파일 다이얼로그 직접 오픈
+    // ② 한도 통과 → 파일 다이얼로그 즉시 오픈
     inC.value='';
     inC.click();
   });
@@ -1194,9 +1170,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   });
 
   /* ================================================================
-     [FIX v20.4] 가까이 찍기 파일 선택 처리
-     · 위치·한도 검증은 lblC 클릭 시 이미 완료
-     · 여기서는 파일 처리만 수행
+     가까이 찍기 파일 선택 처리
      ================================================================ */
   inC.addEventListener('change', (e)=>{
     const f=e.target.files[0];
@@ -1207,8 +1181,6 @@ window.addEventListener('DOMContentLoaded',()=>{
 
 /* ================================================================
    processPhoto: 파일 읽기 및 처리
-   [FIX v20.4] 'c' 분기에서 중복 검증 제거
-              (lblC 클릭 시 이미 사전 검증 완료)
    ================================================================ */
 function processPhoto(f, t){
   if(!f.type.startsWith('image/')){
@@ -1224,7 +1196,6 @@ function processPhoto(f, t){
   r.onload=(ev)=>{
     const dataUrl=ev.target.result;
     if(t==='w'){
-      // 멀리서 찍기
       wF=f;
       showPreview('pvW', dataUrl);
       $('rtW').style.display='block';
@@ -1232,7 +1203,6 @@ function processPhoto(f, t){
       step(2);
       saveDraft();
     } else {
-      // [FIX v20.4] 가까이 찍기: 사전 검증 이미 완료 → 바로 처리
       cF=f;
       showPreview('pvC', dataUrl);
       $('rtC').style.display='block';
@@ -1251,7 +1221,7 @@ function processPhoto(f, t){
 }
 
 /* ================================================================
-   [FIX v20.1] 다시찍기 버튼 처리
+   다시찍기 버튼 처리
    ================================================================ */
 A.retake = (type, e) => {
   e.preventDefault();
@@ -1261,7 +1231,6 @@ A.retake = (type, e) => {
     $('inW').value='';
     $('inW').click();
   } else {
-    // 가까이 찍기 다시찍기: 검증 없이 바로 재촬영
     $('inC').value='';
     $('inC').click();
   }
@@ -1449,7 +1418,9 @@ ${workList}
 /* ── 저장 ── */
 A.togSave=()=>{const ok=$('fAgree').checked;if(ok){ls('frog_agreed','true');$('agreeNote').style.display='block';}$('btnSv').disabled=!ok;$('btnSv').className=ok?'btn-sv ok':'btn-sv off';};
 A.save=()=>{
-  if(!$('fAgree').checked)return;if(!validateRoom())return;
+  if(!$('fAgree').checked)return;
+  // 저장 시점에 위치 검증 (사진 촬영 전 검증 아님)
+  if(!validateRoom())return;
   const cs=$('pvC').src;
   if(!cF&&(!cs||!cs.startsWith('data:'))){alert('사진(가까이 찍기)이 필요합니다.');return;}
   const addr=$('fAddr').value,apt=$('fApt').value||'주소참조',dong=$('fDong').value,ho=$('fHo').value;
@@ -1542,7 +1513,7 @@ A.pdf=()=>{
   document.body.appendChild(overlay);
   const wrap=document.createElement('div');
   wrap.style.cssText='position:absolute;top:0;left:0;width:800px;padding:28px 24px;font-family:Noto Sans KR,sans-serif;color:#1A2332;background:#fff;z-index:1;line-height:1.5';
-  let h=`<div style="text-align:center;margin-bottom:22px;padding-bottom:16px;border-bottom:3px solid #0A6B5C"><div style="font-size:20px;font-weight:900;color:#0A6B5C;margin-bottom:6px">🐸 청개구리 입주자 사전점검 리포트</div><div style="font-size:13px;font-weight:700;color:#5A6B7F">${info}</div><div style="font-size:10px;color:#94A3B8;margin-top:4px">${dateStr} 작성 | 총 ${list.length}건 | v20.4</div><div style="font-size:9px;color:#16A34A;margin-top:6px;background:#ECFDF5;padding:4px 10px;border-radius:6px;display:inline-block">💚 이 앱 수익의 50%는 공익단체에 기부됩니다</div></div>`;
+  let h=`<div style="text-align:center;margin-bottom:22px;padding-bottom:16px;border-bottom:3px solid #0A6B5C"><div style="font-size:20px;font-weight:900;color:#0A6B5C;margin-bottom:6px">🐸 청개구리 입주자 사전점검 리포트</div><div style="font-size:13px;font-weight:700;color:#5A6B7F">${info}</div><div style="font-size:10px;color:#94A3B8;margin-top:4px">${dateStr} 작성 | 총 ${list.length}건 | v20.5</div><div style="font-size:9px;color:#16A34A;margin-top:6px;background:#ECFDF5;padding:4px 10px;border-radius:6px;display:inline-block">💚 이 앱 수익의 50%는 공익단체에 기부됩니다</div></div>`;
   list.forEach((it,idx)=>{
     const isSafe=it.type==='허용범위';
     const tc=isSafe?'#059669':'#E74C3C',tb=isSafe?'#ECFDF5':'#FFF5F5';
@@ -1553,7 +1524,7 @@ A.pdf=()=>{
     const safeDetail=(it.detail||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     h+=`<div style="padding:10px 12px"><div style="font-size:11px;font-weight:700;color:#0A6B5C;margin-bottom:3px">${it.work||''} → ${it.sub||''}</div><div style="font-size:11px;color:#5A6B7F;line-height:1.6;white-space:pre-wrap">${safeDetail}</div></div></div>`;
   });
-  h+=`<div style="text-align:center;font-size:8px;color:#94A3B8;margin-top:14px;padding-top:10px;border-top:1px solid #E8ECF1;line-height:1.6">※ 본 리포트는 입주자 사전점검 보조 자료이며 법적 효력이 없습니다.<br>제공: 청개구리샤시 | 대표: 전영웅 | 📞 010-2322-0949 | ⓒ 2026 Cheong-gaeguri Corp. | v20.4</div>`;
+  h+=`<div style="text-align:center;font-size:8px;color:#94A3B8;margin-top:14px;padding-top:10px;border-top:1px solid #E8ECF1;line-height:1.6">※ 본 리포트는 입주자 사전점검 보조 자료이며 법적 효력이 없습니다.<br>제공: 청개구리샤시 | 대표: 전영웅 | 📞 010-2322-0949 | ⓒ 2026 Cheong-gaeguri Corp. | v20.5</div>`;
   wrap.innerHTML=h;document.body.appendChild(wrap);
   const imgs=wrap.querySelectorAll('img');
   const imgP=Array.from(imgs).map(img=>img.complete&&img.naturalHeight>0?Promise.resolve():new Promise(r=>{img.onload=r;img.onerror=r;}));
@@ -1640,31 +1611,16 @@ A.ask=key=>A.cbAsk(key);
 
 /* ============================================================
    버전 관리
-   현재: v20.4 (2026-03-10)
-   - FIX: 가까이 찍기 클릭 시 파일다이얼로그 미오픈 문제 수정
-     · lblC <label for="inC"> → <div id="lblC"> (for 속성 제거)
-     · 클릭 시 JS에서 사전 검증 후 inC.click() 직접 호출
-     · processPhoto 'c' 분기 중복 검증 제거
-     · input[type="file"] z-index:-1 → position:fixed top:-200px
+   현재: v20.5 (2026-03-11)
+   - FIX: 가까이 찍기 클릭 시 점검위치로 넘어가는 오류 수정
+     · lblC 클릭 핸들러에서 validateRoom() 완전 제거
+     · 위치 검증은 A.save() 시에만 수행 (저장 단계)
+     · 클릭 → 한도 체크 → 즉시 파일 다이얼로그 오픈
 
-   v20.3: UPDATE: 헤더 로고 → 실제 청개구리 브랜드 이미지
-   v20.2: FIX: 헤더 로고 SVG, 앱 이름 변경
+   v20.4: FIX: 파일다이얼로그 미오픈 → lblC for 제거, JS click() 직접 호출
+   v20.3: UPDATE: 헤더 로고 실제 이미지 적용
+   v20.2: FIX: SVG 로고, 앱이름 변경
    v20.1: FIX: capture 제거, 재선택, pointer-events, FileReader 오류핸들링
-   ============================================================ */
-
-/* ============================================================
-   📋 Console 관리 명령어 (개발자용) v20.4
-
-   ▶ 이용권 수동 활성화 (테스트):
-   localStorage.setItem('frog_pass', JSON.stringify({date:new Date().toDateString(),active:true,type:'paid',code:'TEST01'}))
-
-   ▶ 무료 사용량 초기화:
-   localStorage.setItem('frog_use_free', JSON.stringify({date:new Date().toDateString(),count:0}))
-
-   ▶ 개발자 모드 ON:
-   localStorage.setItem('is_dev','true')
-
-   ▶ 테스트 코드: TEST01 / DEMO01 / FROG01
    ============================================================ */
 </script>
 </body>
