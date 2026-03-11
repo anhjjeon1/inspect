@@ -6,12 +6,15 @@
 <meta name="theme-color" content="#0A6B5C">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>청개구리 입주자 사전점검 AI앱 v20.5</title>
+<title>청개구리 입주자 사전점검 AI앱 v20.7</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;800;900&family=Outfit:wght@600;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 /* ============================================================
-   청개구리 입주자 사전점검 AI v20.5
+   청개구리 입주자 사전점검 AI v20.7
+   v20.7 변경사항:
+   - [FIX] 저장 시 점검 위치 미선택 → 리스트 미표시 오류 수정
+     · validateRoom 실패 시 alert 팝업으로 명확히 안내
    v20.5 변경사항:
    - [FIX] 가까이 찍기 클릭 시 점검위치로 넘어가는 오류 수정
      · lblC 클릭 핸들러에서 validateRoom() 사전 검증 제거
@@ -491,6 +494,29 @@ textarea.if{resize:none;height:85px;line-height:1.6}
 }
 .hidden{display:none!important}
 
+/* ── 자동저장 토스트 ── */
+.toast{
+  position:fixed;bottom:calc(90px + var(--safe-bottom));left:50%;transform:translateX(-50%) translateY(20px);
+  background:linear-gradient(135deg,#0A6B5C,#12B89A);color:#fff;
+  padding:11px 20px;border-radius:30px;font-size:.82rem;font-weight:800;
+  box-shadow:0 4px 20px rgba(10,107,92,.4);
+  display:flex;align-items:center;gap:8px;white-space:nowrap;
+  opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);
+  z-index:9000;pointer-events:none;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.warn{background:linear-gradient(135deg,#F39C12,#E67E22)}
+
+/* ── 저장 버튼 → 자동저장 안내 배너로 변경 ── */
+.auto-save-banner{
+  display:flex;align-items:center;gap:8px;
+  background:linear-gradient(135deg,#F0FDF4,#ECFDF5);
+  border:1.5px solid var(--nv);border-radius:var(--r);
+  padding:11px 14px;margin-top:10px;
+  font-size:.78rem;font-weight:700;color:#059669;
+}
+.auto-save-banner i{font-size:.9rem;flex-shrink:0}
+
 input[type="file"]{
   position:fixed;
   top:-200px;
@@ -518,7 +544,7 @@ input[type="file"]{
     </div>
     <div class="hd-tags">
       <span class="tag tag-free" id="passTag">기부형 앱</span>
-      <span class="tag tag-v" id="verTag" onclick="A.devTap()">v20.5</span>
+      <span class="tag tag-v" id="verTag" onclick="A.devTap()">v20.7</span>
     </div>
   </div>
 </header>
@@ -717,9 +743,13 @@ input[type="file"]{
     <div class="ck"><input type="checkbox" id="fAgree" onchange="A.togSave()"><label for="fAgree">위 내용을 확인하였으며 동의합니다</label></div>
     <div id="agreeNote" style="font-size:.62rem;color:#059669;margin-top:4px;display:none"><i class="fa-solid fa-circle-check"></i> 동의가 저장되었습니다 (최초 1회)</div>
   </div>
-  <button class="btn-sv off" id="btnSv" onclick="A.save()" disabled data-voice-id="step5">
+  <button class="btn-sv off" id="btnSv" onclick="A.save()" disabled data-voice-id="step5" style="display:none">
     <i class="fa-solid fa-check-circle"></i> 리스트에 저장
   </button>
+  <div class="auto-save-banner" id="autoSaveBanner">
+    <i class="fa-solid fa-bolt" style="color:var(--pl)"></i>
+    <span>가까이 찍기 후 <b>AI 분석 완료 시 자동 저장</b>됩니다</span>
+  </div>
 </div>
 
 <!-- ── 리스트 ── -->
@@ -754,7 +784,7 @@ input[type="file"]{
 <!-- ── FOOTER ── -->
 <div class="ft">
   <div class="ft-b">청개구리샤시</div>
-  <div class="ft-i">대표: 전영웅 | 사업자: 123-36-31426 | 📞 010-2322-0949<br>본 서비스는 참고용 보조 도구이며 법적 책임을 지지 않습니다.<br>ⓒ 2026 Cheong-gaeguri Corp. | v20.5</div>
+  <div class="ft-i">대표: 전영웅 | 사업자: 123-36-31426 | 📞 010-2322-0949<br>본 서비스는 참고용 보조 도구이며 법적 책임을 지지 않습니다.<br>ⓒ 2026 Cheong-gaeguri Corp. | v20.7</div>
   <div class="ft-donate">
     <i class="fa-solid fa-hand-holding-heart"></i>
     <div class="ft-donate-text">
@@ -923,6 +953,7 @@ input[type="file"]{
 
 <button class="cf" onclick="A.openChatBot()"><i class="fa-solid fa-comment-dots"></i></button>
 <div class="cw" id="chatW"></div>
+<div class="toast" id="toastMsg"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -1301,6 +1332,69 @@ function step(c){
 }
 function stat(m,e){$('sMsg').textContent=m;$('sDot').classList.toggle('err',!!e);}
 
+/* ── 토스트 알림 ── */
+function toast(msg,warn=false,dur=2800){
+  const el=$('toastMsg');
+  el.innerHTML=msg;
+  el.className='toast'+(warn?' warn':'');
+  clearTimeout(el._t);
+  requestAnimationFrame(()=>{el.classList.add('show');});
+  el._t=setTimeout(()=>{el.classList.remove('show');},dur);
+}
+
+/* ── AI 분석 완료 후 자동 저장 ── */
+function autoSave(){
+  const cs=$('pvC').src;
+  if(!cs||!cs.startsWith('data:')){return;}// 사진 없으면 스킵
+
+  // 동의 미체크 시 자동 동의 처리 (최초 1회 이후엔 저장됨)
+  if(!$('fAgree').checked){
+    if(ls('frog_agreed')==='true'){
+      $('fAgree').checked=true;$('agreeNote').style.display='block';
+    } else {
+      // 동의 필요 안내
+      toast('<i class="fa-solid fa-triangle-exclamation"></i> 필수 확인에 동의 후 자동 저장됩니다',true,3500);
+      // 동의 체크박스로 스크롤
+      $('fAgree').closest('.ag').scrollIntoView({behavior:'smooth',block:'center'});
+      // 동의하면 자동저장 트리거 등록 (1회)
+      $('fAgree').addEventListener('change',function handler(){
+        if($('fAgree').checked){autoSave();$('fAgree').removeEventListener('change',handler);}
+      });
+      return;
+    }
+  }
+
+  const addr=$('fAddr').value, apt=$('fApt').value||'주소참조', dong=$('fDong').value, ho=$('fHo').value;
+  const room=$('fRoom').value||'위치미지정';
+  const info=`${addr} (${apt} ${dong}동 ${ho}호)`;
+  $('lInfo').textContent=info;$('ptitle').textContent=info+' 사전점검 리포트';
+  const ws=$('pvW').src;
+  const item={
+    id:Date.now(),room,
+    work:$('fWork').value,sub:$('fSub').value,type:$('fType').value,
+    detail:$('fDetail').value,mode:getActiveMode(),
+    wImg:(ws&&ws.startsWith('data:'))?ws:null,cImg:cs
+  };
+  list.push(item);renderItem(item);updateModeLabel();saveList();
+
+  // 위치 미선택 경고
+  const roomMissing=!$('fRoom').value;
+
+  reset();
+
+  if(roomMissing){
+    toast('<i class="fa-solid fa-circle-check"></i> 자동 저장! ⚠️ 위치는 미지정으로 저장됨',true,3500);
+  } else {
+    toast(`<i class="fa-solid fa-circle-check"></i> <b>${room}</b> 자동 저장 완료!`);
+  }
+  stat('✅ 자동 저장! 다음 항목을 촬영하세요.');
+  // 리스트로 스크롤
+  setTimeout(()=>{
+    document.querySelector('.lh').scrollIntoView({behavior:'smooth'});
+    setTimeout(()=>step(1),800);
+  },600);
+}
+
 /* ── 위치 선택 ── */
 A.toggleRoom=()=>{
   const grid=$('cdGrid'),btn=$('cdBtn');
@@ -1316,15 +1410,37 @@ A.pickRoom=(el)=>{
   $('cdBtn').classList.remove('err-shake');
   document.querySelectorAll('.cd-item').forEach(i=>i.classList.remove('selected'));el.classList.add('selected');
   setTimeout(()=>{$('cdGrid').classList.remove('show');$('cdBtn').classList.remove('open');},150);
+  // 위치 선택 시 경고 메시지 즉시 숨김
+  const warn=$('roomWarnMsg');if(warn)warn.style.display='none';
   saveDraft();
 };
 function validateRoom(){
   if(!$('fRoom').value){
+    // 저장 버튼 위에 인라인 경고 표시
+    showRoomWarn();
     const btn=$('cdBtn');btn.classList.remove('err-shake');void btn.offsetWidth;btn.classList.add('err-shake');
     $('cdGrid').classList.add('show');btn.classList.add('open');
-    stat('⚠️ 점검 위치를 선택해주세요',true);btn.scrollIntoView({behavior:'smooth',block:'center'});return false;
+    stat('⚠️ 점검 위치를 선택해주세요',true);
+    btn.scrollIntoView({behavior:'smooth',block:'center'});
+    return false;
   }
   return true;
+}
+
+/* ── 위치 미선택 인라인 경고 ── */
+function showRoomWarn(){
+  let warn=$('roomWarnMsg');
+  if(!warn){
+    warn=document.createElement('div');
+    warn.id='roomWarnMsg';
+    warn.style.cssText='background:#FFF5F5;border:1.5px solid var(--dn);border-radius:10px;padding:10px 14px;font-size:.78rem;font-weight:700;color:var(--dn);display:flex;align-items:center;gap:8px;margin-top:8px;animation:shake .4s';
+    warn.innerHTML='<i class="fa-solid fa-triangle-exclamation"></i> ① 위 <b style="color:#0A6B5C">점검 위치</b>를 먼저 선택한 후 저장하세요!';
+    const btnSv=$('btnSv');
+    btnSv.parentNode.insertBefore(warn, btnSv);
+  }
+  warn.style.display='flex';
+  clearTimeout(warn._t);
+  warn._t=setTimeout(()=>{if(warn)warn.style.display='none';},4000);
 }
 
 /* ── 전문가(직원) 모드 ── */
@@ -1404,6 +1520,8 @@ ${workList}
     det.value=(final.detail||'')+verifyBadge+'\n(※ AI 분석 결과는 참고용입니다.)';
     useQuota();updateQuotaUI();saveDraft();
     stat(wasCorrected?`🔄 재검증 후 수정됨 (잔여 ${getRemaining()}건)`:`✅ 분석 완료 (잔여 ${getRemaining()}건)`);
+    // ★ AI 분석 완료 → 자동 저장
+    setTimeout(()=>autoSave(), 800);
   }catch(err){
     console.error(err);
     const errMsg=err?.message||err?.toString()||'';
@@ -1415,12 +1533,31 @@ ${workList}
   }
 }
 
-/* ── 저장 ── */
-A.togSave=()=>{const ok=$('fAgree').checked;if(ok){ls('frog_agreed','true');$('agreeNote').style.display='block';}$('btnSv').disabled=!ok;$('btnSv').className=ok?'btn-sv ok':'btn-sv off';};
+/* ── 저장(수동 폴백) ── */
+A.togSave=()=>{
+  const ok=$('fAgree').checked;
+  if(ok){ls('frog_agreed','true');$('agreeNote').style.display='block';}
+  // 자동저장 배너 업데이트
+  const banner=$('autoSaveBanner');
+  if(banner){
+    if(ok){
+      banner.style.borderColor='var(--nv)';banner.style.color='#059669';
+      banner.innerHTML='<i class="fa-solid fa-bolt" style="color:var(--pl)"></i><span>가까이 찍기 후 <b>AI 분석 완료 시 자동 저장</b>됩니다</span>';
+    }else{
+      banner.style.borderColor='var(--wr)';banner.style.color='#C05621';
+      banner.innerHTML='<i class="fa-solid fa-triangle-exclamation" style="color:var(--wr)"></i><span>필수 확인에 동의하면 <b>자동 저장</b>이 활성화됩니다</span>';
+    }
+  }
+};
 A.save=()=>{
   if(!$('fAgree').checked)return;
   // 저장 시점에 위치 검증 (사진 촬영 전 검증 아님)
-  if(!validateRoom())return;
+  if(!validateRoom()){
+    // 저장 버튼 흔들기 강조
+    const sv=$('btnSv');sv.style.background='#E74C3C';sv.style.boxShadow='0 0 0 4px rgba(231,76,60,.25)';
+    setTimeout(()=>{sv.style.background='';sv.style.boxShadow='';},1200);
+    return;
+  }
   const cs=$('pvC').src;
   if(!cF&&(!cs||!cs.startsWith('data:'))){alert('사진(가까이 찍기)이 필요합니다.');return;}
   const addr=$('fAddr').value,apt=$('fApt').value||'주소참조',dong=$('fDong').value,ho=$('fHo').value;
@@ -1513,7 +1650,7 @@ A.pdf=()=>{
   document.body.appendChild(overlay);
   const wrap=document.createElement('div');
   wrap.style.cssText='position:absolute;top:0;left:0;width:800px;padding:28px 24px;font-family:Noto Sans KR,sans-serif;color:#1A2332;background:#fff;z-index:1;line-height:1.5';
-  let h=`<div style="text-align:center;margin-bottom:22px;padding-bottom:16px;border-bottom:3px solid #0A6B5C"><div style="font-size:20px;font-weight:900;color:#0A6B5C;margin-bottom:6px">🐸 청개구리 입주자 사전점검 리포트</div><div style="font-size:13px;font-weight:700;color:#5A6B7F">${info}</div><div style="font-size:10px;color:#94A3B8;margin-top:4px">${dateStr} 작성 | 총 ${list.length}건 | v20.5</div><div style="font-size:9px;color:#16A34A;margin-top:6px;background:#ECFDF5;padding:4px 10px;border-radius:6px;display:inline-block">💚 이 앱 수익의 50%는 공익단체에 기부됩니다</div></div>`;
+  let h=`<div style="text-align:center;margin-bottom:22px;padding-bottom:16px;border-bottom:3px solid #0A6B5C"><div style="font-size:20px;font-weight:900;color:#0A6B5C;margin-bottom:6px">🐸 청개구리 입주자 사전점검 리포트</div><div style="font-size:13px;font-weight:700;color:#5A6B7F">${info}</div><div style="font-size:10px;color:#94A3B8;margin-top:4px">${dateStr} 작성 | 총 ${list.length}건 | v20.7</div><div style="font-size:9px;color:#16A34A;margin-top:6px;background:#ECFDF5;padding:4px 10px;border-radius:6px;display:inline-block">💚 이 앱 수익의 50%는 공익단체에 기부됩니다</div></div>`;
   list.forEach((it,idx)=>{
     const isSafe=it.type==='허용범위';
     const tc=isSafe?'#059669':'#E74C3C',tb=isSafe?'#ECFDF5':'#FFF5F5';
@@ -1524,7 +1661,7 @@ A.pdf=()=>{
     const safeDetail=(it.detail||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     h+=`<div style="padding:10px 12px"><div style="font-size:11px;font-weight:700;color:#0A6B5C;margin-bottom:3px">${it.work||''} → ${it.sub||''}</div><div style="font-size:11px;color:#5A6B7F;line-height:1.6;white-space:pre-wrap">${safeDetail}</div></div></div>`;
   });
-  h+=`<div style="text-align:center;font-size:8px;color:#94A3B8;margin-top:14px;padding-top:10px;border-top:1px solid #E8ECF1;line-height:1.6">※ 본 리포트는 입주자 사전점검 보조 자료이며 법적 효력이 없습니다.<br>제공: 청개구리샤시 | 대표: 전영웅 | 📞 010-2322-0949 | ⓒ 2026 Cheong-gaeguri Corp. | v20.5</div>`;
+  h+=`<div style="text-align:center;font-size:8px;color:#94A3B8;margin-top:14px;padding-top:10px;border-top:1px solid #E8ECF1;line-height:1.6">※ 본 리포트는 입주자 사전점검 보조 자료이며 법적 효력이 없습니다.<br>제공: 청개구리샤시 | 대표: 전영웅 | 📞 010-2322-0949 | ⓒ 2026 Cheong-gaeguri Corp. | v20.7</div>`;
   wrap.innerHTML=h;document.body.appendChild(wrap);
   const imgs=wrap.querySelectorAll('img');
   const imgP=Array.from(imgs).map(img=>img.complete&&img.naturalHeight>0?Promise.resolve():new Promise(r=>{img.onload=r;img.onerror=r;}));
@@ -1611,7 +1748,7 @@ A.ask=key=>A.cbAsk(key);
 
 /* ============================================================
    버전 관리
-   현재: v20.5 (2026-03-11)
+   현재: v20.7 (2026-03-11)
    - FIX: 가까이 찍기 클릭 시 점검위치로 넘어가는 오류 수정
      · lblC 클릭 핸들러에서 validateRoom() 완전 제거
      · 위치 검증은 A.save() 시에만 수행 (저장 단계)
