@@ -1751,7 +1751,7 @@ input[type="file"]{
 <div class="pass-bar unified-bar" data-voice-id="passbar">
   <div class="pass-status free" id="passStatus">
     <div class="pass-dot"></div>
-    <span class="pass-label" id="passLabel">무료 체험 중</span>
+    <span class="pass-label" id="passLabel">무료 체험 3건 가능</span>
     <span class="pass-count" id="passCount"></span>
   </div>
   <button class="btn-buy" id="btnBuy" onclick="A.openPayModal()">
@@ -2118,7 +2118,7 @@ A.verifyCode=async()=>{const code=$('codeInput').value.trim().toUpperCase();if(!
 function updatePassUI(){const p=getPassState();const statusEl=$('passStatus'),labelEl=$('passLabel'),tagEl=$('passTag'),btnBuy=$('btnBuy');if(ls('is_dev')==='true'){statusEl.className='pass-status pro';labelEl.textContent='🛠️ 개발자 모드';tagEl.textContent='DEV';tagEl.style.background='var(--pu)';btnBuy.style.display='none';
 $('passCount').textContent='무제한';
 $('passCount').className='pass-count ok';
-return;}if(mode==='pro'){statusEl.className='pass-status pro';labelEl.textContent='직원 전용 모드 활성';tagEl.textContent='직원';tagEl.style.background='var(--pu)';btnBuy.style.display='none';$('passCount').textContent='';$('passCount').className='pass-count';return;}if(p.active&&p.type==='paid'){statusEl.className='pass-status paid';labelEl.textContent='1일 이용권 이용 중';tagEl.textContent='이용권';tagEl.style.background='var(--nv)';btnBuy.innerHTML='<i class="fa-solid fa-check"></i> 이용 중';btnBuy.style.background='linear-gradient(135deg,var(--p),var(--pl))';btnBuy.onclick=()=>A.openPayModal();}else{statusEl.className='pass-status free';labelEl.textContent='무료 체험 중';tagEl.textContent='기부형 앱';tagEl.style.background='var(--ac)';btnBuy.innerHTML='<i class="fa-brands fa-naver"></i> 1일권 구매';btnBuy.style.background='';btnBuy.onclick=()=>A.openPayModal();}}
+return;}if(mode==='pro'){statusEl.className='pass-status pro';labelEl.textContent='직원 전용 모드 활성';tagEl.textContent='직원';tagEl.style.background='var(--pu)';btnBuy.style.display='none';$('passCount').textContent='';$('passCount').className='pass-count';return;}if(p.active&&p.type==='paid'){statusEl.className='pass-status paid';labelEl.textContent='1일 이용권 이용 중';tagEl.textContent='이용권';tagEl.style.background='var(--nv)';btnBuy.innerHTML='<i class="fa-solid fa-check"></i> 이용 중';btnBuy.style.background='linear-gradient(135deg,var(--p),var(--pl))';btnBuy.onclick=()=>A.openPayModal();}else{statusEl.className='pass-status free';labelEl.textContent='무료 체험 3건 가능';tagEl.textContent='기부형 앱';tagEl.style.background='var(--ac)';btnBuy.innerHTML='<i class="fa-brands fa-naver"></i> 1일권 구매';btnBuy.style.background='';btnBuy.onclick=()=>A.openPayModal();}}
 
 /* ============================================================
    🔒 사용량 제한
