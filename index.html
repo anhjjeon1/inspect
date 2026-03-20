@@ -855,6 +855,34 @@ textarea.if{
   color:var(--th);
   padding:2px 8px;
 }
+.steps-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:4px 10px 6px;
+  gap:8px;
+}
+.steps-row .steps{
+  display:flex;
+  align-items:center;
+  gap:0;
+  padding:0;
+  flex-shrink:0;
+}
+.sg-badge{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  background:linear-gradient(135deg,#EF4444,#DC2626);
+  color:#fff;
+  padding:6px 14px;
+  border-radius:20px;
+  font-size:.82rem;
+  font-weight:800;
+  white-space:nowrap;
+  box-shadow:0 2px 8px rgba(239,68,68,.35);
+}
+.sg-badge i{font-size:.85rem}
 .sg i{color:var(--pl)}
 .ls{padding:0 6px;margin-top:8px}
 .lh{
@@ -1784,13 +1812,14 @@ input[type="file"]{
     <span class="q-num ok" id="qNum">3/3건</span>
   </div>
 </div>
-<div class="sg"><i class="fa-solid fa-database"></i> <span id="sgTx">저장된 항목: 0건</span></div>
-
-<div class="steps">
-  <div class="sn on" id="s1">1</div><div class="sl" id="l1"></div>
-  <div class="sn" id="s2">2</div><div class="sl" id="l2"></div>
-  <div class="sn" id="s3">3</div><div class="sl" id="l3"></div>
-  <div class="sn" id="s4">4</div>
+<div class="steps-row">
+  <div class="steps">
+    <div class="sn on" id="s1">1</div><div class="sl" id="l1"></div>
+    <div class="sn" id="s2">2</div><div class="sl" id="l2"></div>
+    <div class="sn" id="s3">3</div><div class="sl" id="l3"></div>
+    <div class="sn" id="s4">4</div>
+  </div>
+  <div class="sg-badge" id="sgBadge"><i class="fa-solid fa-clipboard-list"></i> <span id="sgTx">저장된 하자 건수 : 0 건</span></div>
 </div>
 
 <!-- ── STEP 1: 현장 정보 ── -->
@@ -2513,8 +2542,8 @@ function renderItem(it){
 function updateModeLabel(){const el=$('lMode');if(!list.length){el.style.display='none';return;}const hasPaid=list.some(i=>i.mode==='paid'),hasPro=list.some(i=>i.mode==='pro');if(hasPaid){el.textContent='이용권점검';el.style.background='var(--nvb)';el.style.color='#059669';}else if(hasPro){el.textContent='직원점검';el.style.background='var(--pub)';el.style.color='var(--pu)';}else{el.textContent='무료체험';el.style.background='var(--pg)';el.style.color='var(--p)';}el.style.display='inline-block';}
 function reset(){$('inW').value='';$('inC').value='';wF=null;cF=null;['pvW','pvC'].forEach(i=>{$(i).style.display='none';$(i).src='';});['rtW','rtC'].forEach(i=>{$(i).style.display='none';});$('fUser').value='';$('fDetail').value='';$('fWork').value='';A.onWork();$('fRoom').value='';const label=$('cdLabel');label.textContent='위치 선택';label.classList.add('cd-placeholder');label.style.color='';label.style.fontWeight='';$('cdBtn').classList.remove('err-shake');document.querySelectorAll('.cd-item').forEach(i=>i.classList.remove('selected'));// 입력 모드 배너 리셋
 const el=$('fUser');el.classList.remove('has-value');const banner=$('inputHintBanner');if(banner){banner.classList.remove('has-input');const span=banner.querySelector('span:first-of-type');if(span)span.innerHTML='하자 내용을 입력하면 <b>입력 기반 정밀 분석</b>으로 전환됩니다';const badge=$('inputModeBadge');if(badge){badge.className='input-mode-badge photo-mode';badge.innerHTML='📷 사진 모드';}}if(ls('frog_agreed')!=='true'){$('fAgree').checked=false;A.togSave();}clearItemDraft();step(4);}
-function saveList(){try{ls('frog_list',JSON.stringify(list.map(it=>({...it,wImg:null,cImg:null}))));ls('frog_list_full',JSON.stringify(list));$('sgTx').textContent=`저장된 항목: ${list.length}건`;}catch(e){console.warn('Storage full');}}
-function loadList(){try{const full=ls('frog_list_full');if(full){list=JSON.parse(full);list.forEach(it=>renderItem(it));updateModeLabel();$('sgTx').textContent=`저장된 항목: ${list.length}건`;}else{const d=ls('frog_list');if(d){list=JSON.parse(d);list.forEach(it=>renderItem(it));updateModeLabel();$('sgTx').textContent=`저장된 항목: ${list.length}건`;}}}catch(e){list=[];}}
+function saveList(){try{ls('frog_list',JSON.stringify(list.map(it=>({...it,wImg:null,cImg:null}))));ls('frog_list_full',JSON.stringify(list));$('sgTx').textContent=`저장된 하자 건수 : ${list.length} 건`;}catch(e){console.warn('Storage full');}}
+function loadList(){try{const full=ls('frog_list_full');if(full){list=JSON.parse(full);list.forEach(it=>renderItem(it));updateModeLabel();$('sgTx').textContent=`저장된 하자 건수 : ${list.length} 건`;}else{const d=ls('frog_list');if(d){list=JSON.parse(d);list.forEach(it=>renderItem(it));updateModeLabel();$('sgTx').textContent=`저장된 하자 건수 : ${list.length} 건`;}}}catch(e){list=[];}}
 A.edit=id=>{const idx=list.findIndex(i=>i.id===id);if(idx===-1)return;if(!confirm('수정 모드로 불러오시겠습니까?'))return;const it=list[idx];$('fRoom').value=it.room;const label=$('cdLabel');label.textContent=it.room;label.classList.remove('cd-placeholder');label.style.color='var(--tx)';label.style.fontWeight='700';document.querySelectorAll('.cd-item').forEach(i=>i.classList.toggle('selected',i.dataset.val===it.room));$('fWork').value=it.work;$('fDetail').value=it.detail;if(it.wImg)showPreview('pvW',it.wImg);if(it.cImg)showPreview('pvC',it.cImg);$(`i-${id}`).remove();list.splice(idx,1);$('lCnt').textContent=list.length;saveList();window.scrollTo(0,0);};
 A.del=id=>{if(!confirm('삭제하시겠습니까?'))return;$(`i-${id}`).remove();list=list.filter(i=>i.id!==id);$('lCnt').textContent=list.length;updateModeLabel();saveList();};
 A.clearAll=()=>{if(!list.length)return;if(!confirm(`${list.length}건 전체 삭제하시겠습니까?`))return;list=[];$('lBox').innerHTML='';$('lCnt').textContent=0;updateModeLabel();saveList();};
