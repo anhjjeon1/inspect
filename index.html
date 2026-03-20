@@ -1933,11 +1933,10 @@ input[type="file"]{
     </div>
     <textarea class="if" id="fDetail" placeholder="사진 촬영 시 AI가 자동 분석합니다.&#10;하자 내용 직접 입력 시 더 정밀한 분석이 제공됩니다."></textarea>
   </div>
-  <div class="ag" data-voice-id="step4">
-    <div class="ag-t"><i class="fa-solid fa-shield-halved"></i> 필수 확인</div>
-    <div class="ag-tx">1. <b>법적 효력 없음:</b> AI 추정치이며 전문가 실사 필요<br>2. <b>책임 제한:</b> 분석 오류에 대해 개발사 법적 책임 없음</div>
-    <div class="ck"><input type="checkbox" id="fAgree" onchange="A.togSave()"><label for="fAgree">위 내용을 확인하였으며 동의합니다</label></div>
-    <div id="agreeNote" style="font-size:.62rem;color:#059669;margin-top:4px;display:none"><i class="fa-solid fa-circle-check"></i> 동의가 저장되었습니다 (최초 1회)</div>
+  <div style="display:flex;align-items:center;gap:8px;background:var(--wrb);border:1px solid #FEEBC8;border-radius:8px;padding:7px 10px;margin-top:8px" data-voice-id="step4">
+    <input type="checkbox" id="fAgree" onchange="A.togSave()" style="width:16px;height:16px;accent-color:var(--p);cursor:pointer;flex-shrink:0">
+    <label for="fAgree" style="font-size:.68rem;font-weight:700;color:var(--ts);cursor:pointer;line-height:1.4"><i class="fa-solid fa-shield-halved" style="color:#C05621;margin-right:3px"></i>AI 참고용, 법적효력 없음에 동의</label>
+    <span id="agreeNote" style="font-size:.58rem;color:#059669;display:none;flex-shrink:0">✓</span>
   </div>
   <button class="btn-sv off" id="btnSv" onclick="A.save()" disabled data-voice-id="step5" style="display:none">
     <i class="fa-solid fa-check-circle"></i> 리스트에 저장
