@@ -191,6 +191,9 @@ body{
   background:var(--card);
   border-bottom:1px solid var(--bl);
 }
+.unified-bar .pass-status{flex:1;min-width:0}
+.unified-bar .btn-buy{flex-shrink:0}
+.unified-bar .st-voice{flex-shrink:0;font-size:.72rem;padding:8px 12px}
 .pass-status{
   flex:1;
   display:flex;
@@ -1745,7 +1748,7 @@ input[type="file"]{
   <div class="db-text">수익의 50%는 공익단체를 통해 기부됩니다 (협의 중)<span class="db-badge">기부형 앱</span></div>
 </div>
 
-<div class="pass-bar" data-voice-id="passbar">
+<div class="pass-bar unified-bar" data-voice-id="passbar">
   <div class="pass-status free" id="passStatus">
     <div class="pass-dot"></div>
     <span class="pass-label" id="passLabel">무료 체험 중</span>
@@ -1754,13 +1757,12 @@ input[type="file"]{
   <button class="btn-buy" id="btnBuy" onclick="A.openPayModal()">
     <i class="fa-brands fa-naver"></i> 1일권 구매
   </button>
-</div>
-
-<div class="st">
-  <div class="st-chip"><div class="st-dot" id="sDot"></div><span id="sMsg">AI 대기 중</span></div>
   <button class="st-voice" id="voiceBtn" onclick="A.voiceGuide()">
     <i class="fa-solid fa-volume-high"></i> 음성안내
   </button>
+</div>
+<div class="st" style="display:none">
+  <div class="st-chip"><div class="st-dot" id="sDot"></div><span id="sMsg">AI 대기 중</span></div>
 </div>
 
 <div class="voice-ctrl" id="voiceCtrl">
