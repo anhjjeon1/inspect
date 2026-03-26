@@ -191,9 +191,9 @@ body{
   background:var(--card);
   border-bottom:1px solid var(--bl);
 }
-.unified-bar .pass-status{flex:1;min-width:0}
-.unified-bar .btn-buy{flex-shrink:0}
 .unified-bar .st-voice{flex-shrink:0;font-size:.72rem;padding:8px 12px}
+.unified-bar .btn-buy{flex-shrink:0}
+.unified-bar .pass-status{flex-shrink:0;margin-left:auto}
 .pass-status{
   flex:1;
   display:flex;
@@ -1778,17 +1778,17 @@ input[type="file"]{
 </div>
 
 <div class="pass-bar unified-bar" data-voice-id="passbar">
+  <button class="st-voice" id="voiceBtn" onclick="A.voiceGuide()">
+    <i class="fa-solid fa-volume-high"></i> 음성안내
+  </button>
+  <button class="btn-buy" id="btnBuy" onclick="A.openPayModal()">
+    <i class="fa-brands fa-naver"></i> 1일권 구매
+  </button>
   <div class="pass-status free" id="passStatus">
     <div class="pass-dot"></div>
     <span class="pass-label" id="passLabel">무료 체험 3건 가능</span>
     <span class="pass-count" id="passCount"></span>
   </div>
-  <button class="btn-buy" id="btnBuy" onclick="A.openPayModal()">
-    <i class="fa-brands fa-naver"></i> 1일권 구매
-  </button>
-  <button class="st-voice" id="voiceBtn" onclick="A.voiceGuide()">
-    <i class="fa-solid fa-volume-high"></i> 음성안내
-  </button>
 </div>
 <div class="st" style="display:none">
   <div class="st-chip"><div class="st-dot" id="sDot"></div><span id="sMsg">AI 대기 중</span></div>
