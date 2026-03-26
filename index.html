@@ -2170,9 +2170,9 @@ if('speechSynthesis' in window){window.speechSynthesis.getVoices();window.speech
 /* ============================================================
    ⚙️ 공종/세부/유형
    ============================================================ */
-function initWorkSelect(){const sel=$('fWork');sel.innerHTML='<option value="">자동</option>';for(const w of Object.keys(WM)){const o=document.createElement('option');o.value=w;o.textContent=w;sel.appendChild(o);}}
-A.onWork=()=>{const w=$('fWork').value,sub=$('fSub');sub.innerHTML='<option value="">자동</option>';$('fType').innerHTML='<option value="">자동</option>';if(w&&WM[w])for(const s of Object.keys(WM[w])){const o=document.createElement('option');o.value=s;o.textContent=s;sub.appendChild(o);}};
-A.onSub=()=>{const w=$('fWork').value,s=$('fSub').value,tp=$('fType');tp.innerHTML='<option value="">자동</option>';if(w&&s&&WM[w]&&WM[w][s])for(const t of WM[w][s]){const o=document.createElement('option');o.value=t;o.textContent=t;tp.appendChild(o);}};
+function initWorkSelect(){const sel=$('fWork');sel.innerHTML='<option value="">공종(자동입력)</option>';for(const w of Object.keys(WM)){const o=document.createElement('option');o.value=w;o.textContent=w;sel.appendChild(o);}}
+A.onWork=()=>{const w=$('fWork').value,sub=$('fSub');sub.innerHTML='<option value="">세부(자동입력)</option>';$('fType').innerHTML='<option value="">유형(자동입력)</option>';if(w&&WM[w])for(const s of Object.keys(WM[w])){const o=document.createElement('option');o.value=s;o.textContent=s;sub.appendChild(o);}};
+A.onSub=()=>{const w=$('fWork').value,s=$('fSub').value,tp=$('fType');tp.innerHTML='<option value="">유형(자동입력)</option>';if(w&&s&&WM[w]&&WM[w][s])for(const t of WM[w][s]){const o=document.createElement('option');o.value=t;o.textContent=t;tp.appendChild(o);}};
 
 /* ── ★ v20.8: 사용자 입력 실시간 UI 업데이트 ── */
 A.onUserInput=(el)=>{
